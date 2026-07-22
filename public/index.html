@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html lang="en" ng-app="brickbloomSite">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BrickBloom | Modern Cocopeat for Growers</title>
+    <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+    <meta property="og:title" content="BrickBloom — Modern Cocopeat for Growers" />
+    <meta property="og:description" content="BrickBloom delivers premium coconut-based growing media with modern packaging, consistent quality, and crop-ready performance." />
+    <meta property="og:image" content="/images/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="description"
+      content="BrickBloom is a modern cocopeat brand with clean agriculture media, premium formats, and sustainable coconut-based substrates for growers worldwide."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  </head>
+  <body ng-controller="mainController">
+    <header class="topbar topbar-apple">
+      <div class="topbar-inner">
+        <a class="brand" href="/"><img src="/images/logo.svg" alt="BrickBloom" class="brand-logo" /></a>
+        <nav class="nav-links">
+          <a href="#products">Products</a>
+          <a href="#why">Why</a>
+          <a href="#outcome">Outcome</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero hero-apple">
+        <div class="hero-copy">
+          <p class="eyebrow">BrickBloom</p>
+          <h1>Modern cocopeat for precision growing.</h1>
+          <p class="hero-text">
+            Premium coconut-based substrate engineered for growers who need clean handling, consistent crop performance, and modern product formats.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#products">Explore products</a>
+            <a class="btn secondary" href="#why">Why BrickBloom</a>
+          </div>
+          <div class="hero-notes">
+            <div>
+              <strong>Low EC</strong>
+              <span>Better control for soil-free cultivation.</span>
+            </div>
+            <div>
+              <strong>Clean handling</strong>
+              <span>Reduced dust and neat logistics.</span>
+            </div>
+            <div>
+              <strong>Crop-ready</strong>
+              <span>Uniform media for reliable establishment.</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-frame">
+            <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1200&q=80" alt="BrickBloom modern media" />
+          </div>
+        </div>
+      </section>
+
+      <section id="products" class="section section-products">
+        <div class="section-heading center">
+          <p class="eyebrow">Product family</p>
+          <h2>Choose the BrickBloom format that matches your growing workflow.</h2>
+        </div>
+        <div class="product-card-grid">
+          <article class="product-card" ng-repeat="format in formats">
+            <a class="product-link" ng-href="{{format.path}}">
+              <div class="product-card-thumb">
+                <img ng-src="{{format.image}}" alt="{{format.name}}" />
+              </div>
+              <div class="product-card-copy">
+                <h3>{{ format.name }}</h3>
+                <p>{{ format.benefit }}</p>
+              </div>
+              <span class="product-link-label">View details</span>
+            </a>
+          </article>
+        </div>
+      </section>
+
+      <section id="why" class="section section-why">
+        <div class="section-heading center">
+          <p class="eyebrow">Why BrickBloom</p>
+          <h2>Premium substrate design for modern growers.</h2>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <h3>Clean media</h3>
+            <p>Carefully processed cocopeat with low dust and consistent texture.</p>
+          </article>
+          <article class="feature-card">
+            <h3>Precision quality</h3>
+            <p>Batch-controlled substrate for repeatable crop outcomes.</p>
+          </article>
+          <article class="feature-card">
+            <h3>Modern logistics</h3>
+            <p>Formats built for easy storage, transport, and fast deployment.</p>
+          </article>
+          <article class="feature-card">
+            <h3>Grower support</h3>
+            <p>Responsive sourcing advice and packaging recommendations.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="outcome" class="section section-outcome">
+        <div class="section-heading center">
+          <p class="eyebrow">BrickBloom Outcome</p>
+          <h2>Outcomes that matter to your farm and supply chain.</h2>
+        </div>
+        <div class="outcome-grid">
+          <article class="outcome-card">
+            <h3>Faster establishment</h3>
+            <p>Well-aerated media that speeds root growth and reduces transplant stress.</p>
+          </article>
+          <article class="outcome-card">
+            <h3>Lower irrigation</h3>
+            <p>Improved moisture retention keeps water available without waterlogging.</p>
+          </article>
+          <article class="outcome-card">
+            <h3>Cleaner operations</h3>
+            <p>Less dust and better handling support modern greenhouse workflows.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="contact" class="section section-contact">
+        <div class="contact-panel">
+          <div>
+            <p class="eyebrow">Contact</p>
+            <h2>Start your BrickBloom inquiry.</h2>
+            <p>Share your volume, preferred format, and destination. We’ll recommend the right media and delivery plan.</p>
+          </div>
+          <form class="contact-form" ng-submit="submitLead()">
+            <input type="text" ng-model="form.name" placeholder="Your name" required />
+            <input type="email" ng-model="form.email" placeholder="Work email" required />
+            <input type="text" ng-model="form.company" placeholder="Company" required />
+            <textarea ng-model="form.message" placeholder="Tell us your volume, format, and destination" required></textarea>
+            <button class="btn primary" type="submit">Send inquiry</button>
+            <p class="form-status" ng-if="notice">{{ notice }}</p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

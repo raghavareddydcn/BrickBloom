@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 96" width="360" height="96">
+  <defs>
+    <linearGradient id="leafGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1f462a" />
+      <stop offset="100%" stop-color="#72a259" />
+    </linearGradient>
+    <linearGradient id="shellGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8d5a33" />
+      <stop offset="100%" stop-color="#cb9c57" />
+    </linearGradient>
+  </defs>
+  <rect width="360" height="96" rx="22" fill="#f7f0e8" />
+  <g transform="translate(20,18)">
+    <path d="M28 40c0 15 12 28 28 28s28-13 28-28-12-28-28-28-28 13-28 28z" fill="url(#shellGradient)" stroke="#5c3f27" stroke-width="2" />
+    <path d="M16 24c10-15 32-20 50-12" stroke="#f7e3c8" stroke-width="5" fill="none" stroke-linecap="round" />
+    <path d="M20 38c12-10 34-12 50 0" stroke="#f7e3c8" stroke-width="5" fill="none" stroke-linecap="round" />
+    <path d="M12 22c8 12 12 26 12 34" stroke="url(#leafGradient)" stroke-width="9" stroke-linecap="round" fill="none" />
+    <path d="M60 14c10 10 16 24 14 36" stroke="url(#leafGradient)" stroke-width="9" stroke-linecap="round" fill="none" />
+  </g>
+  <text x="100" y="48" font-family="Inter, sans-serif" font-weight="800" font-size="32" fill="#1c3924">BrickBloom</text>
+  <text x="100" y="70" font-family="Inter, sans-serif" font-weight="500" font-size="12" fill="#6a6a5f">Modern cocopeat media</text>
+</svg>
