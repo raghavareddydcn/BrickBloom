@@ -17,49 +17,49 @@ const marketIntelligence = {
       name: 'Coco Tabs',
       benefit: 'Eco-friendly propagation tablets for seed starting and cuttings.',
       path: '/tabs.html',
-      image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80'
+      image: '/images/coco-tabs.svg'
     },
     {
       name: 'Coco Grow Cubes',
       benefit: 'Preformed grow cubes for uniform rooting and clean handling.',
       path: '/coco-grow-cubes.html',
-      image: 'https://images.unsplash.com/photo-1524594154902-3e84e201ed8f?auto=format&fit=crop&w=900&q=80'
+      image: '/images/coco-grow-cubes.svg'
     },
     {
       name: 'Coco Bricks',
       benefit: 'Compressed cocopeat bricks for potting mixes and seedling beds.',
       path: '/coco-bricks.html',
-      image: 'https://images.unsplash.com/photo-1513116476489-7635e79feb27?auto=format&fit=crop&w=900&q=80'
+      image: '/images/coco-bricks.png'
     },
     {
       name: 'Coco Blocks',
       benefit: 'Bulk cocopeat blocks for growers and export-ready packs.',
       path: '/blocks.html',
-      image: 'https://images.unsplash.com/photo-1472130509608-7a19b0d65d2a?auto=format&fit=crop&w=900&q=80'
+      image: '/images/coco-blocks.png'
     },
     {
       name: 'Coco GrowSlabs',
       benefit: 'Ready-to-use slabs with controlled peat, fiber, and chip ratios.',
       path: '/coco-growslabs.html',
-      image: 'https://images.unsplash.com/photo-1542831371-d531d36971e6?auto=format&fit=crop&w=900&q=80'
+      image: '/images/coco-growslabs.png'
     },
     {
       name: 'Coco Growbags',
       benefit: 'Standard coco growbags for transplanting and greenhouse crops.',
       path: '/growbags.html',
-      image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=80'
+      image: '/images/coco-growbags.png'
     },
     {
       name: 'Open Top Growbags',
       benefit: 'Open top growbags for premium planting and easy crop access.',
       path: '/open-top-growbags.html',
-      image: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=900&q=80'
+      image: '/images/open-top-growbags.png'
     },
     {
       name: 'Coco Loose Substrates',
       benefit: 'Loose cocopeat substrate for bulk potting and media mixing.',
       path: '/loose.html',
-      image: 'https://images.unsplash.com/photo-1542838132-92c53300491e6?auto=format&fit=crop&w=900&q=80'
+      image: '/images/coco-loose.svg'
     }
   ],
   sourcingHubs: [

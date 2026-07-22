@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7f3eb"/>
+      <stop offset="100%" stop-color="#e3d6bf"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="18" stdDeviation="14" flood-color="#2c1a08" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  <rect width="900" height="600" fill="url(#bg)"/>
+  
+  <!-- 3D Grow Cubes Grid -->
+  <g filter="url(#shadow)">
+    <!-- Cube 1 (Left) -->
+    <g transform="translate(180, 240)">
+      <polygon points="100,0 200,50 100,100 0,50" fill="#a46d38"/>
+      <polygon points="0,50 100,100 100,220 0,170" fill="#6a3e14"/>
+      <polygon points="100,100 200,50 200,170 100,220" fill="#4d2c0d"/>
+      <ellipse cx="100" cy="50" rx="25" ry="12" fill="#3a2007"/>
+    </g>
+
+    <!-- Cube 2 (Right) -->
+    <g transform="translate(520, 240)">
+      <polygon points="100,0 200,50 100,100 0,50" fill="#a46d38"/>
+      <polygon points="0,50 100,100 100,220 0,170" fill="#6a3e14"/>
+      <polygon points="100,100 200,50 200,170 100,220" fill="#4d2c0d"/>
+      <ellipse cx="100" cy="50" rx="25" ry="12" fill="#3a2007"/>
+    </g>
+
+    <!-- Cube 3 (Center Front with Plant) -->
+    <g transform="translate(350, 160)">
+      <polygon points="100,0 200,50 100,100 0,50" fill="#b87d43"/>
+      <polygon points="0,50 100,100 100,220 0,170" fill="#7a491a"/>
+      <polygon points="100,100 200,50 200,170 100,220" fill="#573211"/>
+      <ellipse cx="100" cy="50" rx="30" ry="15" fill="#3a2007"/>
+      
+      <!-- Sprouting Seedling -->
+      <path d="M 100,45 C 90,-10 60,-30 40,-50 C 70,-40 92,-20 100,45 Z" fill="#4caf50"/>
+      <path d="M 100,45 C 110,-15 140,-35 160,-55 C 130,-45 108,-25 100,45 Z" fill="#2e7d32"/>
+      <path d="M 100,45 Q 100,-10 100,-45" stroke="#a5d6a7" stroke-width="4" stroke-linecap="round" fill="none"/>
+    </g>
+  </g>
+  
+  <!-- Label -->
+  <rect x="310" y="490" width="280" height="42" rx="21" fill="#0c6a2a"/>
+  <text x="450" y="517" font-family="'Inter', sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="1">COCO GROW CUBES</text>
+</svg>
