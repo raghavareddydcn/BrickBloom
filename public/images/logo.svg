@@ -1,22 +1,115 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 96" width="360" height="96">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 160" width="580" height="160">
   <defs>
-    <linearGradient id="leafGradient" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1f462a" />
-      <stop offset="100%" stop-color="#72a259" />
+    <linearGradient id="cocoShellGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7B4A1E"/>
+      <stop offset="50%" stop-color="#5C3210"/>
+      <stop offset="100%" stop-color="#3E1F06"/>
     </linearGradient>
-    <linearGradient id="shellGradient" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#8d5a33" />
-      <stop offset="100%" stop-color="#cb9c57" />
+    <linearGradient id="cocopeatGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8B5E2A"/>
+      <stop offset="100%" stop-color="#4E2D0A"/>
+    </linearGradient>
+    <linearGradient id="plantGreenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5CB85C"/>
+      <stop offset="100%" stop-color="#2E7D32"/>
+    </linearGradient>
+    <radialGradient id="shellHighlight" cx="35%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#A0693A" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#2A1005" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="dropShadow" x="-5%" y="-5%" width="115%" height="125%">
+      <feDropShadow dx="1" dy="3" stdDeviation="3" flood-color="#1a0800" flood-opacity="0.25"/>
+    </filter>
+    <!-- Brick gradient -->
+    <linearGradient id="brickGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8B1A1A"/>
+      <stop offset="100%" stop-color="#6B1111"/>
+    </linearGradient>
+    <!-- Bloom gradient -->
+    <linearGradient id="bloomGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1E6B1E"/>
+      <stop offset="100%" stop-color="#155215"/>
     </linearGradient>
   </defs>
-  <rect width="360" height="96" rx="22" fill="#f7f0e8" />
-  <g transform="translate(20,18)">
-    <path d="M28 40c0 15 12 28 28 28s28-13 28-28-12-28-28-28-28 13-28 28z" fill="url(#shellGradient)" stroke="#5c3f27" stroke-width="2" />
-    <path d="M16 24c10-15 32-20 50-12" stroke="#f7e3c8" stroke-width="5" fill="none" stroke-linecap="round" />
-    <path d="M20 38c12-10 34-12 50 0" stroke="#f7e3c8" stroke-width="5" fill="none" stroke-linecap="round" />
-    <path d="M12 22c8 12 12 26 12 34" stroke="url(#leafGradient)" stroke-width="9" stroke-linecap="round" fill="none" />
-    <path d="M60 14c10 10 16 24 14 36" stroke="url(#leafGradient)" stroke-width="9" stroke-linecap="round" fill="none" />
+
+  <!-- === COCONUT BOWL ICON === -->
+  <g transform="translate(8, 8)" filter="url(#dropShadow)">
+    <!-- Half coconut shell - outer dark brown shape (bottom half bowl) -->
+    <ellipse cx="72" cy="97" rx="52" ry="14" fill="#3E1F06"/>
+    <!-- Shell body (half bowl) -->
+    <path d="M 20,75 Q 20,111 72,111 Q 124,111 124,75 Z" fill="url(#cocoShellGrad)"/>
+    <!-- Shell highlight -->
+    <path d="M 20,75 Q 20,111 72,111 Q 124,111 124,75 Z" fill="url(#shellHighlight)"/>
+    <!-- Shell rim (top edge of half coconut) -->
+    <ellipse cx="72" cy="75" rx="52" ry="10" fill="#5C3210"/>
+    <!-- Inner shell texture lines -->
+    <path d="M 28,85 Q 72,80 116,85" stroke="#2A1005" stroke-width="1" fill="none" opacity="0.5"/>
+    <path d="M 25,92 Q 72,87 119,92" stroke="#2A1005" stroke-width="1" fill="none" opacity="0.4"/>
+    <path d="M 24,99 Q 72,94 120,99" stroke="#2A1005" stroke-width="1" fill="none" opacity="0.3"/>
+    
+    <!-- Cocopeat/substrate fill inside coconut -->
+    <clipPath id="shellClip">
+      <path d="M 22,75 Q 22,109 72,109 Q 122,109 122,75 Z"/>
+    </clipPath>
+    <ellipse cx="72" cy="75" rx="50" ry="16" fill="url(#cocopeatGrad)" clip-path="url(#shellClip)"/>
+    <!-- Cocopeat texture dots -->
+    <g clip-path="url(#shellClip)" opacity="0.6">
+      <circle cx="45" cy="74" r="2" fill="#6B4010"/>
+      <circle cx="58" cy="71" r="1.5" fill="#7B4A20"/>
+      <circle cx="72" cy="73" r="2" fill="#5A3008"/>
+      <circle cx="85" cy="70" r="1.5" fill="#6B4010"/>
+      <circle cx="98" cy="73" r="2" fill="#7B4A20"/>
+      <circle cx="52" cy="78" r="1.5" fill="#5A3008"/>
+      <circle cx="65" cy="76" r="2" fill="#6B4010"/>
+      <circle cx="80" cy="77" r="1.5" fill="#7B4A20"/>
+      <circle cx="93" cy="75" r="2" fill="#5A3008"/>
+    </g>
+    
+    <!-- Plant stem growing from cocopeat -->
+    <line x1="72" y1="74" x2="72" y2="42" stroke="#2E8B2E" stroke-width="3" stroke-linecap="round"/>
+    <!-- Left leaf -->
+    <path d="M 72,58 Q 50,48 44,34 Q 60,42 72,58 Z" fill="url(#plantGreenGrad)"/>
+    <path d="M 72,58 Q 50,48 44,34" stroke="#1B5E20" stroke-width="1" fill="none"/>
+    <!-- Right leaf -->
+    <path d="M 72,52 Q 94,42 100,28 Q 84,36 72,52 Z" fill="url(#plantGreenGrad)"/>
+    <path d="M 72,52 Q 94,42 100,28" stroke="#1B5E20" stroke-width="1" fill="none"/>
+    <!-- Top center leaf / tip -->
+    <path d="M 72,42 Q 65,28 68,16 Q 75,28 72,42 Z" fill="#4CAF50"/>
+    <path d="M 72,42 Q 79,28 76,16 Q 69,28 72,42 Z" fill="#388E3C"/>
+    <!-- Small leaf tip -->
+    <ellipse cx="72" cy="15" rx="5" ry="8" fill="#43A047" transform="rotate(-5, 72, 15)"/>
+    
+    <!-- Coir fiber texture on outside of shell -->
+    <path d="M 22,80 Q 18,85 20,90" stroke="#6B4010" stroke-width="1.5" fill="none" opacity="0.7"/>
+    <path d="M 120,82 Q 125,87 123,93" stroke="#6B4010" stroke-width="1.5" fill="none" opacity="0.7"/>
+    <path d="M 26,95 Q 22,100 24,105" stroke="#5C3210" stroke-width="1.2" fill="none" opacity="0.5"/>
+    <path d="M 116,97 Q 120,102 118,107" stroke="#5C3210" stroke-width="1.2" fill="none" opacity="0.5"/>
   </g>
-  <text x="100" y="48" font-family="Inter, sans-serif" font-weight="800" font-size="32" fill="#1c3924">BrickBloom</text>
-  <text x="100" y="70" font-family="Inter, sans-serif" font-weight="500" font-size="12" fill="#6a6a5f">Modern cocopeat media</text>
+
+  <!-- === TYPOGRAPHY === -->
+  <!-- "Brick" in dark maroon/red -->
+  <text x="148" y="97" 
+        font-family="'Georgia', 'Times New Roman', serif" 
+        font-weight="900" 
+        font-size="58" 
+        fill="url(#brickGrad)" 
+        letter-spacing="-1">Brick</text>
+  <!-- "Bloom" in dark forest green -->
+  <text x="285" y="97" 
+        font-family="'Georgia', 'Times New Roman', serif" 
+        font-weight="900" 
+        font-size="58" 
+        fill="url(#bloomGrad)" 
+        letter-spacing="-1">Bloom</text>
+
+  <!-- Tagline decorative lines and text -->
+  <line x1="148" y1="113" x2="195" y2="113" stroke="#8B1A1A" stroke-width="1.2" opacity="0.7"/>
+  <text x="290" y="118" 
+        font-family="'Georgia', serif" 
+        font-style="italic" 
+        font-size="16" 
+        fill="#4A4A4A" 
+        text-anchor="middle" 
+        letter-spacing="0.8">From Nature. For Nature.</text>
+  <line x1="385" y1="113" x2="432" y2="113" stroke="#1E6B1E" stroke-width="1.2" opacity="0.7"/>
 </svg>

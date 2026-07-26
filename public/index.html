@@ -3,79 +3,102 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BrickBloom | Modern Cocopeat for Growers</title>
+    <title>BrickBloom | Modern Cocopeat Sourcing — From Nature, For Nature</title>
     <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
-    <meta property="og:title" content="BrickBloom — Modern Cocopeat for Growers" />
-    <meta property="og:description" content="BrickBloom delivers premium coconut-based growing media with modern packaging, consistent quality, and crop-ready performance." />
-    <meta property="og:image" content="/images/og-image.svg" />
+    <meta property="og:title" content="BrickBloom — Modern Cocopeat for Precision Growing" />
+    <meta property="og:description" content="BrickBloom delivers premium coconut-based growing media with modern packaging, consistent quality, low EC, and crop-ready performance. From Nature, For Nature." />
+    <meta property="og:image" content="/images/brickbloom-brochure-1.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="description"
-      content="BrickBloom is a modern cocopeat brand with clean agriculture media, premium formats, and sustainable coconut-based substrates for growers worldwide."
+      content="BrickBloom is a modern cocopeat brand supplying clean agriculture media, premium formats, and sustainable coconut-based substrates for growers worldwide."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="styles.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   </head>
   <body ng-controller="mainController">
-    <header class="topbar topbar-apple">
+    <!-- Apple Floating Glass Topbar -->
+    <header class="topbar">
       <div class="topbar-inner">
-        <a class="brand" href="/"><img src="/images/logo.svg" alt="BrickBloom" class="brand-logo" /></a>
+        <a class="brand" href="index.html">
+          <img src="images/logo.svg" alt="BrickBloom — From Nature, For Nature" class="brand-logo" />
+        </a>
         <nav class="nav-links">
           <a href="#products">Products</a>
-          <a href="#why">Why</a>
-          <a href="#outcome">Outcome</a>
+          <a href="#brand">Our Craft</a>
+          <a href="#why">Why BrickBloom</a>
           <a href="#contact">Contact</a>
+          <a href="#contact" class="btn-cta-nav">Request Quote</a>
         </nav>
       </div>
     </header>
 
     <main>
-      <section class="hero hero-apple">
+      <!-- Hero Section: Apple Showcase Style -->
+      <section class="hero-apple">
         <div class="hero-copy">
-          <p class="eyebrow">BrickBloom</p>
+          <div class="badge-apple">🌱 From Nature, For Nature</div>
           <h1>Modern cocopeat for precision growing.</h1>
           <p class="hero-text">
-            Premium coconut-based substrate engineered for growers who need clean handling, consistent crop performance, and modern product formats.
+            Engineered coconut-based substrates designed for commercial greenhouses, nurseries, and soil-free hydroponic cultivation worldwide.
           </p>
           <div class="hero-actions">
-            <a class="btn primary" href="#products">Explore products</a>
-            <a class="btn secondary" href="#why">Why BrickBloom</a>
+            <a class="btn primary" href="#products">Explore Product Family →</a>
+            <a class="btn secondary" href="#contact">Request Bulk Pricing</a>
           </div>
-          <div class="hero-notes">
-            <div>
-              <strong>Low EC</strong>
-              <span>Better control for soil-free cultivation.</span>
+          <div class="hero-specs-row">
+            <div class="spec-item">
+              <h4>Low EC ≤ 0.5</h4>
+              <p>Washed & buffered for root safety.</p>
             </div>
-            <div>
-              <strong>Clean handling</strong>
-              <span>Reduced dust and neat logistics.</span>
+            <div class="spec-item">
+              <h4>Clean Handling</h4>
+              <p>Reduced dust & tight bales.</p>
             </div>
-            <div>
-              <strong>Crop-ready</strong>
-              <span>Uniform media for reliable establishment.</span>
+            <div class="spec-item">
+              <h4>100% Organic</h4>
+              <p>Sustainably processed coir.</p>
             </div>
           </div>
         </div>
         <div class="hero-visual">
           <div class="hero-frame">
-            <img src="/images/hero-cocopeat.png" alt="BrickBloom modern cocopeat media" />
+            <img src="images/hero-cocopeat.svg" alt="BrickBloom Modern Cocopeat Media" />
+            <div class="floating-pill">
+              <div class="floating-pill-icon">✓</div>
+              <div class="floating-pill-text">
+                <strong>Export Certified Media</strong>
+                <span>Direct Sourcing Hubs (India & Sri Lanka)</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
+      <!-- Product Family Showcase -->
       <section id="products" class="section section-products">
-        <div class="section-heading center">
-          <p class="eyebrow">Product family</p>
-          <h2>Choose the BrickBloom format that matches your growing workflow.</h2>
+        <div class="section-heading">
+          <span class="eyebrow">Product Family</span>
+          <h2>Designed for every growing workflow.</h2>
+          <p>Choose your preferred substrate format engineered to match your farm setup.</p>
         </div>
+
+        <!-- Category Filter Tabs -->
+        <div class="product-filter-bar">
+          <button class="filter-btn" ng-class="{'active': selectedCategory === 'all'}" ng-click="setFilter('all')">All Products</button>
+          <button class="filter-btn" ng-class="{'active': selectedCategory === 'bricks'}" ng-click="setFilter('bricks')">Bricks & Blocks</button>
+          <button class="filter-btn" ng-class="{'active': selectedCategory === 'growbags'}" ng-click="setFilter('growbags')">Growbags & Slabs</button>
+          <button class="filter-btn" ng-class="{'active': selectedCategory === 'propagation'}" ng-click="setFilter('propagation')">Propagation & Loose</button>
+        </div>
+
         <div class="product-card-grid">
-          <article class="product-card" ng-repeat="format in formats">
+          <article class="product-card" ng-repeat="format in formats | filter:filterFormat">
             <a class="product-link" ng-href="{{format.path}}">
               <div class="product-card-thumb">
                 <img ng-src="{{format.image}}" alt="{{format.name}}" />
@@ -83,78 +106,153 @@
               <div class="product-card-copy">
                 <h3>{{ format.name }}</h3>
                 <p>{{ format.benefit }}</p>
+                <span class="product-link-label">View specifications</span>
               </div>
-              <span class="product-link-label">View details</span>
             </a>
           </article>
         </div>
       </section>
 
+      <!-- Brand & Natural Coir Canvas Banner -->
+      <section id="brand" class="section-brand-banner">
+        <div class="brand-banner-inner">
+          <div class="brand-banner-copy">
+            <span class="eyebrow" style="color: var(--accent-gold);">The BrickBloom Standard</span>
+            <h2>Pure Coconut Coir. Uncompromised Quality.</h2>
+            <p>
+              From raw coconut husk to finished, triple-washed substrate — BrickBloom processes high-grade coir fiber and pith with strict EC and pH controls to maximize root aeration and water retention.
+            </p>
+            <div class="brand-tagline-quote">
+              "BrickBloom — From Nature, For Nature"
+            </div>
+          </div>
+          <div class="brand-banner-media">
+            <img src="images/natural-coir-photo.jpg" alt="Natural Coconut Coir & Cocopeat Substrate" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Why BrickBloom Feature Section -->
       <section id="why" class="section section-why">
-        <div class="section-heading center">
-          <p class="eyebrow">Why BrickBloom</p>
-          <h2>Premium substrate design for modern growers.</h2>
+        <div class="section-heading">
+          <span class="eyebrow">Why BrickBloom</span>
+          <h2>Engineered substrate superiority.</h2>
+          <p>Built to optimize crop yield, lower irrigation frequency, and reduce operational waste.</p>
         </div>
         <div class="feature-grid">
           <article class="feature-card">
-            <h3>Clean media</h3>
-            <p>Carefully processed cocopeat with low dust and consistent texture.</p>
+            <div class="feature-icon">🌿</div>
+            <h3>Triple-Washed Media</h3>
+            <p>Strict sodium and chloride leaching protocols ensure low EC levels for immediate planting.</p>
           </article>
           <article class="feature-card">
-            <h3>Precision quality</h3>
-            <p>Batch-controlled substrate for repeatable crop outcomes.</p>
+            <div class="feature-icon">🔬</div>
+            <h3>Batch Consistency</h3>
+            <p>Uniform particle sizing and controlled fiber-to-pith ratios across every shipment.</p>
           </article>
           <article class="feature-card">
-            <h3>Modern logistics</h3>
-            <p>Formats built for easy storage, transport, and fast deployment.</p>
+            <div class="feature-icon">📦</div>
+            <h3>Freight Optimized</h3>
+            <p>Compressed bales and slabs designed to maximize container loads and lower shipping costs.</p>
           </article>
           <article class="feature-card">
-            <h3>Grower support</h3>
-            <p>Responsive sourcing advice and packaging recommendations.</p>
+            <div class="feature-icon">🤝</div>
+            <h3>Direct Sourcing</h3>
+            <p>Direct supply from certified processing mills in India and Sri Lanka for guaranteed volume.</p>
           </article>
         </div>
       </section>
 
-      <section id="outcome" class="section section-outcome">
-        <div class="section-heading center">
-          <p class="eyebrow">BrickBloom Outcome</p>
-          <h2>Outcomes that matter to your farm and supply chain.</h2>
-        </div>
-        <div class="outcome-grid">
-          <article class="outcome-card">
-            <h3>Faster establishment</h3>
-            <p>Well-aerated media that speeds root growth and reduces transplant stress.</p>
-          </article>
-          <article class="outcome-card">
-            <h3>Lower irrigation</h3>
-            <p>Improved moisture retention keeps water available without waterlogging.</p>
-          </article>
-          <article class="outcome-card">
-            <h3>Cleaner operations</h3>
-            <p>Less dust and better handling support modern greenhouse workflows.</p>
-          </article>
-        </div>
-      </section>
-
+      <!-- Contact & Quotation Form (Apple Glass Panel) -->
       <section id="contact" class="section section-contact">
         <div class="contact-panel">
-          <div>
-            <p class="eyebrow">Contact</p>
+          <div class="contact-info">
+            <span class="eyebrow">Direct Sourcing Desk</span>
             <h2>Start your BrickBloom inquiry.</h2>
-            <p>Share your volume, preferred format, and destination. We’ll recommend the right media and delivery plan.</p>
+            <p>Tell us about your crop program, desired product format, and destination port. Our team will prepare custom pricing and shipping options.</p>
+            <div class="contact-bullets">
+              <div class="contact-bullet">
+                <div class="contact-bullet-icon">✓</div>
+                <span>Custom EC & pH buffering upon request</span>
+              </div>
+              <div class="contact-bullet">
+                <div class="contact-bullet-icon">✓</div>
+                <span>FCL Container shipping (20ft / 40ft High Cube)</span>
+              </div>
+              <div class="contact-bullet">
+                <div class="contact-bullet-icon">✓</div>
+                <span>24-Hour quotation turnaround time</span>
+              </div>
+            </div>
           </div>
+
           <form class="contact-form" ng-submit="submitLead()">
-            <input type="text" ng-model="form.name" placeholder="Your name" required />
-            <input type="email" ng-model="form.email" placeholder="Work email" required />
-            <input type="text" ng-model="form.company" placeholder="Company" required />
-            <textarea ng-model="form.message" placeholder="Tell us your volume, format, and destination" required></textarea>
-            <button class="btn primary" type="submit">Send inquiry</button>
-            <p class="form-status" ng-if="notice">{{ notice }}</p>
+            <div class="form-group">
+              <label>Your Name</label>
+              <input type="text" ng-model="form.name" placeholder="e.g. Alexander Wright" required />
+            </div>
+            <div class="form-group">
+              <label>Work Email</label>
+              <input type="email" ng-model="form.email" placeholder="alexander@greenhouse.com" required />
+            </div>
+            <div class="form-group">
+              <label>Company / Farm Name</label>
+              <input type="text" ng-model="form.company" placeholder="Apex Hydroponics Ltd" required />
+            </div>
+            <div class="form-group">
+              <label>Inquiry Details</label>
+              <textarea ng-model="form.message" placeholder="Specify volume, target format (e.g., 5kg blocks, GrowSlabs), and destination port..." required></textarea>
+            </div>
+            <button class="btn primary" type="submit">Send Sourcing Inquiry →</button>
+            <div class="form-status" ng-if="notice">{{ notice }}</div>
           </form>
         </div>
       </section>
     </main>
 
-    <script src="/app.js"></script>
+    <!-- Apple-Style Multi-Column Footer -->
+    <footer class="footer-apple">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="images/logo.svg" alt="BrickBloom" />
+          <p>BrickBloom is a global supplier of premium coconut-based growing media. From Nature, For Nature.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Products</h4>
+          <ul>
+            <li><a href="coco-bricks.html">Coco Bricks</a></li>
+            <li><a href="blocks.html">Coco Blocks</a></li>
+            <li><a href="coco-growslabs.html">Coco GrowSlabs</a></li>
+            <li><a href="growbags.html">Coco Growbags</a></li>
+            <li><a href="tabs.html">Coco Tabs</a></li>
+            <li><a href="loose.html">Loose Substrate</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Sourcing Hubs</h4>
+          <ul>
+            <li><a href="#brand">India Processing Hub</a></li>
+            <li><a href="#brand">Sri Lanka Aged Media</a></li>
+            <li><a href="#why">Quality Certifications</a></li>
+            <li><a href="#why">Lab EC Testing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#why">About BrickBloom</a></li>
+            <li><a href="#contact">Contact Sourcing Desk</a></li>
+            <li><a href="#contact">Request Sample Kit</a></li>
+            <li><a href="https://github.com/raghavareddydcn/BrickBloom" target="_blank">GitHub Repository</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Konasema Coco Products LLP. BrickBloom is a trademark of Konasema Coco Products LLP. — From Nature, For Nature.</p>
+        <p>Built with Express & AngularJS</p>
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
   </body>
 </html>

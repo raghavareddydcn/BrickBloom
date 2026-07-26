@@ -35,7 +35,7 @@ const marketIntelligence = {
       name: 'Coco Blocks',
       benefit: 'Bulk cocopeat blocks for growers and export-ready packs.',
       path: '/blocks.html',
-      image: '/images/coco-blocks.png'
+      image: '/images/coco-blocks-branded.svg'
     },
     {
       name: 'Coco GrowSlabs',
@@ -47,13 +47,13 @@ const marketIntelligence = {
       name: 'Coco Growbags',
       benefit: 'Standard coco growbags for transplanting and greenhouse crops.',
       path: '/growbags.html',
-      image: '/images/coco-growbags.png'
+      image: '/images/coco-growbags-branded.svg'
     },
     {
       name: 'Open Top Growbags',
       benefit: 'Open top growbags for premium planting and easy crop access.',
       path: '/open-top-growbags.html',
-      image: '/images/open-top-growbags.png'
+      image: '/images/open-top-growbags-branded.svg'
     },
     {
       name: 'Coco Loose Substrates',

@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" width="900" height="900">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F0EBE4"/>
+      <stop offset="100%" stop-color="#E0D5C8"/>
+    </linearGradient>
+    <linearGradient id="blockBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7B4A1E"/>
+      <stop offset="30%" stop-color="#5C3210"/>
+      <stop offset="100%" stop-color="#3E1F06"/>
+    </linearGradient>
+    <linearGradient id="blockTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9B6A3E"/>
+      <stop offset="100%" stop-color="#6B4010"/>
+    </linearGradient>
+    <linearGradient id="blockRight" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3E1F06"/>
+      <stop offset="100%" stop-color="#2A1005"/>
+    </linearGradient>
+    <linearGradient id="labelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F5EDE0"/>
+    </linearGradient>
+    <linearGradient id="labelHeaderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8B1A1A"/>
+      <stop offset="50%" stop-color="#5C1010"/>
+      <stop offset="100%" stop-color="#1E6B1E"/>
+    </linearGradient>
+    <filter id="blockShadow">
+      <feDropShadow dx="8" dy="15" stdDeviation="12" flood-color="#1a0800" flood-opacity="0.45"/>
+    </filter>
+    <pattern id="coirTex" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+      <rect width="10" height="10" fill="#5C3210"/>
+      <line x1="0" y1="0" x2="10" y2="10" stroke="#6B4010" stroke-width="0.8" opacity="0.5"/>
+      <line x1="0" y1="5" x2="10" y2="5" stroke="#7B4A1E" stroke-width="0.6" opacity="0.4"/>
+      <line x1="0" y1="10" x2="10" y2="0" stroke="#4A2808" stroke-width="0.5" opacity="0.3"/>
+      <circle cx="5" cy="5" r="0.8" fill="#3E1F06" opacity="0.4"/>
+    </pattern>
+    <pattern id="coirTex2" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
+      <rect width="12" height="12" fill="#4A2808"/>
+      <line x1="0" y1="3" x2="12" y2="3" stroke="#5C3210" stroke-width="1" opacity="0.6"/>
+      <line x1="0" y1="8" x2="12" y2="8" stroke="#6B4010" stroke-width="0.7" opacity="0.4"/>
+      <line x1="4" y1="0" x2="4" y2="12" stroke="#5C3210" stroke-width="0.6" opacity="0.3"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="900" fill="url(#bgGrad)"/>
+  
+  <!-- Floor shadow -->
+  <ellipse cx="450" cy="820" rx="320" ry="40" fill="#8B6A4A" opacity="0.15"/>
+
+  <!-- === MAIN COCO PEAT BLOCK (5kg Big Block) === -->
+  <!-- The 3D isometric block -->
+  <g filter="url(#blockShadow)" transform="translate(185, 180)">
+    <!-- Front face -->
+    <rect x="0" y="80" width="530" height="380" rx="12" fill="url(#coirTex)"/>
+    <rect x="0" y="80" width="530" height="380" rx="12" fill="url(#blockBody)" opacity="0.7"/>
+    
+    <!-- Top face -->
+    <path d="M 0,80 L 70,20 L 600,20 L 530,80 Z" fill="url(#coirTex)"/>
+    <path d="M 0,80 L 70,20 L 600,20 L 530,80 Z" fill="url(#blockTop)" opacity="0.8"/>
+    
+    <!-- Right face -->
+    <path d="M 530,80 L 600,20 L 600,400 L 530,460 Z" fill="url(#blockRight)"/>
+    
+    <!-- Strap 1 (horizontal) -->
+    <rect x="-5" y="190" width="545" height="8" fill="#C8B090" opacity="0.85"/>
+    <path d="M 530,190 L 600,145 L 600,153 L 530,198 Z" fill="#B09070" opacity="0.85"/>
+    
+    <!-- Strap 2 (horizontal) -->
+    <rect x="-5" y="340" width="545" height="8" fill="#C8B090" opacity="0.85"/>
+    <path d="M 530,340 L 600,295 L 600,303 L 530,348 Z" fill="#B09070" opacity="0.85"/>
+
+    <!-- === BRICKBLOOM LABEL (main) === -->
+    <rect x="70" y="165" width="390" height="210" rx="8" fill="url(#labelGrad)" stroke="#C8A880" stroke-width="2"/>
+    
+    <!-- Label top bar (gradient brand header) -->
+    <rect x="70" y="165" width="390" height="42" rx="8" fill="url(#labelHeaderGrad)"/>
+    <rect x="70" y="193" width="390" height="14" fill="url(#labelHeaderGrad)"/>
+    
+    <!-- Brand name on label -->
+    <text x="265" y="195" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="900" font-size="24" fill="white" letter-spacing="1.5">BRICKBLOOM</text>
+    
+    <!-- Divider -->
+    <line x1="90" y1="215" x2="440" y2="215" stroke="#D4B896" stroke-width="1" opacity="0.5"/>
+    
+    <!-- Product name -->
+    <text x="265" y="250" text-anchor="middle" font-family="Georgia, serif" font-weight="800" font-size="22" fill="#2E1A08">PREMIUM COCO</text>
+    <text x="265" y="278" text-anchor="middle" font-family="Georgia, serif" font-weight="800" font-size="22" fill="#2E1A08">PEAT BLOCK</text>
+    
+    <!-- Weight -->
+    <text x="265" y="305" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#7B4A1E">5 KG NET WEIGHT</text>
+    
+    <!-- Divider line -->
+    <line x1="100" y1="316" x2="430" y2="316" stroke="#D4B896" stroke-width="1"/>
+    
+    <!-- Quality specs row -->
+    <text x="265" y="334" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#5C3210">TRIPLE WASHED  |  LOW EC ≤ 0.5  |  100% ORGANIC</text>
+    <text x="265" y="352" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#5C3210">COMPRESSED COIR PITH  |  MADE IN INDIA</text>
+    
+    <!-- Small coconut icon on label -->
+    <circle cx="130" cy="280" r="18" fill="#5C3210" opacity="0.15"/>
+    <text x="130" y="286" text-anchor="middle" font-size="20">🥥</text>
+    <circle cx="400" cy="280" r="18" fill="#2E7D32" opacity="0.1"/>
+    <text x="400" y="286" text-anchor="middle" font-size="20">🌱</text>
+  </g>
+
+  <!-- BrickBloom brand badge (top corner) -->
+  <g transform="translate(30, 30)">
+    <rect x="0" y="0" width="200" height="68" rx="14" fill="#3E1F06" opacity="0.92"/>
+    <text x="100" y="22" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#C8A87A" letter-spacing="1.2">KONASEMA COCO PRODUCTS</text>
+    <text x="100" y="44" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="20" fill="white">BrickBloom</text>
+    <text x="100" y="60" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="10" fill="#C8A87A">From Nature. For Nature.</text>
+  </g>
+
+  <!-- Spec pills -->
+  <g transform="translate(650, 30)">
+    <rect x="0" y="0" width="220" height="38" rx="19" fill="white" opacity="0.9" stroke="#C8A87A" stroke-width="1"/>
+    <text x="110" y="16" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#7B4A1E">EXPORT GRADE · COMMERCIAL</text>
+    <text x="110" y="30" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="11" fill="#3E1F06">Heavy-Duty Compressed Block</text>
+  </g>
+  <g transform="translate(650, 78)">
+    <rect x="0" y="0" width="220" height="38" rx="19" fill="white" opacity="0.9" stroke="#4CAF50" stroke-width="1"/>
+    <text x="110" y="16" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#2E7D32">PH 5.5–6.5 · CATION BUFFERED</text>
+    <text x="110" y="30" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="11" fill="#1B5E20">Root-Safe Growing Media</text>
+  </g>
+</svg>
