@@ -16,51 +16,51 @@ app.controller('mainController', function ($scope, $http) {
     formats: [
       {
         name: 'Coco Tabs',
-        benefit: 'Eco-friendly propagation tablets for seed starting and cuttings.',
+        benefit: 'Precision-fit starter tabs for clean sowing and fast, uniform germination.',
         path: 'tabs.html',
-        image: 'images/coco-tabs.svg'
+        image: 'images/Coins.jpeg'
       },
       {
         name: 'Coco Grow Cubes',
-        benefit: 'Preformed grow cubes for uniform rooting and clean handling.',
+        benefit: 'Uniform propagation cubes that support strong rooting and tidy nursery handling.',
         path: 'coco-grow-cubes.html',
-        image: 'images/coco-grow-cubes.svg'
+        image: 'images/Disk.jpeg'
       },
       {
         name: 'Coco Bricks',
-        benefit: 'Compressed cocopeat bricks for potting mixes and seedling beds.',
+        benefit: 'Compact bricks that expand into a rich medium for nursery and potting programs.',
         path: 'coco-bricks.html',
-        image: 'images/coco-bricks.png'
+        image: 'images/Brick5KG.jpeg'
       },
       {
         name: 'Coco Blocks',
-        benefit: 'Bulk cocopeat blocks for growers and export-ready packs.',
+        benefit: 'Bulk blocks made for commercial growers who want dependable hydration and storage efficiency.',
         path: 'blocks.html',
-        image: 'images/coco-blocks-branded.svg'
+        image: 'images/CoCoPeatProducts.jpeg'
       },
       {
         name: 'Coco GrowSlabs',
-        benefit: 'Ready-to-use slabs with controlled peat, fiber, and chip ratios.',
+        benefit: 'Ready-to-use slabs designed for balanced moisture and smooth greenhouse placement.',
         path: 'coco-growslabs.html',
-        image: 'images/coco-growslabs.png'
+        image: 'images/ALL products.png'
       },
       {
         name: 'Coco Growbags',
-        benefit: 'Standard coco growbags for transplanting and greenhouse crops.',
+        benefit: 'Flexible growbags built for easy transplanting, durable handling, and clean crop flow.',
         path: 'growbags.html',
-        image: 'images/coco-growbags-branded.svg'
+        image: 'images/GrowBag.jpeg'
       },
       {
         name: 'Open Top Growbags',
-        benefit: 'Open top growbags for premium planting and easy crop access.',
+        benefit: 'Open top growbags engineered for excellent aeration and simple crop access.',
         path: 'open-top-growbags.html',
-        image: 'images/open-top-growbags-branded.svg'
+        image: 'images/Pots-ALlSizes.jpeg'
       },
       {
         name: 'Coco Loose Substrates',
-        benefit: 'Loose cocopeat substrate for bulk potting and media mixing.',
+        benefit: 'Loose cocopeat for custom media recipes, rapid potting, and flexible cultivation setups.',
         path: 'loose.html',
-        image: 'images/coco-loose.svg'
+        image: 'images/CoirPot.jpeg'
       }
     ],
     sourcingHubs: [

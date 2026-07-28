@@ -74,6 +74,7 @@
               <div class="hero-card hero-card-back"></div>
               <div class="hero-card hero-card-middle"></div>
               <div class="hero-card hero-card-front">
+                <img src="images/COCOKit.jpeg" alt="BrickBloom coco kit" class="hero-card-image" />
                 <div class="hero-card-label">Coco Nature in Every Brick</div>
                 <div class="hero-card-lines"></div>
               </div>
@@ -193,7 +194,7 @@
             </div>
           </div>
 
-          <form class="contact-form" ng-submit="submitLead()">
+          <form class="contact-form" ng-submit="submitLead()" action="mailto:admin@brickbloom.co.in" method="post" enctype="text/plain">
             <div class="form-group">
               <label>Your Name</label>
               <input type="text" ng-model="form.name" placeholder="e.g. Alexander Wright" required />
