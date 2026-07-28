@@ -1,19 +1,20 @@
 // BrickBloom shared site behavior: scroll-reveal animations + sticky header state.
-// Vanilla JS so it works on both the AngularJS homepage and the static product pages.
+// Vanilla JS — works on both the AngularJS homepage and static product pages.
 (function () {
   'use strict';
 
-  // Scroll-reveal: automatically animate common content blocks into view.
+  // Scroll-reveal: ONLY applied to elements that are clearly BELOW the fold.
+  // Intentionally excludes .section-heading, .product-grid, .product-card
+  // because those can appear near the top of product pages and cause a
+  // "white screen" if the IntersectionObserver hasn't fired yet.
   var revealSelectors = [
-    '.section-heading',
-    '.product-grid',
-    '.card-grid .card',
     '.feature-card',
-    '.product-card',
+    '.brand-banner-inner',
     '.contact-panel',
     '.contact-section .contact-copy',
     '.contact-section .contact-form',
-    '.brand-banner-inner'
+    '.card-grid .card',
+    '.footer-brand'
   ].join(', ');
 
   var revealEls = document.querySelectorAll(revealSelectors);
@@ -21,6 +22,12 @@
   revealEls.forEach(function (el) {
     el.classList.add('reveal');
   });
+
+  var makeAllVisible = function () {
+    revealEls.forEach(function (el) {
+      el.classList.add('is-visible');
+    });
+  };
 
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(
@@ -32,32 +39,30 @@
           }
         });
       },
-      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+      { threshold: 0.1, rootMargin: '0px 0px -30px 0px' }
     );
     revealEls.forEach(function (el) {
       io.observe(el);
     });
   } else {
-    revealEls.forEach(function (el) {
-      el.classList.add('is-visible');
-    });
+    makeAllVisible();
   }
 
-  // Sticky header state on scroll.
+  // Hard failsafe: ensure nothing stays hidden after 1.2 seconds.
+  // Covers edge cases where IntersectionObserver fires too slowly on mobile.
+  setTimeout(makeAllVisible, 1200);
+
+  // Sticky header shrinks slightly on scroll.
   var topbar = document.querySelector('.topbar');
   if (topbar) {
     var onScroll = function () {
-      if (window.scrollY > 40) {
-        topbar.classList.add('is-scrolled');
-      } else {
-        topbar.classList.remove('is-scrolled');
-      }
+      topbar.classList.toggle('is-scrolled', window.scrollY > 40);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
   }
 
-  // Close the mobile nav overlay automatically after a link is tapped.
+  // Auto-close mobile nav when a link is tapped.
   var navToggle = document.getElementById('nav-toggle');
   if (navToggle) {
     document.querySelectorAll('.nav-links a').forEach(function (link) {
