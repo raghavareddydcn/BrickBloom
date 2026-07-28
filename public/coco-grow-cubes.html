@@ -9,18 +9,22 @@
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="index.html"><img src="images/logo.svg" alt="BrickBloom" class="brand-logo"/></a>
-      <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="tabs.html">Coco Tabs</a>
-        <a href="coco-grow-cubes.html">Coco Grow Cubes</a>
-        <a href="coco-bricks.html">Coco Bricks</a>
-        <a href="blocks.html">Coco Blocks</a>
-        <a href="coco-growslabs.html">Coco GrowSlabs</a>
-        <a href="growbags.html">Coco Growbags</a>
-        <a href="open-top-growbags.html">Open Top Growbags</a>
-        <a href="loose.html">Coco Loose</a>
-      </nav>
+      <div class="topbar-inner">
+        <a class="brand" href="index.html"><img src="images/logo.svg" alt="BrickBloom" class="brand-logo"/></a>
+        <input type="checkbox" id="nav-toggle" class="nav-toggle-input" />
+        <label for="nav-toggle" class="nav-toggle-btn" aria-label="Toggle navigation"><span></span><span></span><span></span></label>
+        <nav class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="tabs.html">Coco Tabs</a>
+          <a href="coco-grow-cubes.html">Coco Grow Cubes</a>
+          <a href="coco-bricks.html">Coco Bricks</a>
+          <a href="blocks.html">Coco Blocks</a>
+          <a href="coco-growslabs.html">Coco GrowSlabs</a>
+          <a href="growbags.html">Coco Growbags</a>
+          <a href="open-top-growbags.html">Open Top Growbags</a>
+          <a href="loose.html">Coco Loose</a>
+        </nav>
+      </div>
     </header>
     <main>
       <section class="section product-hero">
@@ -67,5 +71,6 @@
         </form>
       </section>
     </main>
+    <script src="site.js" defer></script>
   </body>
 </html>

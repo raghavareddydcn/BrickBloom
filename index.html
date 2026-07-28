@@ -29,6 +29,10 @@
         <a class="brand" href="index.html">
           <img src="images/logo.svg" alt="BrickBloom — From Nature, For Nature" class="brand-logo" />
         </a>
+        <input type="checkbox" id="nav-toggle" class="nav-toggle-input" />
+        <label for="nav-toggle" class="nav-toggle-btn" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </label>
         <nav class="nav-links">
           <a href="#products">Products</a>
           <a href="#brand">Our Craft</a>
@@ -68,19 +72,15 @@
           </div>
         </div>
         <div class="hero-visual">
-          <div class="hero-frame hero-video-shell">
-            <div class="hero-video-scene">
-              <div class="hero-glow"></div>
-              <div class="hero-card hero-card-back"></div>
-              <div class="hero-card hero-card-middle"></div>
-              <div class="hero-card hero-card-front">
-                <img src="images/COCOKit.jpeg" alt="BrickBloom coco kit" class="hero-card-image" />
-                <div class="hero-card-label">Coco Nature in Every Brick</div>
-                <div class="hero-card-lines"></div>
-              </div>
-              <div class="hero-pulse-ring"></div>
-              <div class="hero-badge">Brick meets bloom — roots start in coir core</div>
+          <div class="hero-frame hero-showcase">
+            <img src="images/all-products.png" alt="Complete BrickBloom cocopeat product range" class="hero-showcase-img" />
+            <div class="hero-showcase-overlay"></div>
+            <div class="hero-showcase-label">
+              <span class="eyebrow">Full Product Family</span>
+              <h3>Every format. One trusted source.</h3>
             </div>
+            <div class="hero-pulse-ring"></div>
+            <div class="hero-badge">Brick meets bloom — roots start in coir core</div>
             <div class="floating-pill">
               <div class="floating-pill-icon">✓</div>
               <div class="hero-pill-text">Plant grows in our bricks</div>
@@ -262,5 +262,6 @@
     </footer>
 
     <script src="app.js"></script>
+    <script src="site.js" defer></script>
   </body>
 </html>
