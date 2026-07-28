@@ -52,6 +52,42 @@
   // Covers edge cases where IntersectionObserver fires too slowly on mobile.
   setTimeout(makeAllVisible, 1200);
 
+  // Active nav state based on the section in view.
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-links a[href^="#"]'));
+  var sections = navLinks
+    .map(function (link) {
+      return document.querySelector(link.getAttribute('href'));
+    })
+    .filter(Boolean);
+
+  var setActiveLink = function (hash) {
+    navLinks.forEach(function (link) {
+      link.classList.toggle('is-active', link.getAttribute('href') === hash);
+    });
+  };
+
+  var updateActiveLink = function () {
+    var scrollPosition = window.scrollY + 180;
+    var activeHash = '#products';
+
+    sections.forEach(function (section) {
+      if (section.offsetTop <= scrollPosition) {
+        activeHash = '#' + section.id;
+      }
+    });
+
+    setActiveLink(activeHash);
+  };
+
+  navLinks.forEach(function (link) {
+    link.addEventListener('click', function () {
+      setActiveLink(link.getAttribute('href'));
+    });
+  });
+
+  window.addEventListener('scroll', updateActiveLink, { passive: true });
+  updateActiveLink();
+
   // Sticky header shrinks slightly on scroll.
   var topbar = document.querySelector('.topbar');
   if (topbar) {
