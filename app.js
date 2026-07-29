@@ -112,8 +112,14 @@ app.controller('mainController', function ($scope, $http) {
       return;
     }
     
-    $http.post('/api/leads', f).then(function (response) {
-      $scope.notice = response.data.message;
+    $http.post('https://formsubmit.co/ajax/admin@brickbloom.co.in', {
+      name: f.name,
+      email: f.email,
+      company: f.company,
+      message: f.message,
+      _subject: 'BrickBloom Sourcing Inquiry from ' + f.company
+    }).then(function (response) {
+      $scope.notice = 'Thank you, ' + f.name + '. Our sourcing desk will contact you shortly.';
       $scope.form = { name: '', email: '', company: '', message: '' };
     }).catch(function (error) {
       $scope.notice = 'There was an error processing your inquiry. Please try again later.';
