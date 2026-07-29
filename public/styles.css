@@ -471,7 +471,7 @@ body {
 
 @keyframes heroKenBurns {
   0% { transform: scale(1) translate(0, 0); }
-  100% { transform: scale(1.08) translate(-1.5%, -1.5%); }
+  100% { transform: scale(1.06) translate(-1%, -1%); }
 }
 
 .hero-glow {
@@ -543,7 +543,7 @@ body {
   position: relative;
   width: 100%;
   height: min(88svh, 860px);
-  min-height: 420px;
+  min-height: 380px;
   max-height: 860px;
   overflow: hidden;
   background: #0d1a13;
@@ -722,11 +722,15 @@ body {
 
 @media (max-width: 760px) {
   .hero-fullbleed {
-    height: min(72svh, 560px);
-    min-height: 320px;
+    height: clamp(280px, 56vw, 520px);
+    min-height: 280px;
+  }
+  .hero-fb-img {
+    object-position: center center;
+    animation: none;
   }
   .hero-fb-content {
-    padding: 0 22px 64px;
+    padding: 0 22px 48px;
   }
   .hero-fb-sub {
     font-size: 0.97rem;
@@ -743,16 +747,26 @@ body {
   }
   .stat-item:nth-child(even) { border-right: none; }
   .stat-item:nth-last-child(-n+2) { border-bottom: none; }
+  .product-card-copy h3 {
+    font-size: 1.1rem;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
 }
 
 @media (max-width: 480px) {
   .hero-fullbleed {
-    height: min(66svh, 420px);
-    min-height: 280px;
+    height: clamp(220px, 60vw, 380px);
+    min-height: 220px;
   }
 
   .hero-fb-img {
-    object-position: center top;
+    object-position: center center;
+    animation: none;
   }
   .hero-fb-badge {
     font-size: 0.72rem;
@@ -1484,19 +1498,38 @@ body {
 
   .nav-links {
     position: fixed;
-    inset: 0;
     top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(80vw, 300px);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 28px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 90px 28px 32px;
+    gap: 20px;
     background: rgba(251, 251, 249, 0.98);
     backdrop-filter: blur(20px);
-    font-size: 1.15rem;
-    transform: translateX(100%);
+    border-left: 1px solid rgba(0,0,0,0.06);
+    box-shadow: -12px 0 32px rgba(0,0,0,0.08);
+    font-size: 1rem;
+    transform: translateX(110%);
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 1099;
+    overflow-y: auto;
+  }
+
+  .nav-links a {
+    width: 100%;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .btn-cta-nav {
+    width: 100%;
+    text-align: center;
+    margin-top: 8px;
+    border-bottom: none !important;
   }
 
   .nav-toggle-input:checked ~ .nav-links {
