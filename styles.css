@@ -471,7 +471,7 @@ body {
 
 @keyframes heroKenBurns {
   0% { transform: scale(1) translate(0, 0); }
-  100% { transform: scale(1.08) translate(-1.5%, -1.5%); }
+  100% { transform: scale(1.06) translate(-1%, -1%); }
 }
 
 .hero-glow {
@@ -721,11 +721,15 @@ body {
 
 @media (max-width: 760px) {
   .hero-fullbleed {
-    height: min(78svh, 640px);
-    min-height: 420px;
+    height: clamp(280px, 56vw, 520px);
+    min-height: 280px;
+  }
+  .hero-fb-img {
+    object-position: center center;
+    animation: none;
   }
   .hero-fb-content {
-    padding: 0 22px 64px;
+    padding: 0 22px 48px;
   }
   .hero-fb-sub {
     font-size: 0.97rem;
@@ -746,8 +750,12 @@ body {
 
 @media (max-width: 480px) {
   .hero-fullbleed {
-    height: min(74svh, 520px);
-    min-height: 340px;
+    height: clamp(220px, 60vw, 380px);
+    min-height: 220px;
+  }
+  .hero-fb-img {
+    object-position: center center;
+    animation: none;
   }
   .hero-fb-badge {
     font-size: 0.72rem;
@@ -1604,7 +1612,8 @@ body {
   }
 
   .product-card-copy h3 {
-    min-height: 2.7em;
+    min-height: 2.6em;
+    font-size: 1.15rem;
   }
 
   .contact-panel {
