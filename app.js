@@ -106,21 +106,17 @@ app.controller('mainController', function ($scope, $http) {
   };
 
   $scope.submitLead = function () {
-    // For GitHub Pages, open mailto link as API calls are unavailable
     var f = $scope.form;
     if (!f.name || !f.email || !f.company || !f.message) {
       $scope.notice = 'Please complete every field so we can prepare your quote.';
       return;
     }
-    var subject = encodeURIComponent('BrickBloom Sourcing Inquiry from ' + f.company);
-    var body = encodeURIComponent(
-      'Name: ' + f.name + '\n' +
-      'Email: ' + f.email + '\n' +
-      'Company: ' + f.company + '\n\n' +
-      'Inquiry:\n' + f.message
-    );
-    window.location.href = 'mailto:admin@brickbloom.co.in?subject=' + subject + '&body=' + body;
-    $scope.notice = 'Thank you, ' + f.name + '. Opening your email client to send the inquiry.';
-    $scope.form = { name: '', email: '', company: '', message: '' };
+    
+    $http.post('/api/leads', f).then(function (response) {
+      $scope.notice = response.data.message;
+      $scope.form = { name: '', email: '', company: '', message: '' };
+    }).catch(function (error) {
+      $scope.notice = 'There was an error processing your inquiry. Please try again later.';
+    });
   };
 });

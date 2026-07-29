@@ -87,19 +87,49 @@ app.get('/public/:asset(*)', (req, res) => {
   res.redirect(`/${assetPath}`);
 });
 
-app.post('/api/leads', (req, res) => {
+const nodemailer = require('nodemailer');
+
+app.post('/api/leads', async (req, res) => {
   const { name, email, company, message } = req.body;
 
   if (!name || !email || !company || !message) {
     return res.status(400).json({ message: 'Please complete every field so we can prepare your quote.' });
   }
 
-  if (req.headers.accept && req.headers.accept.includes('text/html')) {
-    const safeName = String(name).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-    return res.send(`<!doctype html><html><head><meta charset="utf-8"><title>Inquiry received</title></head><body><h1>Thank you, ${safeName}</h1><p>Our sourcing desk will contact you shortly.</p><p><a href="/">Back to home</a></p></body></html>`);
-  }
+  try {
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.ethereal.email',
+      port: process.env.SMTP_PORT || 587,
+      secure: process.env.SMTP_SECURE === 'true',
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+      }
+    });
 
-  res.json({ message: `Thank you, ${name}. Our sourcing desk will contact you shortly.` });
+    const mailOptions = {
+      from: `"${name}" <${email}>`, 
+      to: 'admin@brickbloom.co.in',
+      subject: `BrickBloom Sourcing Inquiry from ${company}`,
+      text: `Name: ${name}\nEmail: ${email}\nCompany: ${company}\n\nInquiry:\n${message}`
+    };
+
+    if (process.env.SMTP_USER) {
+      await transporter.sendMail(mailOptions);
+    } else {
+      console.log("Simulating email send (SMTP not configured):", mailOptions);
+    }
+
+    if (req.headers.accept && req.headers.accept.includes('text/html')) {
+      const safeName = String(name).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      return res.send(`<!doctype html><html><head><meta charset="utf-8"><title>Inquiry received</title></head><body><h1>Thank you, ${safeName}</h1><p>Our sourcing desk will contact you shortly.</p><p><a href="/">Back to home</a></p></body></html>`);
+    }
+
+    res.json({ message: `Thank you, ${name}. Our sourcing desk will contact you shortly.` });
+  } catch (error) {
+    console.error("Email sending error:", error);
+    res.status(500).json({ message: 'There was an error processing your inquiry. Please try again later.' });
+  }
 });
 
 app.get('*', (req, res) => {
