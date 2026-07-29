@@ -224,8 +224,13 @@ img {
 }
 
 .btn-cta-nav.is-active {
-  color: var(--accent) !important;
+  color: var(--text) !important;
+  font-weight: 600;
   box-shadow: none;
+}
+
+.btn-cta-nav.is-active::after {
+  width: 100%;
 }
 
 .btn-cta-nav::after {
