@@ -190,8 +190,27 @@
               <input type="email" ng-model="form.email" placeholder="alexander@greenhouse.com" required />
             </div>
             <div class="form-group">
+              <label>Phone Number</label>
+              <input type="tel" ng-model="form.phone" placeholder="+1 (555) 123-4567" required />
+            </div>
+            <div class="form-group">
               <label>Company / Farm Name</label>
               <input type="text" ng-model="form.company" placeholder="Apex Hydroponics Ltd" required />
+            </div>
+            <div class="form-group">
+              <label>Product of Interest</label>
+              <select ng-model="form.product" required>
+                <option value="" disabled selected>Select a product...</option>
+                <option value="Coco Tabs">Coco Tabs</option>
+                <option value="Coco Grow Cubes">Coco Grow Cubes</option>
+                <option value="Coco Bricks">Coco Bricks</option>
+                <option value="Coco Blocks">Coco Blocks</option>
+                <option value="Coco GrowSlabs">Coco GrowSlabs</option>
+                <option value="Coco Growbags">Coco Growbags</option>
+                <option value="Open Top Growbags">Open Top Growbags</option>
+                <option value="Coco Loose Substrates">Coco Loose Substrates</option>
+                <option value="Multiple Products / Unsure">Multiple Products / Unsure</option>
+              </select>
             </div>
             <div class="form-group">
               <label>Inquiry Details</label>

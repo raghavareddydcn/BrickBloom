@@ -7,7 +7,7 @@ app.controller('mainController', function ($scope, $http) {
   $scope.qualityNotes = [];
   $scope.overview = '';
   $scope.selectedCategory = 'all';
-  $scope.form = { name: '', email: '', company: '', message: '' };
+  $scope.form = { name: '', email: '', phone: '', company: '', product: '', message: '' };
   $scope.notice = '';
 
   // Static data — replaces the API call for GitHub Pages compatibility
@@ -107,7 +107,7 @@ app.controller('mainController', function ($scope, $http) {
 
   $scope.submitLead = function () {
     var f = $scope.form;
-    if (!f.name || !f.email || !f.company || !f.message) {
+    if (!f.name || !f.email || !f.phone || !f.company || !f.product || !f.message) {
       $scope.notice = 'Please complete every field so we can prepare your quote.';
       return;
     }
@@ -122,13 +122,15 @@ app.controller('mainController', function ($scope, $http) {
       data: {
         name: f.name,
         email: f.email,
+        phone: f.phone,
         company: f.company,
+        product: f.product,
         message: f.message,
-        _subject: 'BrickBloom Sourcing Inquiry from ' + f.company
+        _subject: 'BrickBloom Sourcing Inquiry for ' + f.product + ' from ' + f.company
       }
     }).then(function (response) {
       $scope.notice = 'Thank you, ' + f.name + '. Our sourcing desk will contact you shortly.';
-      $scope.form = { name: '', email: '', company: '', message: '' };
+      $scope.form = { name: '', email: '', phone: '', company: '', product: '', message: '' };
     }).catch(function (error) {
       var details = (error.status === -1) ? "Network Error / AdBlocker / CORS" : error.status;
       if (error.data && error.data.message) {
