@@ -542,9 +542,8 @@ body {
 .hero-fullbleed {
   position: relative;
   width: 100%;
-  height: min(88svh, 860px);
-  min-height: 460px;
-  max-height: 860px;
+  height: auto;
+  aspect-ratio: 1488 / 715;
   overflow: hidden;
   background: #0d1a13;
 }
@@ -554,8 +553,8 @@ body {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
+  object-fit: contain;
+  object-position: center center;
 }
 
 .hero-fb-overlay {
