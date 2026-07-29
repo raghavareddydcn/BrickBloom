@@ -720,10 +720,12 @@ body {
 
 @media (max-width: 760px) {
   .hero-fullbleed {
-    height: clamp(280px, 56vw, 520px);
-    min-height: 280px;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 1488 / 715;
   }
   .hero-fb-img {
+    object-fit: contain;
     object-position: center center;
     animation: none;
   }
@@ -758,11 +760,13 @@ body {
 
 @media (max-width: 480px) {
   .hero-fullbleed {
-    height: clamp(220px, 60vw, 380px);
-    min-height: 220px;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 1488 / 715;
   }
 
   .hero-fb-img {
+    object-fit: contain;
     object-position: center center;
     animation: none;
   }
