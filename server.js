@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname)));
 
 const marketIntelligence = {
   overview: 'Premium BrickBloom sourcing for hydroponics, nurseries, and commercial growers.',
@@ -78,6 +78,15 @@ app.get('/api/market-intelligence', (req, res) => {
   res.json(marketIntelligence);
 });
 
+app.get('/public', (req, res) => {
+  res.redirect('/');
+});
+
+app.get('/public/:asset(*)', (req, res) => {
+  const assetPath = req.params.asset;
+  res.redirect(`/${assetPath}`);
+});
+
 app.post('/api/leads', (req, res) => {
   const { name, email, company, message } = req.body;
 
@@ -94,7 +103,7 @@ app.post('/api/leads', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, () => {
