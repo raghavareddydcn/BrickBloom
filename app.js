@@ -112,17 +112,29 @@ app.controller('mainController', function ($scope, $http) {
       return;
     }
     
-    $http.post('https://formsubmit.co/ajax/admin@brickbloom.co.in', {
-      name: f.name,
-      email: f.email,
-      company: f.company,
-      message: f.message,
-      _subject: 'BrickBloom Sourcing Inquiry from ' + f.company
+    $http({
+      method: 'POST',
+      url: 'https://formsubmit.co/ajax/admin@brickbloom.co.in',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      data: {
+        name: f.name,
+        email: f.email,
+        company: f.company,
+        message: f.message,
+        _subject: 'BrickBloom Sourcing Inquiry from ' + f.company
+      }
     }).then(function (response) {
       $scope.notice = 'Thank you, ' + f.name + '. Our sourcing desk will contact you shortly.';
       $scope.form = { name: '', email: '', company: '', message: '' };
     }).catch(function (error) {
-      $scope.notice = 'There was an error processing your inquiry. Please try again later.';
+      var details = (error.status === -1) ? "Network Error / AdBlocker / CORS" : error.status;
+      if (error.data && error.data.message) {
+        details += " - " + error.data.message;
+      }
+      $scope.notice = 'Error processing inquiry (' + details + '). Please check the admin email for activation link or wait 2 minutes for deployment cache to clear.';
     });
   };
 });
