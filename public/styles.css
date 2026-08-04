@@ -133,9 +133,9 @@ img {
 
 .brand-logo,
 .brand-logo-video {
-  height: 96px;
+  height: 118px;
   width: auto;
-  max-width: 460px;
+  max-width: 520px;
   object-fit: contain;
   transition: var(--transition);
 }
@@ -146,12 +146,12 @@ img {
 
 .topbar.is-scrolled .brand-logo,
 .topbar.is-scrolled .brand-logo-video {
-  height: 70px;
+  height: 80px;
 }
 
 .brand:hover .brand-logo,
 .brand:hover .brand-logo-video {
-  transform: scale(1.04);
+  transform: scale(1.12);
 }
 
 .nav-toggle-input {
@@ -1384,6 +1384,17 @@ body {
 
 /* Responsive */
 @media (max-width: 1080px) {
+  .brand-logo,
+  .brand-logo-video {
+    height: 100px;
+    max-width: 400px;
+  }
+
+  .topbar.is-scrolled .brand-logo,
+  .topbar.is-scrolled .brand-logo-video {
+    height: 74px;
+  }
+
   .hero-apple,
   .brand-banner-inner,
   .contact-panel {
@@ -1442,6 +1453,17 @@ body {
 @media (max-width: 760px) {
   .topbar-inner {
     padding: 12px 20px;
+  }
+
+  .brand-logo,
+  .brand-logo-video {
+    height: 84px;
+    max-width: 280px;
+  }
+
+  .topbar.is-scrolled .brand-logo,
+  .topbar.is-scrolled .brand-logo-video {
+    height: 64px;
   }
 
   .nav-toggle-btn {
@@ -1542,6 +1564,12 @@ body {
 @media (max-width: 480px) {
   .brand-logo,
   .brand-logo-video {
+    height: 58px;
+    max-width: 190px;
+  }
+
+  .topbar.is-scrolled .brand-logo,
+  .topbar.is-scrolled .brand-logo-video {
     height: 46px;
   }
 
