@@ -93,13 +93,13 @@ img {
 }
 
 .topbar-inner {
-  max-width: 1440px;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0;
-  padding: 0 32px;
+  padding: 0 32px 0 0;
   height: 80px;
   position: relative;
 }
@@ -107,8 +107,10 @@ img {
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0;
   z-index: 1101;
+  height: 100%;
+  flex-shrink: 0;
 }
 
 .brand-wordmark {
@@ -133,27 +135,28 @@ img {
 }
 
 .brand-logo {
-  height: 64px;
+  height: 100%;
   width: auto;
-  max-width: 240px;
+  max-width: 300px;
   object-fit: contain;
+  padding: 6px 0;
   transition: var(--transition);
 }
 
 .brand-logo-video {
-  height: 64px;
+  height: 100%;
   width: auto;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 0;
   transition: var(--transition);
 }
 
 .topbar.is-scrolled .brand-logo {
-  height: 52px;
+  height: 100%;
 }
 
 .topbar.is-scrolled .brand-logo-video {
-  height: 52px;
+  height: 100%;
 }
 
 .nav-toggle-input {
@@ -1472,26 +1475,27 @@ body {
 
 @media (max-width: 760px) {
   .topbar-inner {
-    padding: 0 20px;
+    padding: 0 16px 0 0;
     height: 64px;
   }
 
   .brand-logo {
-    height: 48px;
+    height: 100%;
     max-width: 180px;
+    padding: 6px 0;
   }
 
   .brand-logo-video {
-    height: 48px;
+    height: 100%;
     width: auto;
   }
 
   .topbar.is-scrolled .brand-logo {
-    height: 40px;
+    height: 100%;
   }
 
   .topbar.is-scrolled .brand-logo-video {
-    height: 40px;
+    height: 100%;
   }
 
   .nav-toggle-btn {
