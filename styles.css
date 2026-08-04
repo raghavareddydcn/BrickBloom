@@ -131,8 +131,7 @@ img {
   text-transform: uppercase;
 }
 
-.brand-logo,
-.brand-logo-video {
+.brand-logo {
   height: 118px;
   width: auto;
   max-width: 520px;
@@ -141,17 +140,19 @@ img {
 }
 
 .brand-logo-video {
+  width: 160px;
+  height: 130px;
+  object-fit: cover;
   border-radius: 10px;
+  transition: var(--transition);
 }
 
-.topbar.is-scrolled .brand-logo,
-.topbar.is-scrolled .brand-logo-video {
+.topbar.is-scrolled .brand-logo {
   height: 80px;
 }
 
-.brand:hover .brand-logo,
-.brand:hover .brand-logo-video {
-  transform: scale(1.12);
+.topbar.is-scrolled .brand-logo-video {
+  height: 92px;
 }
 
 .nav-toggle-input {
@@ -1384,15 +1385,22 @@ body {
 
 /* Responsive */
 @media (max-width: 1080px) {
-  .brand-logo,
-  .brand-logo-video {
+  .brand-logo {
     height: 100px;
     max-width: 400px;
   }
 
-  .topbar.is-scrolled .brand-logo,
-  .topbar.is-scrolled .brand-logo-video {
+  .brand-logo-video {
+    width: 140px;
+    height: 112px;
+  }
+
+  .topbar.is-scrolled .brand-logo {
     height: 74px;
+  }
+
+  .topbar.is-scrolled .brand-logo-video {
+    height: 82px;
   }
 
   .hero-apple,
@@ -1455,15 +1463,22 @@ body {
     padding: 12px 20px;
   }
 
-  .brand-logo,
-  .brand-logo-video {
+  .brand-logo {
     height: 84px;
     max-width: 280px;
   }
 
-  .topbar.is-scrolled .brand-logo,
-  .topbar.is-scrolled .brand-logo-video {
+  .brand-logo-video {
+    width: 120px;
+    height: 96px;
+  }
+
+  .topbar.is-scrolled .brand-logo {
     height: 64px;
+  }
+
+  .topbar.is-scrolled .brand-logo-video {
+    height: 74px;
   }
 
   .nav-toggle-btn {
@@ -1562,15 +1577,22 @@ body {
 }
 
 @media (max-width: 480px) {
-  .brand-logo,
-  .brand-logo-video {
+  .brand-logo {
     height: 58px;
     max-width: 190px;
   }
 
-  .topbar.is-scrolled .brand-logo,
-  .topbar.is-scrolled .brand-logo-video {
+  .brand-logo-video {
+    width: 90px;
+    height: 70px;
+  }
+
+  .topbar.is-scrolled .brand-logo {
     height: 46px;
+  }
+
+  .topbar.is-scrolled .brand-logo-video {
+    height: 54px;
   }
 
   .hero-apple h1 {
