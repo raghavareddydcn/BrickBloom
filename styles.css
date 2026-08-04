@@ -599,16 +599,23 @@ body {
 
 .hero-fb-content {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 36px;
+  left: clamp(18px, 4vw, 54px);
+  right: clamp(18px, 4vw, 54px);
   z-index: 2;
-  padding: 0 40px 80px;
+  padding: 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0;
+  justify-content: flex-start;
+}
+
+.hero-fb-panel {
+  max-width: 670px;
+  padding: 30px 34px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: linear-gradient(145deg, rgba(14, 28, 20, 0.62) 0%, rgba(12, 24, 18, 0.45) 100%);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(14px);
 }
 
 .hero-fb-badge {
@@ -624,33 +631,37 @@ body {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin-bottom: 18px;
-  backdrop-filter: blur(10px);
+  margin-bottom: 16px;
+  backdrop-filter: blur(8px);
 }
 
 .hero-fb-title {
   font-family: var(--font-display);
-  font-size: clamp(3rem, 7vw, 5.8rem);
+  font-size: clamp(2.2rem, 5vw, 4.4rem);
   font-weight: 400;
-  line-height: 1.05;
+  line-height: 1.02;
   letter-spacing: -0.01em;
   color: #ffffff;
-  margin-bottom: 20px;
-  text-shadow: 0 4px 32px rgba(0, 0, 0, 0.28);
+  margin-bottom: 14px;
+  text-shadow: 0 3px 24px rgba(0, 0, 0, 0.28);
+}
+
+.hero-fb-title span {
+  display: block;
 }
 
 .hero-fb-sub {
-  font-size: clamp(1.05rem, 2vw, 1.25rem);
-  color: rgba(255, 255, 255, 0.85);
-  line-height: 1.6;
-  max-width: 580px;
-  margin: 0 auto 36px;
+  font-size: clamp(0.98rem, 1.45vw, 1.16rem);
+  color: rgba(255, 255, 255, 0.86);
+  line-height: 1.58;
+  max-width: 560px;
+  margin: 0 0 26px;
 }
 
 .hero-fb-actions {
   display: flex;
-  gap: 16px;
-  justify-content: center;
+  gap: 14px;
+  justify-content: flex-start;
   flex-wrap: wrap;
 }
 
@@ -766,10 +777,26 @@ body {
     animation: none;
   }
   .hero-fb-content {
-    padding: 0 22px 48px;
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+  }
+  .hero-fb-panel {
+    max-width: none;
+    padding: 18px 16px;
+    border-radius: 16px;
+  }
+  .hero-fb-title {
+    font-size: clamp(1.5rem, 6vw, 2.3rem);
+    margin-bottom: 10px;
   }
   .hero-fb-sub {
-    font-size: 0.97rem;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    margin-bottom: 14px;
+  }
+  .hero-fb-actions {
+    gap: 10px;
   }
   .hero-stats-strip {
     flex-wrap: wrap;
@@ -797,13 +824,23 @@ body {
     animation: none;
   }
   .hero-fb-badge {
-    font-size: 0.72rem;
-    padding: 6px 14px;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    padding: 5px 10px;
+    margin-bottom: 8px;
   }
   .hero-btn-primary,
   .hero-btn-secondary {
-    padding: 14px 26px;
-    font-size: 0.94rem;
+    padding: 10px 14px;
+    font-size: 0.79rem;
+    min-height: 40px;
+    border-radius: 999px;
+  }
+  .hero-fb-actions .btn {
+    flex: 1 1 auto;
+    min-width: 0;
+    justify-content: center;
+    text-align: center;
   }
 }
 
