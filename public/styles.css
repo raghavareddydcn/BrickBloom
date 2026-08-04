@@ -131,18 +131,25 @@ img {
   text-transform: uppercase;
 }
 
-.brand-logo {
+.brand-logo,
+.brand-logo-video {
   height: 74px;
   width: auto;
   object-fit: contain;
   transition: var(--transition);
 }
 
-.topbar.is-scrolled .brand-logo {
+.brand-logo-video {
+  border-radius: 10px;
+}
+
+.topbar.is-scrolled .brand-logo,
+.topbar.is-scrolled .brand-logo-video {
   height: 62px;
 }
 
-.brand:hover .brand-logo {
+.brand:hover .brand-logo,
+.brand:hover .brand-logo-video {
   transform: scale(1.04);
 }
 
@@ -603,12 +610,6 @@ body {
   left: clamp(18px, 4vw, 54px);
   right: clamp(18px, 4vw, 54px);
   z-index: 2;
-  padding: 0;
-  display: flex;
-  justify-content: flex-start;
-}
-
-.hero-fb-panel {
   max-width: 670px;
   padding: 30px 34px;
   border-radius: 24px;
@@ -616,6 +617,9 @@ body {
   background: linear-gradient(145deg, rgba(14, 28, 20, 0.62) 0%, rgba(12, 24, 18, 0.45) 100%);
   box-shadow: 0 26px 70px rgba(0, 0, 0, 0.34);
   backdrop-filter: blur(14px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .hero-fb-badge {
@@ -780,8 +784,6 @@ body {
     left: 14px;
     right: 14px;
     bottom: 14px;
-  }
-  .hero-fb-panel {
     max-width: none;
     padding: 18px 16px;
     border-radius: 16px;
@@ -1678,7 +1680,8 @@ body {
 }
 
 @media (max-width: 480px) {
-  .brand-logo {
+  .brand-logo,
+  .brand-logo-video {
     height: 46px;
   }
 
