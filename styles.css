@@ -151,9 +151,9 @@ img {
 
 .brand-logo-video {
   height: 100%;
-  width: 100%;
-  object-fit: cover;
-  object-position: center center;
+  width: auto;
+  object-fit: contain;
+  object-position: left center;
   border-radius: 0;
   transition: var(--transition);
 }
