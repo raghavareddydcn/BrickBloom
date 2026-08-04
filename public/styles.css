@@ -1,28 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 :root {
   color-scheme: light;
-  --bg: #fbfbf9;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+  --bg: #f8f9f6;
   --surface: #ffffff;
-  --surface-alt: #f4f5f1;
-  --surface-dark: #0d1a13;
-  --text: #1d1d1f;
-  --text-muted: #6e6e73;
-  --text-light: #86868b;
+  --surface-alt: #f1f3ef;
+  --surface-dark: #0a1510;
+  --text: #1a1d19;
+  --text-muted: #6b7068;
+  --text-light: #8a8f87;
   --accent: #0c6a2a;
+  --accent-dark: #085220;
   --accent-light: #2e7d32;
-  --accent-glow: rgba(12, 106, 42, 0.15);
+  --accent-glow: rgba(12, 106, 42, 0.14);
+  --accent-glow-strong: rgba(12, 106, 42, 0.28);
   --accent-gold: #c89242;
-  --accent-gold-soft: #fbf4ea;
-  --border: opacity(0.08);
+  --accent-gold-soft: #fdf4e8;
+  --accent-gold-border: rgba(200, 146, 66, 0.3);
   --border-color: rgba(0, 0, 0, 0.08);
   --border-glass: rgba(255, 255, 255, 0.6);
-  --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 12px 40px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 30px 90px rgba(0, 0, 0, 0.08);
-  --radius-sm: 14px;
-  --radius-md: 24px;
-  --radius-lg: 36px;
+  --shadow-xs: 0 1px 4px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.07);
+  --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.09), 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 20px 56px rgba(0, 0, 0, 0.11), 0 6px 16px rgba(0, 0, 0, 0.06);
+  --shadow-xl: 0 40px 100px rgba(0, 0, 0, 0.14), 0 12px 30px rgba(0, 0, 0, 0.08);
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 32px;
   --radius-pill: 999px;
   --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -38,11 +49,16 @@ html {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-sans);
   color: var(--text);
   background: var(--bg);
   line-height: 1.5;
   overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
 }
 
 a {
@@ -208,51 +224,53 @@ img {
 
 .btn-cta-nav {
   background: transparent;
-  color: var(--text-muted) !important;
-  border: 0;
-  padding: 6px 0;
-  border-radius: 0;
-  font-weight: 500;
-  font-size: 0.92rem;
+  color: var(--accent) !important;
+  border: 1.5px solid rgba(12, 106, 42, 0.38);
+  padding: 8px 20px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.88rem;
   white-space: nowrap;
   flex-shrink: 0;
   box-shadow: none;
   transition: var(--transition);
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   isolation: isolate;
 }
 
 .btn-cta-nav.is-active {
-  color: var(--text) !important;
+  background: var(--accent);
+  color: #ffffff !important;
   font-weight: 600;
-  box-shadow: none;
+  border-color: var(--accent);
+  box-shadow: 0 4px 18px var(--accent-glow-strong);
 }
 
 .btn-cta-nav.is-active::after {
-  width: 100%;
+  display: none;
 }
 
 .btn-cta-nav::after {
   content: '';
   position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0%;
-  height: 2px;
+  inset: 0;
   background: var(--accent);
-  border-radius: 2px;
-  transition: width 0.3s ease;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: -1;
 }
 
 .btn-cta-nav:hover {
+  color: #ffffff !important;
+  border-color: var(--accent);
   transform: none;
-  box-shadow: none;
-  color: var(--text) !important;
+  box-shadow: 0 4px 18px var(--accent-glow-strong);
 }
 
 .btn-cta-nav:hover::after {
-  width: 100%;
+  transform: translateX(0);
 }
 
 /* ==========================================================================
@@ -316,13 +334,14 @@ body {
 }
 
 .hero-apple h1 {
+  font-family: var(--font-display);
   font-size: clamp(3.2rem, 5vw, 4.8rem);
-  font-weight: 800;
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  font-weight: 400;
+  line-height: 1.06;
+  letter-spacing: -0.01em;
   color: var(--text);
   margin-bottom: 24px;
-  background: linear-gradient(135deg, #1d1d1f 30%, #0c6a2a 100%);
+  background: linear-gradient(135deg, #1a1d19 30%, #0c6a2a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -609,12 +628,23 @@ body {
   backdrop-filter: blur(10px);
 }
 
+.hero-fb-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 5.8rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  margin-bottom: 20px;
+  text-shadow: 0 4px 32px rgba(0, 0, 0, 0.28);
+}
+
 .hero-fb-sub {
   font-size: clamp(1.05rem, 2vw, 1.25rem);
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.6;
-  max-width: 600px;
-  margin: 0 auto 34px;
+  max-width: 580px;
+  margin: 0 auto 36px;
 }
 
 .hero-fb-actions {
@@ -811,18 +841,21 @@ body {
 }
 
 .section-heading h2 {
-  font-size: clamp(2.2rem, 3.8vw, 3.4rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 4vw, 3.8rem);
+  font-weight: 400;
+  letter-spacing: -0.01em;
   line-height: 1.1;
   color: var(--text);
   margin-bottom: 16px;
 }
 
 .section-heading p {
-  font-size: 1.15rem;
+  font-size: 1.18rem;
   color: var(--text-muted);
-  line-height: 1.5;
+  line-height: 1.65;
+  max-width: 580px;
+  margin: 0 auto;
 }
 
 /* ==========================================================================
@@ -914,7 +947,8 @@ body {
 .product-card-thumb img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
   transition: transform 0.5s ease;
 }
 
@@ -993,10 +1027,11 @@ body {
 }
 
 .brand-banner-copy h2 {
-  font-size: clamp(2.5rem, 4vw, 3.6rem);
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 4vw, 3.8rem);
+  font-weight: 400;
   line-height: 1.08;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   margin-bottom: 24px;
   color: #ffffff;
 }
@@ -1048,14 +1083,15 @@ body {
   padding: 36px 30px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-sm), inset 0 3px 0 var(--accent);
   transition: var(--transition);
+  position: relative;
 }
 
 .feature-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-  border-color: rgba(12, 106, 42, 0.2);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg), inset 0 3px 0 var(--accent);
+  border-color: rgba(12, 106, 42, 0.15);
 }
 
 .feature-icon {
@@ -1109,8 +1145,9 @@ body {
 }
 
 .contact-info h2 {
-  font-size: 2.5rem;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  font-weight: 400;
   margin-bottom: 16px;
   line-height: 1.1;
 }
@@ -1220,13 +1257,14 @@ body {
 }
 
 .product-hero .section-heading h1 {
-  font-size: clamp(2.4rem, 4.5vw, 3.6rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+  font-weight: 400;
+  letter-spacing: -0.01em;
   line-height: 1.08;
   color: var(--text);
   margin-bottom: 16px;
-  background: linear-gradient(135deg, #1d1d1f 30%, #0c6a2a 100%);
+  background: linear-gradient(135deg, #1a1d19 30%, #0c6a2a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -1245,8 +1283,9 @@ body {
 }
 
 .product-detail h2 {
-  font-size: 1.7rem;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 400;
   color: var(--text);
   margin-bottom: 20px;
 }
@@ -1362,8 +1401,9 @@ body {
 }
 
 .contact-section .contact-copy h2 {
-  font-size: clamp(2rem, 3.4vw, 2.8rem);
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.4vw, 3rem);
+  font-weight: 400;
   margin-bottom: 14px;
   color: var(--text);
 }
