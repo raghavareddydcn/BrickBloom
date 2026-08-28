@@ -482,7 +482,7 @@
               <tbody id="itemsBody"></tbody>
             </table>
           </div>
-          <button class="btn-add-row" onclick="addRow()">
+          <button class="btn-add-row" id="btnAddRowBtn">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/></svg>
             Add Item
           </button>
@@ -541,21 +541,21 @@
 
   <script>
     // ─── State ────────────────────────────────────────────────────────────────
-    let items = [];
-    let rowCounter = 0;
-    let editingId = null;
+    var items = [];
+    var rowCounter = 0;
+    var editingId = null;
 
     // ─── Toast ────────────────────────────────────────────────────────────────
     function showToast(msg, type) {
       if (!type) type = 'success';
-      const t = document.getElementById('toast');
+      var t = document.getElementById('toast');
       t.textContent = (type === 'success' ? '✅ ' : type === 'error' ? '❌ ' : 'ℹ️ ') + msg;
       t.className = 'toast show ' + type;
       setTimeout(function() { t.className = 'toast'; }, 3200);
     }
 
     // ─── Storage Helpers (LocalStorage + Repo API Sync) ────────────────────────
-    const STORAGE_KEY = 'bb_invoices';
+    var STORAGE_KEY = 'bb_invoices';
 
     function loadInvoices() {
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
@@ -570,15 +570,15 @@
     // Fetch invoices from repo API on load
     async function syncFromRepo() {
       try {
-        const res = await fetch('/api/invoices');
+        var res = await fetch('/api/invoices');
         if (res.ok) {
-          const repoInvoices = await res.json();
+          var repoInvoices = await res.json();
           if (Array.isArray(repoInvoices) && repoInvoices.length > 0) {
-            const local = loadInvoices();
-            const map = new Map();
+            var local = loadInvoices();
+            var map = new Map();
             local.forEach(function(i) { map.set(i.id, i); });
             repoInvoices.forEach(function(i) { map.set(i.id, i); });
-            const merged = Array.from(map.values());
+            var merged = Array.from(map.values());
             storeInvoices(merged);
             renderSavedList();
           }
@@ -605,13 +605,13 @@
     }
 
     async function saveInvoice() {
-      const data = getInvoiceData();
+      var data = getInvoiceData();
       if (!data.refNo) {
         showToast('Please enter a Ref No before saving', 'error');
         return;
       }
-      const all = loadInvoices();
-      const idx = all.findIndex(function(i) { return i.id === data.id; });
+      var all = loadInvoices();
+      var idx = all.findIndex(function(i) { return i.id === data.id; });
       if (idx >= 0) {
         all[idx] = data;
         showToast('Invoice updated: ' + data.refNo);
@@ -634,8 +634,8 @@
     }
 
     function editInvoice(id) {
-      const all = loadInvoices();
-      const inv = all.find(function(i) { return i.id === id; });
+      var all = loadInvoices();
+      var inv = all.find(function(i) { return i.id === id; });
       if (!inv) return;
 
       editingId = inv.id;
@@ -659,12 +659,11 @@
     }
 
     async function deleteInvoice(id) {
-      const all = loadInvoices();
-      const inv = all.find(function(i) { return i.id === id; });
+      var all = loadInvoices();
+      var inv = all.find(function(i) { return i.id === id; });
       if (!inv) return;
-      if (!confirm('Delete invoice "' + inv.refNo + '"?
-This cannot be undone.')) return;
-      const updated = all.filter(function(i) { return i.id !== id; });
+      if (!confirm('Delete invoice "' + inv.refNo + '"? This cannot be undone.')) return;
+      var updated = all.filter(function(i) { return i.id !== id; });
       storeInvoices(updated);
       if (editingId === id) { editingId = null; updateEditingBadge(); }
       renderSavedList();
@@ -676,8 +675,8 @@ This cannot be undone.')) return;
     }
 
     function updateEditingBadge() {
-      const badge = document.getElementById('editingBadge');
-      const ref   = document.getElementById('editingRef');
+      var badge = document.getElementById('editingBadge');
+      var ref   = document.getElementById('editingRef');
       if (editingId) {
         ref.textContent = document.getElementById('refNo').value || editingId;
         badge.classList.add('visible');
@@ -688,24 +687,24 @@ This cannot be undone.')) return;
 
     // ─── Auto Invoice Number Generator ─────────────────────────────────────────
     function autoFillInvoiceNumber() {
-      const now     = new Date();
-      const year    = now.getFullYear();
-      const month   = now.getMonth() + 1;
-      const fyStart = month >= 4 ? year : year - 1;
-      const fyEnd   = fyStart + 1;
-      const fyShort = String(fyStart).slice(2) + '-' + String(fyEnd).slice(2);
-      const prefix  = 'BB/' + fyShort + '/';
+      var now     = new Date();
+      var year    = now.getFullYear();
+      var month   = now.getMonth() + 1;
+      var fyStart = month >= 4 ? year : year - 1;
+      var fyEnd   = fyStart + 1;
+      var fyShort = String(fyStart).slice(2) + '-' + String(fyEnd).slice(2);
+      var prefix  = 'BB/' + fyShort + '/';
 
-      const all = loadInvoices();
-      let maxSerial = 0;
+      var all = loadInvoices();
+      var maxSerial = 0;
       all.forEach(function(inv) {
         if (inv.refNo && inv.refNo.indexOf(prefix) === 0) {
-          const n = parseInt(inv.refNo.slice(prefix.length)) || 0;
+          var n = parseInt(inv.refNo.slice(prefix.length)) || 0;
           if (n > maxSerial) maxSerial = n;
         }
       });
 
-      const next = String(maxSerial + 1).padStart(3, '0');
+      var next = String(maxSerial + 1).padStart(3, '0');
       document.getElementById('refNo').value = prefix + next;
       renderPreview();
       updateEditingBadge();
@@ -724,8 +723,8 @@ This cannot be undone.')) return;
     }
 
     function renderSavedList() {
-      const all = loadInvoices().sort(function(a, b) { return new Date(b.savedAt) - new Date(a.savedAt); });
-      const el  = document.getElementById('invoicesList');
+      var all = loadInvoices().sort(function(a, b) { return new Date(b.savedAt) - new Date(a.savedAt); });
+      var el  = document.getElementById('invoicesList');
       document.getElementById('savedCount').textContent = all.length;
 
       if (!all.length) {
@@ -734,33 +733,47 @@ This cannot be undone.')) return;
       }
 
       el.innerHTML = all.map(function(inv) {
-        const t = calcTotalsFromInv(inv);
-        const grand = t.subtotal + t.transport + t.taxAmount;
+        var t = calcTotalsFromInv(inv);
+        var grand = t.subtotal + t.transport + t.taxAmount;
         return '<div class="inv-card" id="card-' + inv.id + '">' +
           '<div class="inv-card-head">' +
             '<span class="inv-card-refno">' + escHtml(inv.refNo || '—') + '</span>' +
             '<span class="inv-card-date">' + formatDate(inv.issueDate) + '</span>' +
           '</div>' +
           '<div class="inv-card-cust">👤 ' + escHtml(inv.custName || 'No customer name') + '</div>' +
-          '<div class="inv-card-total">₹ ' + grand.toFixed(2).replace(/B(?=(d{3})+(?!d))/g, ',') + '</div>' +
+          '<div class="inv-card-total">₹ ' + grand.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '</div>' +
           '<div class="inv-card-actions">' +
-            '<button class="btn-edit" onclick="editInvoice('' + inv.id + '')">✏️ Edit</button>' +
-            '<button class="btn-del"  onclick="deleteInvoice('' + inv.id + '')">🗑 Delete</button>' +
+            '<button class="btn-edit" data-id="' + inv.id + '">✏️ Edit</button>' +
+            '<button class="btn-del"  data-id="' + inv.id + '">🗑 Delete</button>' +
           '</div>' +
         '</div>';
       }).join('');
     }
 
+    // Attach event delegation for drawer edit/delete buttons
+    document.getElementById('invoicesList').addEventListener('click', function(e) {
+      var editBtn = e.target.closest('.btn-edit');
+      if (editBtn) {
+        editInvoice(editBtn.getAttribute('data-id'));
+        return;
+      }
+      var delBtn = e.target.closest('.btn-del');
+      if (delBtn) {
+        deleteInvoice(delBtn.getAttribute('data-id'));
+        return;
+      }
+    });
+
     function calcTotalsFromInv(inv) {
-      const subtotal  = (inv.items || []).reduce(function(s, r) { return s + parseFloat(r.qty || 0) * parseFloat(r.price || 0); }, 0);
-      const transport = parseFloat(inv.transport || 0);
-      const taxAmount = subtotal * parseFloat(inv.taxRate || 0) / 100;
+      var subtotal  = (inv.items || []).reduce(function(s, r) { return s + parseFloat(r.qty || 0) * parseFloat(r.price || 0); }, 0);
+      var transport = parseFloat(inv.transport || 0);
+      var taxAmount = subtotal * parseFloat(inv.taxRate || 0) / 100;
       return { subtotal: subtotal, transport: transport, taxAmount: taxAmount };
     }
 
     // ─── Row Management (DOM-based, Robust & Quote-Safe) ────────────────────────
     function addRow(name, qty, price) {
-      const id = ++rowCounter;
+      var id = ++rowCounter;
       items.push({ id: id, name: name || '', qty: qty || '', price: price || '' });
       rebuildTable();
     }
@@ -775,25 +788,25 @@ This cannot be undone.')) return;
     }
 
     function updateRow(id, field, value) {
-      const r = items.find(function(r) { return r.id === id; });
+      var r = items.find(function(r) { return r.id === id; });
       if (r) { r[field] = value; renderPreview(); }
     }
 
     function rebuildTable() {
-      const tbody = document.getElementById('itemsBody');
+      var tbody = document.getElementById('itemsBody');
       tbody.innerHTML = '';
       items.forEach(function(item, idx) {
-        const tr = document.createElement('tr');
+        var tr = document.createElement('tr');
 
         // SR No
-        const tdIdx = document.createElement('td');
+        var tdIdx = document.createElement('td');
         tdIdx.style.cssText = 'color:var(--text-muted);font-size:11px;text-align:center';
         tdIdx.textContent = String(idx + 1);
         tr.appendChild(tdIdx);
 
         // Item Name Input
-        const tdName = document.createElement('td');
-        const inputName = document.createElement('input');
+        var tdName = document.createElement('td');
+        var inputName = document.createElement('input');
         inputName.type = 'text';
         inputName.placeholder = 'Item name';
         inputName.value = item.name || '';
@@ -802,8 +815,8 @@ This cannot be undone.')) return;
         tr.appendChild(tdName);
 
         // Qty Input
-        const tdQty = document.createElement('td');
-        const inputQty = document.createElement('input');
+        var tdQty = document.createElement('td');
+        var inputQty = document.createElement('input');
         inputQty.type = 'number';
         inputQty.className = 'num';
         inputQty.placeholder = '0';
@@ -815,8 +828,8 @@ This cannot be undone.')) return;
         tr.appendChild(tdQty);
 
         // Price Input
-        const tdPrice = document.createElement('td');
-        const inputPrice = document.createElement('input');
+        var tdPrice = document.createElement('td');
+        var inputPrice = document.createElement('input');
         inputPrice.type = 'number';
         inputPrice.className = 'num';
         inputPrice.placeholder = '0.00';
@@ -828,15 +841,15 @@ This cannot be undone.')) return;
         tr.appendChild(tdPrice);
 
         // Amount Display
-        const tdAmt = document.createElement('td');
+        var tdAmt = document.createElement('td');
         tdAmt.style.cssText = 'text-align:right;font-weight:600;font-size:12px;color:var(--text)';
-        const amount = parseFloat(item.qty || 0) * parseFloat(item.price || 0);
+        var amount = parseFloat(item.qty || 0) * parseFloat(item.price || 0);
         tdAmt.textContent = fmt(amount);
         tr.appendChild(tdAmt);
 
         // Delete Row Button
-        const tdDel = document.createElement('td');
-        const btnDel = document.createElement('button');
+        var tdDel = document.createElement('td');
+        var btnDel = document.createElement('button');
         btnDel.className = 'row-del';
         btnDel.textContent = '✕';
         btnDel.title = 'Remove';
@@ -851,42 +864,42 @@ This cannot be undone.')) return;
 
     // ─── Calculations ─────────────────────────────────────────────────────────
     function calcTotals() {
-      const subtotal  = items.reduce(function(s, r) { return s + parseFloat(r.qty || 0) * parseFloat(r.price || 0); }, 0);
-      const transport = parseFloat(document.getElementById('transport').value || 0);
-      const taxRate   = parseFloat(document.getElementById('taxRate').value || 0);
-      const taxAmount = subtotal * taxRate / 100;
-      const grand     = subtotal + transport + taxAmount;
+      var subtotal  = items.reduce(function(s, r) { return s + parseFloat(r.qty || 0) * parseFloat(r.price || 0); }, 0);
+      var transport = parseFloat(document.getElementById('transport').value || 0);
+      var taxRate   = parseFloat(document.getElementById('taxRate').value || 0);
+      var taxAmount = subtotal * taxRate / 100;
+      var grand     = subtotal + transport + taxAmount;
       return { subtotal: subtotal, transport: transport, taxRate: taxRate, taxAmount: taxAmount, grand: grand };
     }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
     function fmt(n) {
       if (isNaN(n)) return '₹ 0.00';
-      return '₹ ' + n.toFixed(2).replace(/B(?=(d{3})+(?!d))/g, ',');
+      return '₹ ' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
     function fmtP(n) {
       if (isNaN(n)) return '0.00';
-      return n.toFixed(2).replace(/B(?=(d{3})+(?!d))/g, ',');
+      return n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
     function esc(v)     { return String(v || '').replace(/"/g, '&quot;'); }
     function escHtml(v) { return String(v || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
     function formatDate(d) {
       if (!d) return '';
-      const parts = d.split('-');
+      var parts = d.split('-');
       return parts[2] + '-' + parts[1] + '-' + parts[0];
     }
     function today() { return new Date().toISOString().split('T')[0]; }
 
     // ─── Render Preview ───────────────────────────────────────────────────────
     function renderPreview() {
-      const t = calcTotals();
+      var t = calcTotals();
       document.getElementById('st_subtotal').textContent = fmt(t.subtotal);
       document.getElementById('st_tax').textContent      = fmt(t.taxAmount);
       document.getElementById('st_grand').textContent    = fmt(t.grand);
 
-      const totalQty = items.reduce(function(s, r) { return s + parseFloat(r.qty || 0); }, 0);
-      const itemRows = items.map(function(r, idx) {
-        const amt = parseFloat(r.qty || 0) * parseFloat(r.price || 0);
+      var totalQty = items.reduce(function(s, r) { return s + parseFloat(r.qty || 0); }, 0);
+      var itemRows = items.map(function(r, idx) {
+        var amt = parseFloat(r.qty || 0) * parseFloat(r.price || 0);
         return '<tr>' +
             '<td>' + (idx + 1) + '</td>' +
             '<td>' + escHtml(r.name || '—') + '</td>' +
@@ -900,18 +913,17 @@ This cannot be undone.')) return;
           '</tr>';
       }).join('');
 
-      const refNo     = escHtml(document.getElementById('refNo').value     || 'BB/26-27/—');
-      const issueDate = escHtml(formatDate(document.getElementById('issueDate').value));
-      const custName  = escHtml(document.getElementById('custName').value);
-      const custAddr  = escHtml(document.getElementById('custAddr').value).replace(/
-/g, '<br>');
-      const custPhone = escHtml(document.getElementById('custPhone').value);
-      const custState = escHtml(document.getElementById('custState').value);
+      var refNo     = escHtml(document.getElementById('refNo').value     || 'BB/26-27/—');
+      var issueDate = escHtml(formatDate(document.getElementById('issueDate').value));
+      var custName  = escHtml(document.getElementById('custName').value);
+      var custAddr  = escHtml(document.getElementById('custAddr').value).replace(/\n/g, '<br>');
+      var custPhone = escHtml(document.getElementById('custPhone').value);
+      var custState = escHtml(document.getElementById('custState').value);
 
       document.getElementById('invoiceDoc').innerHTML =
         '<div class="inv-amount-header">' +
           '<div><div class="inv-amount-label">Amount due</div></div>' +
-          '<div class="inv-amount-val">₹ ' + t.grand.toFixed(2).replace(/B(?=(d{3})+(?!d))/g, ',') + '</div>' +
+          '<div class="inv-amount-val">₹ ' + t.grand.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '</div>' +
         '</div>' +
         '<div class="inv-seller-row">' +
           '<div class="inv-seller-info">' +
@@ -983,12 +995,12 @@ This cannot be undone.')) return;
 
     // ─── Save as Image ────────────────────────────────────────────────────────
     function saveAsImage() {
-      const el  = document.getElementById('invoiceDoc');
-      const ref = document.getElementById('refNo').value.trim().replace(///g, '-') || 'invoice';
+      var el  = document.getElementById('invoiceDoc');
+      var ref = document.getElementById('refNo').value.trim().replace(/\//g, '-') || 'invoice';
       showToast('Generating image…', 'info');
       html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#ffffff' })
         .then(function(canvas) {
-          const link = document.createElement('a');
+          var link = document.createElement('a');
           link.download = 'BrickBloom-' + ref + '.png';
           link.href = canvas.toDataURL('image/png');
           link.click();
@@ -1008,7 +1020,7 @@ This cannot be undone.')) return;
         if (!confirm('Start a new invoice? Unsaved changes will be lost.')) return;
       }
       ['refNo','custName','custAddr','custPhone','custState','transport'].forEach(function(id) {
-        const el = document.getElementById(id);
+        var el = document.getElementById(id);
         if (el) el.value = '';
       });
       document.getElementById('issueDate').value = today();
@@ -1026,12 +1038,17 @@ This cannot be undone.')) return;
     }
 
     // ─── Init ─────────────────────────────────────────────────────────────────
+    document.getElementById('btnAddRowBtn').addEventListener('click', function() {
+      addRow('', '', '');
+    });
+
     document.getElementById('issueDate').value = today();
-    const allInv = loadInvoices();
+    var allInv = loadInvoices();
     document.getElementById('savedCount').textContent = allInv.length;
     autoFillInvoiceNumber();
     addRow('', '', '');
     syncFromRepo();
+
   </script>
 </body>
 </html>
