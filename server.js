@@ -78,6 +78,15 @@ app.get('/api/market-intelligence', (req, res) => {
   res.json(marketIntelligence);
 });
 
+// ─── Admin portal ──────────────────────────────────────────────────────────
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+app.get('/invoice', (req, res) => {
+  res.sendFile(path.join(__dirname, 'invoice.html'));
+});
+
 app.get('/public', (req, res) => {
   res.redirect('/');
 });
