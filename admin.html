@@ -78,27 +78,18 @@
       text-align: center;
       margin-bottom: 32px;
     }
-    .logo-leaf {
-      display: inline-block;
-      width: 64px; height: 64px;
-      background: linear-gradient(135deg, var(--green-light), var(--green-dark));
-      border-radius: 50% 50% 50% 0;
-      transform: rotate(-45deg);
-      margin-bottom: 12px;
-      box-shadow: 0 4px 20px rgba(62,196,103,0.4);
-      animation: leafPulse 2.5s ease-in-out infinite;
-      position: relative;
+    .brand-logo-img {
+      width: 200px;
+      height: auto;
+      border-radius: 12px;
+      object-fit: contain;
+      margin-bottom: 10px;
+      animation: logoPulse 3s ease-in-out infinite;
+      filter: drop-shadow(0 4px 16px rgba(0,0,0,0.4));
     }
-    .logo-leaf::after {
-      content: '';
-      position: absolute;
-      inset: 12px;
-      background: rgba(255,255,255,0.25);
-      border-radius: 50% 50% 50% 0;
-    }
-    @keyframes leafPulse {
-      0%,100% { box-shadow: 0 4px 20px rgba(62,196,103,0.4); transform: rotate(-45deg) scale(1); }
-      50%      { box-shadow: 0 4px 36px rgba(62,196,103,0.7); transform: rotate(-45deg) scale(1.07); }
+    @keyframes logoPulse {
+      0%,100% { filter: drop-shadow(0 4px 16px rgba(0,0,0,0.4)); transform: scale(1); }
+      50%      { filter: drop-shadow(0 6px 24px rgba(62,196,103,0.5)); transform: scale(1.03); }
     }
 
     .brand-name {
@@ -293,8 +284,7 @@
 
     <!-- Logo -->
     <div class="logo-wrap">
-      <div class="logo-leaf"></div>
-      <div class="brand-name">BrickBloom</div>
+      <img src="/images/BGLogo.jpeg" alt="BrickBloom" class="brand-logo-img" />
       <div class="brand-tagline">Admin Portal</div>
     </div>
 
