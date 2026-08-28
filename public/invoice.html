@@ -189,7 +189,7 @@
       box-shadow: 0 0 0 3px rgba(62,196,103,0.15);
     }
 
-    /* ─── Items table ─────────────────────────────────────────────── */
+    /* ─── Items table (Form Editor) ───────────────────────────────── */
     .items-wrap { overflow-x: auto; margin-bottom: 10px; }
     .items-table { width: 100%; border-collapse: collapse; font-size: 12px; }
     .items-table th { background: #f1f5f9; padding: 7px 8px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); white-space: nowrap; }
@@ -245,7 +245,7 @@
     }
     .btn-print:hover, .btn-img:hover { transform: translateY(-2px); filter: brightness(1.08); }
 
-    /* ─── Invoice Document Styles ─────────────────────────────────── */
+    /* ─── Invoice Document Styles (Refined & Balanced Layout) ────── */
     #invoiceDoc {
       background: white;
       border-radius: 16px;
@@ -255,7 +255,7 @@
     }
     .inv-amount-header {
       background: linear-gradient(135deg, #1a2332 0%, #2d3f55 100%);
-      color: white; padding: 22px 28px;
+      color: white; padding: 20px 28px;
       display: flex; align-items: center; justify-content: space-between;
     }
     .inv-amount-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.7; }
@@ -270,26 +270,68 @@
     .inv-logo-box { width: 120px; flex-shrink: 0; }
     .inv-logo-img { width: 100%; height: auto; border-radius: 8px; object-fit: contain; }
 
-    .inv-bill-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px 24px; border-bottom: 1px solid #f0f0f0; }
-    .inv-row-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--brand-dark); margin-bottom: 5px; }
+    /* Refined Bill To & Ref No section */
+    .inv-bill-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: stretch;
+      gap: 16px;
+      padding: 18px 24px;
+      border-bottom: 1px solid #eef2f6;
+    }
+    .inv-bill-box {
+      flex: 1;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .inv-ref-box {
+      width: 220px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      text-align: right;
+    }
+    .inv-row-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--brand-dark); margin-bottom: 6px; }
     .inv-row-value { font-size: 12.5px; color: var(--text); line-height: 1.6; }
-    .inv-row-value .phone { color: var(--sky-dark); }
+    .inv-row-value .phone { color: var(--sky-dark); font-weight: 600; }
+    .inv-ref-num { font-size: 15px; font-weight: 800; color: var(--sky-dark); letter-spacing: 0.5px; }
 
+    /* Perfectly Proportioned Items Table */
     .inv-items-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-    .inv-items-table th { background: #f7f9fc; padding: 10px 12px; text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); border-bottom: 2px solid #eee; }
-    .inv-items-table td { padding: 10px 12px; border-bottom: 1px solid #f3f3f3; vertical-align: middle; }
+    .inv-items-table th {
+      background: #f8fafc;
+      padding: 10px 14px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .inv-items-table td { padding: 11px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    
+    /* Strict Proportional Widths to eliminate blank horizontal space */
+    .inv-items-table th:nth-child(1), .inv-items-table td:nth-child(1) { width: 44px; text-align: center; }
+    .inv-items-table th:nth-child(2), .inv-items-table td:nth-child(2) { width: 42%; text-align: left; }
+    .inv-items-table th:nth-child(3), .inv-items-table td:nth-child(3) { width: 14%; text-align: right; }
+    .inv-items-table th:nth-child(4), .inv-items-table td:nth-child(4) { width: 20%; text-align: right; }
+    .inv-items-table th:nth-child(5), .inv-items-table td:nth-child(5) { width: 20%; text-align: right; }
+    
     .inv-items-table tr:last-child td { border-bottom: none; }
-    .inv-items-table .tax-row td { padding: 4px 12px; font-size: 11px; color: var(--text-muted); background: #fafbfc; }
-    .inv-items-table .subtotal-row td { background: #f7f9fc; font-weight: 600; font-size: 12.5px; border-top: 2px solid #eee; }
+    .inv-items-table .subtotal-row td { background: #f8fafc; font-weight: 700; font-size: 12.5px; border-top: 2px solid #e2e8f0; }
+    .inv-items-table .tax-row td { padding: 4px 14px; font-size: 11px; color: var(--text-muted); background: #fafbfc; }
 
-    .inv-totals { padding: 14px 24px; border-top: 2px solid #eee; }
+    .inv-totals { padding: 16px 24px; border-top: 2px solid #e2e8f0; }
     .inv-total-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 12.5px; }
-    .inv-total-row.grand { font-size: 15px; font-weight: 800; color: var(--brand-dark); padding-top: 10px; border-top: 2px solid var(--brand-dark); margin-top: 5px; }
+    .inv-total-row.grand { font-size: 15px; font-weight: 800; color: var(--brand-dark); padding-top: 10px; border-top: 2px solid var(--brand-dark); margin-top: 6px; }
     .inv-total-row .lbl { color: var(--text-muted); }
     .inv-total-row .amt { font-weight: 600; color: var(--text); }
     .inv-total-row.grand .amt { color: var(--brand-dark); }
 
-    .inv-tax-section { padding: 12px 24px; background: #f7f9fc; border-top: 1px solid #eee; }
+    .inv-tax-section { padding: 12px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; }
     .inv-tax-title { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
     .inv-tax-row { display: flex; justify-content: space-between; font-size: 12px; }
     .inv-tax-row .lbl { color: var(--text-muted); }
@@ -343,6 +385,8 @@
     @media (max-width: 900px) {
       .workspace { grid-template-columns: 1fr; }
       .invoice-wrap { position: static; max-height: none; }
+      .inv-bill-row { flex-direction: column; }
+      .inv-ref-box { width: 100%; text-align: left; }
     }
   </style>
 </head>
@@ -673,7 +717,6 @@
       var inv = all.find(function(i) { return i.id === id; });
       if (!inv) return;
 
-      // Pre-fill all details but clear editingId so saving creates a NEW invoice
       editingId = null;
       document.getElementById('issueDate').value = today();
       document.getElementById('custName').value  = inv.custName || '';
@@ -687,7 +730,7 @@
       rowCounter = items.length > 0 ? Math.max.apply(null, items.map(function(i) { return i.id || 0; })) : 0;
 
       rebuildTable();
-      autoFillInvoiceNumber(); // Auto-generates next serial invoice number
+      autoFillInvoiceNumber();
       updateEditingBadge();
       closeDrawer();
       showToast('Pre-filled all details from ' + inv.refNo + ' for NEW invoice ' + document.getElementById('refNo').value);
@@ -939,7 +982,7 @@
     }
     function today() { return new Date().toISOString().split('T')[0]; }
 
-    // ─── Render Preview ───────────────────────────────────────────────────────
+    // ─── Render Preview (Refined Layout with No Empty Gaps) ────────────────────
     function renderPreview() {
       var t = calcTotals();
       document.getElementById('st_subtotal').textContent = fmt(t.subtotal);
@@ -949,17 +992,23 @@
       var totalQty = items.reduce(function(s, r) { return s + parseFloat(r.qty || 0); }, 0);
       var itemRows = items.map(function(r, idx) {
         var amt = parseFloat(r.qty || 0) * parseFloat(r.price || 0);
-        return '<tr>' +
-            '<td>' + (idx + 1) + '</td>' +
-            '<td>' + escHtml(r.name || '—') + '</td>' +
-            '<td style="text-align:right">' + escHtml(r.qty) + '</td>' +
-            '<td style="text-align:right">' + fmtP(parseFloat(r.price || 0)) + '</td>' +
-            '<td style="text-align:right">' + fmtP(amt) + '</td>' +
-          '</tr>' +
-          '<tr class="tax-row">' +
-            '<td colspan="3" style="text-align:right;padding-right:12px">Tax: ' + (t.taxRate === 0 ? 'Exempted :' : t.taxRate + '% :') + '</td>' +
-            '<td colspan="2" style="text-align:right">' + fmtP(t.taxRate === 0 ? 0 : amt * t.taxRate / 100) + '</td>' +
+        var html = '<tr>' +
+            '<td style="text-align:center;color:var(--text-muted)">' + (idx + 1) + '</td>' +
+            '<td><strong>' + escHtml(r.name || '—') + '</strong></td>' +
+            '<td style="text-align:right;font-weight:600">' + escHtml(r.qty || '0') + '</td>' +
+            '<td style="text-align:right">₹ ' + fmtP(parseFloat(r.price || 0)) + '</td>' +
+            '<td style="text-align:right;font-weight:700;color:var(--brand-dark)">₹ ' + fmtP(amt) + '</td>' +
           '</tr>';
+
+        // Only add per-item tax row if tax rate is greater than 0
+        if (t.taxRate > 0) {
+          var itemTax = amt * t.taxRate / 100;
+          html += '<tr class="tax-row">' +
+            '<td colspan="3" style="text-align:right;padding-right:12px">Tax (' + t.taxRate + '%):</td>' +
+            '<td colspan="2" style="text-align:right">₹ ' + fmtP(itemTax) + '</td>' +
+          '</tr>';
+        }
+        return html;
       }).join('');
 
       var refNo     = escHtml(document.getElementById('refNo').value     || 'BB/26-27/—');
@@ -987,28 +1036,30 @@
           '</div>' +
         '</div>' +
         '<div class="inv-bill-row">' +
-          '<div class="inv-bill-col">' +
+          '<div class="inv-bill-box">' +
             '<div class="inv-row-label">Bill To:</div>' +
             '<div class="inv-row-value">' +
-              '<strong>' + (custName || 'Customer Name') + '</strong><br>' +
+              '<strong style="font-size:14px;color:var(--brand-dark)">' + (custName || 'Customer Name') + '</strong><br>' +
               (custAddr || '—') + '<br>' +
-              (custPhone ? '<span class="phone">' + custPhone + '</span><br>' : '') +
-              (custState || '') +
+              (custPhone ? '<span class="phone">📞 ' + custPhone + '</span><br>' : '') +
+              (custState ? '📍 ' + custState : '') +
             '</div>' +
           '</div>' +
-          '<div class="inv-ref-col">' +
-            '<div class="inv-row-label" style="color:var(--text-muted)">Ref No:</div>' +
-            '<div class="inv-row-value" style="color:var(--sky-dark);font-weight:700">' + refNo + '</div>' +
-            '<div style="margin-top:8px">' +
-              '<div class="inv-row-label" style="color:var(--sky-dark)">Date of Issue</div>' +
-              '<div class="inv-row-value">' + (issueDate || '—') + '</div>' +
+          '<div class="inv-ref-box">' +
+            '<div style="margin-bottom:10px">' +
+              '<div class="inv-row-label">Ref No:</div>' +
+              '<div class="inv-ref-num">' + refNo + '</div>' +
+            '</div>' +
+            '<div>' +
+              '<div class="inv-row-label">Date of Issue:</div>' +
+              '<div class="inv-row-value" style="font-weight:600">' + (issueDate || '—') + '</div>' +
             '</div>' +
           '</div>' +
         '</div>' +
         '<table class="inv-items-table">' +
           '<thead>' +
             '<tr>' +
-              '<th style="width:30px">SR</th>' +
+              '<th>SR</th>' +
               '<th>Name</th>' +
               '<th style="text-align:right">Qty</th>' +
               '<th style="text-align:right">Price</th>' +
@@ -1018,15 +1069,15 @@
           '<tbody>' +
             (itemRows || '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:16px">No items added</td></tr>') +
             '<tr class="subtotal-row">' +
-              '<td colspan="2"><strong>Total</strong></td>' +
-              '<td style="text-align:right">' + totalQty + '</td>' +
+              '<td colspan="2" style="text-align:left"><strong>Total Items: ' + items.length + '</strong></td>' +
+              '<td style="text-align:right"><strong>' + totalQty + '</strong></td>' +
               '<td></td>' +
-              '<td style="text-align:right">' + fmtP(t.subtotal) + '</td>' +
+              '<td style="text-align:right"><strong>₹ ' + fmtP(t.subtotal) + '</strong></td>' +
             '</tr>' +
           '</tbody>' +
         '</table>' +
         '<div class="inv-totals">' +
-          '<div class="inv-total-row"><span class="lbl">Transport charges</span><span class="amt">' + fmtP(t.transport) + '</span></div>' +
+          '<div class="inv-total-row"><span class="lbl">Transport charges</span><span class="amt">₹ ' + fmtP(t.transport) + '</span></div>' +
           '<div class="inv-total-row grand"><span class="lbl">Grand Total</span><span class="amt">₹ ' + fmtP(t.grand) + '</span></div>' +
           '<div class="inv-total-row"><span class="lbl">Balance</span><span class="amt">₹ ' + fmtP(t.grand) + '</span></div>' +
         '</div>' +
@@ -1034,7 +1085,7 @@
           '<div class="inv-tax-title">Tax Details</div>' +
           '<div class="inv-tax-row">' +
             '<span class="lbl">' + (t.taxRate === 0 ? 'EXEMPTED @ 0%' : 'GST @ ' + t.taxRate + '%') + '</span>' +
-            '<span class="amt">' + fmtP(t.taxAmount) + '</span>' +
+            '<span class="amt">₹ ' + fmtP(t.taxAmount) + '</span>' +
           '</div>' +
         '</div>' +
         '<div class="inv-footer">' +
