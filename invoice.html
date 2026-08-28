@@ -90,8 +90,8 @@
     .invoices-drawer {
       position: fixed;
       top: 0;
-      right: -420px;
-      width: min(420px, 95vw);
+      right: -450px;
+      width: min(450px, 95vw);
       height: 100vh;
       background: white;
       box-shadow: -4px 0 32px rgba(0,0,0,0.25);
@@ -141,9 +141,11 @@
     .inv-card-cust  { font-size: 12px; color: var(--text); margin-bottom: 4px; }
     .inv-card-total { font-size: 13px; font-weight: 700; color: var(--sky-dark); }
     .inv-card-actions { display: flex; gap: 6px; margin-top: 10px; }
-    .inv-card-actions button { flex: 1; padding: 6px 10px; border-radius: 7px; border: none; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .inv-card-actions button { flex: 1; padding: 6px 8px; border-radius: 7px; border: none; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
     .btn-edit  { background: #e3f2fd; color: var(--sky-dark); }
     .btn-edit:hover { background: var(--sky); color: white; }
+    .btn-clone { background: #e8f5e9; color: var(--brand-dark); }
+    .btn-clone:hover { background: var(--brand); color: white; }
     .btn-del   { background: #ffebee; color: var(--red); }
     .btn-del:hover { background: var(--red); color: white; }
 
@@ -307,7 +309,9 @@
       font-weight: 600;
       margin-bottom: 14px;
       align-items: center;
+      justify-content: space-between;
       gap: 8px;
+      flex-wrap: wrap;
     }
     .editing-badge.visible { display: flex; }
 
@@ -357,7 +361,10 @@
   <!-- Saved Invoices Drawer -->
   <div class="invoices-drawer" id="invoicesDrawer">
     <div class="drawer-head">
-      <h3>📋 Saved Invoices</h3>
+      <div>
+        <h3>📋 Saved Invoices</h3>
+        <div style="font-size:10px;opacity:0.8;font-weight:400;margin-top:2px">Saved to repo folder: invoices/</div>
+      </div>
       <button class="drawer-close" onclick="closeDrawer()">×</button>
     </div>
     <div class="drawer-body" id="invoicesList"></div>
@@ -376,7 +383,7 @@
       <button class="btn-sm btn-gold" onclick="autoFillInvoiceNumber()" title="Auto-generate next invoice number">
         # Auto
       </button>
-      <button class="btn-sm btn-success" onclick="saveInvoice()">
+      <button class="btn-sm btn-success" onclick="saveInvoice()" title="Save / Update invoice">
         💾 Save
       </button>
       <button class="btn-sm btn-outline" id="savedCountBtn" onclick="openDrawer()">
@@ -404,8 +411,11 @@
 
       <!-- Editing indicator -->
       <div class="editing-badge" id="editingBadge">
-        ✏️ Editing Invoice: <strong id="editingRef"></strong>
-        <button onclick="clearForm()" style="margin-left:auto;background:#ff9800;color:white;border:none;border-radius:6px;padding:3px 10px;cursor:pointer;font-size:11px;">New Invoice</button>
+        <span>✏️ Editing Invoice: <strong id="editingRef"></strong></span>
+        <div style="display:flex;gap:6px">
+          <button onclick="duplicateCurrentAsNew()" style="background:#2e7d32;color:white;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11px;font-weight:600">📋 Save as New</button>
+          <button onclick="clearForm()" style="background:#ff9800;color:white;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11px">✨ Blank Form</button>
+        </div>
       </div>
 
       <!-- Invoice Meta -->
@@ -654,8 +664,41 @@
       rebuildTable();
       updateEditingBadge();
       closeDrawer();
-      showToast('Editing: ' + inv.refNo);
+      showToast('Loaded details of ' + inv.refNo + ' for editing');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function duplicateInvoice(id) {
+      var all = loadInvoices();
+      var inv = all.find(function(i) { return i.id === id; });
+      if (!inv) return;
+
+      // Pre-fill all details but clear editingId so saving creates a NEW invoice
+      editingId = null;
+      document.getElementById('issueDate').value = today();
+      document.getElementById('custName').value  = inv.custName || '';
+      document.getElementById('custAddr').value  = inv.custAddr || '';
+      document.getElementById('custPhone').value = inv.custPhone || '';
+      document.getElementById('custState').value = inv.custState || '';
+      document.getElementById('transport').value = inv.transport || '';
+      document.getElementById('taxRate').value   = String(inv.taxRate || 0);
+
+      items = inv.items ? JSON.parse(JSON.stringify(inv.items)) : [];
+      rowCounter = items.length > 0 ? Math.max.apply(null, items.map(function(i) { return i.id || 0; })) : 0;
+
+      rebuildTable();
+      autoFillInvoiceNumber(); // Auto-generates next serial invoice number
+      updateEditingBadge();
+      closeDrawer();
+      showToast('Pre-filled all details from ' + inv.refNo + ' for NEW invoice ' + document.getElementById('refNo').value);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function duplicateCurrentAsNew() {
+      editingId = null;
+      autoFillInvoiceNumber();
+      updateEditingBadge();
+      showToast('Pre-filled details ready as NEW invoice: ' + document.getElementById('refNo').value);
     }
 
     async function deleteInvoice(id) {
@@ -743,18 +786,24 @@
           '<div class="inv-card-cust">👤 ' + escHtml(inv.custName || 'No customer name') + '</div>' +
           '<div class="inv-card-total">₹ ' + grand.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '</div>' +
           '<div class="inv-card-actions">' +
-            '<button class="btn-edit" data-id="' + inv.id + '">✏️ Edit</button>' +
-            '<button class="btn-del"  data-id="' + inv.id + '">🗑 Delete</button>' +
+            '<button class="btn-edit" data-id="' + inv.id + '" title="Edit existing invoice">✏️ Edit</button>' +
+            '<button class="btn-clone" data-id="' + inv.id + '" title="Pre-fill details as new invoice">📋 New from this</button>' +
+            '<button class="btn-del" data-id="' + inv.id + '" title="Delete invoice">🗑 Delete</button>' +
           '</div>' +
         '</div>';
       }).join('');
     }
 
-    // Attach event delegation for drawer edit/delete buttons
+    // Attach event delegation for drawer action buttons
     document.getElementById('invoicesList').addEventListener('click', function(e) {
       var editBtn = e.target.closest('.btn-edit');
       if (editBtn) {
         editInvoice(editBtn.getAttribute('data-id'));
+        return;
+      }
+      var cloneBtn = e.target.closest('.btn-clone');
+      if (cloneBtn) {
+        duplicateInvoice(cloneBtn.getAttribute('data-id'));
         return;
       }
       var delBtn = e.target.closest('.btn-del');
