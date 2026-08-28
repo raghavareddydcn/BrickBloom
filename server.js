@@ -141,6 +141,59 @@ app.post('/api/leads', async (req, res) => {
   }
 });
 
+// ─── Invoice Persistence API ────────────────────────────────────────────────
+const fs = require('fs');
+const invoicesDir = path.join(__dirname, 'invoices');
+if (!fs.existsSync(invoicesDir)) {
+  fs.mkdirSync(invoicesDir, { recursive: true });
+}
+
+app.get('/api/invoices', (req, res) => {
+  try {
+    const files = fs.readdirSync(invoicesDir).filter(f => f.endsWith('.json'));
+    const invoices = files.map(f => {
+      try {
+        return JSON.parse(fs.readFileSync(path.join(invoicesDir, f), 'utf8'));
+      } catch (err) {
+        return null;
+      }
+    }).filter(Boolean);
+    res.json(invoices);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to read invoices' });
+  }
+});
+
+app.post('/api/invoices', (req, res) => {
+  try {
+    const invoice = req.body;
+    if (!invoice || !invoice.id) {
+      return res.status(400).json({ error: 'Invoice ID is required' });
+    }
+    const filename = `${String(invoice.id).replace(/[^a-zA-Z0-9_-]/g, '_')}.json`;
+    const filePath = path.join(invoicesDir, filename);
+    fs.writeFileSync(filePath, JSON.stringify(invoice, null, 2), 'utf8');
+    res.json({ success: true, message: 'Invoice saved to repo', filename });
+  } catch (err) {
+    console.error('Error saving invoice:', err);
+    res.status(500).json({ error: 'Failed to save invoice to server' });
+  }
+});
+
+app.delete('/api/invoices/:id', (req, res) => {
+  try {
+    const id = req.params.id;
+    const filename = `${String(id).replace(/[^a-zA-Z0-9_-]/g, '_')}.json`;
+    const filePath = path.join(invoicesDir, filename);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+    res.json({ success: true, message: 'Invoice deleted' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete invoice' });
+  }
+});
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
