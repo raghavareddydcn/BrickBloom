@@ -862,8 +862,8 @@
        PRINT STYLES
     ══════════════════════════════════════════════════════════════════════ */
     @media print {
-      @page { size: A4 portrait; margin: 8mm 10mm; }
-      body { background: white !important; }
+      @page { size: A4 portrait; margin: 5mm; }
+      body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .topbar, .mobile-actions, .drawer-overlay, .drawer,
       .form-col, .export-btns, .editing-badge, .toast {
         display: none !important;
@@ -882,8 +882,23 @@
         box-shadow: none !important;
         border-radius: 0 !important;
         border: 1px solid var(--slate-300) !important;
-        font-size: 11px !important;
+        font-size: 10.5px !important;
+        max-height: 285mm;
+        overflow: hidden;
       }
+      /* Compact vertical padding for single-page print fit */
+      .inv-header { padding: 12px 16px 10px !important; gap: 8px !important; }
+      .inv-company-logo { height: 42px !important; margin-bottom: 4px !important; }
+      .inv-party { padding: 10px 16px !important; }
+      .inv-items-heading { padding: 8px 0 4px !important; }
+      .inv-tbl th, .inv-tbl td { padding: 6px 6px !important; }
+      .inv-tbl .subtotal-row td { padding: 6px 6px !important; }
+      .inv-fin-left, .inv-fin-right { padding: 10px 16px !important; }
+      .inv-summary-rows { margin-bottom: 8px !important; gap: 4px !important; }
+      .inv-grand-row { padding: 8px 12px !important; }
+      .inv-footer-row { padding: 10px 16px 12px !important; gap: 10px !important; }
+      .inv-sign-co { margin-bottom: 24px !important; }
+      .inv-tagline { padding: 6px 16px !important; font-size: 9.5px !important; }
     }
 
     /* ══════════════════════════════════════════════════════════════════════
