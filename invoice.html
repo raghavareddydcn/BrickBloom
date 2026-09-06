@@ -672,25 +672,30 @@
       font-size: 12.5px;
       table-layout: fixed;
     }
-    /* Fixed column widths — no gaps */
-    .inv-tbl col.c-sr    { width: 36px; }
-    .inv-tbl col.c-desc  { width: auto; }
-    .inv-tbl col.c-qty   { width: 52px; }
-    .inv-tbl col.c-rate  { width: 80px; }
-    .inv-tbl col.c-taxable { width: 84px; }
-    .inv-tbl col.c-gst   { width: 68px; }
-    .inv-tbl col.c-total { width: 84px; }
+    /* Percentage-based column widths (sum to 100%) — renders reliably in
+       both the browser and the html2canvas PDF/PNG export, unlike a mix of
+       fixed px widths + one "auto" column which html2canvas fails to
+       stretch to the full table width. */
+    .inv-tbl col.c-sr      { width: 5%; }
+    .inv-tbl col.c-desc    { width: 45%; }
+    .inv-tbl col.c-qty     { width: 7%; }
+    .inv-tbl col.c-rate    { width: 11%; }
+    .inv-tbl col.c-taxable { width: 12%; }
+    .inv-tbl col.c-gst     { width: 10%; }
+    .inv-tbl col.c-total   { width: 10%; }
 
     .inv-tbl thead th {
       background: var(--slate-800);
       color: white;
-      padding: 9px 8px;
-      font-size: 10px;
+      padding: 9px 6px;
+      font-size: 9.5px;
       font-weight: 700;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
       text-align: right;
-      white-space: nowrap;
+      white-space: normal;
+      line-height: 1.25;
+      word-break: break-word;
     }
     .inv-tbl thead th:first-child { text-align: center; border-radius: 0; }
     .inv-tbl thead th:nth-child(2) { text-align: left; }
