@@ -83,7 +83,7 @@ To effectively maintain, extend, and scale this project, developers require the 
 ### Frontend Structure (`public/`)
 - `index.html`: Main landing page driven by AngularJS (`ng-app="brickbloomSite"`).
 - `app.js`: Angular controller fetching `/api/market-intelligence` and handling `submitLead()`.
-- Product Detail Pages: `blocks.html`, `coco-bricks.html`, `coco-grow-cubes.html`, `coco-growslabs.html`, `coir-chips.html`, `growbags.html`, `loose.html`, `open-top-growbags.html`, `tabs.html`.
+- Product Detail Pages: `blocks.html`, `coco-grow-cubes.html`, `coir-chips.html`, `growbags.html`, `loose.html`, `open-top-growbags.html`, `tabs.html`.
 - `styles.css`: Centralized CSS stylesheet containing design system design tokens and responsive rules.
 
 ---
