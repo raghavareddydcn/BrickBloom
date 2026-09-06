@@ -17,49 +17,49 @@ const marketIntelligence = {
       name: 'Coco Tabs',
       benefit: 'Eco-friendly propagation tablets for seed starting and cuttings.',
       path: '/tabs.html',
-      image: '/images/coco-tabs.svg'
+      image: '/images/actual-products/Strater-kit.JPG'
     },
     {
       name: 'Coco Grow Cubes',
       benefit: 'Preformed grow cubes for uniform rooting and clean handling.',
       path: '/coco-grow-cubes.html',
-      image: '/images/coco-grow-cubes.svg'
+      image: '/images/actual-products/disk.png'
     },
     {
       name: 'Coco Bricks',
       benefit: 'Compressed cocopeat bricks for potting mixes and seedling beds.',
       path: '/coco-bricks.html',
-      image: '/images/coco-bricks.png'
+      image: '/images/actual-products/Brick.JPG'
     },
     {
       name: 'Coco Blocks',
       benefit: 'Bulk cocopeat blocks for growers and export-ready packs.',
       path: '/blocks.html',
-      image: '/images/coco-blocks-branded.svg'
+      image: '/images/actual-products/Brick.JPG'
     },
     {
       name: 'Coco GrowSlabs',
       benefit: 'Ready-to-use slabs with controlled peat, fiber, and chip ratios.',
       path: '/coco-growslabs.html',
-      image: '/images/coco-growslabs.png'
+      image: '/images/actual-products/premium.png'
     },
     {
       name: 'Coco Growbags',
       benefit: 'Standard coco growbags for transplanting and greenhouse crops.',
       path: '/growbags.html',
-      image: '/images/coco-growbags-branded.svg'
+      image: '/images/actual-products/premium.png'
     },
     {
       name: 'Open Top Growbags',
       benefit: 'Open top growbags for premium planting and easy crop access.',
       path: '/open-top-growbags.html',
-      image: '/images/open-top-growbags-branded.svg'
+      image: '/images/actual-products/Ready-Pot.JPG'
     },
     {
       name: 'Coco Loose Substrates',
       benefit: 'Loose cocopeat substrate for bulk potting and media mixing.',
       path: '/loose.html',
-      image: '/images/coco-loose.svg'
+      image: '/images/actual-products/Medium-Kit.JPG'
     }
   ],
   sourcingHubs: [

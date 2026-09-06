@@ -18,49 +18,49 @@ app.controller('mainController', function ($scope, $http) {
         name: 'Coco Tabs',
         benefit: 'Precision-fit starter tabs for clean sowing and fast, uniform germination.',
         path: 'tabs.html',
-        image: 'images/Coins.jpeg'
+        image: 'images/actual-products/Strater-kit.JPG'
       },
       {
         name: 'Coco Grow Cubes',
         benefit: 'Uniform propagation cubes that support strong rooting and tidy nursery handling.',
         path: 'coco-grow-cubes.html',
-        image: 'images/Disk.jpeg'
+        image: 'images/actual-products/disk.png'
       },
       {
         name: 'Coco Bricks',
         benefit: 'Compact bricks that expand into a rich medium for nursery and potting programs.',
         path: 'coco-bricks.html',
-        image: 'images/Brick5KG.jpeg'
+        image: 'images/actual-products/Brick.JPG'
       },
       {
         name: 'Coco Blocks',
         benefit: 'Bulk blocks made for commercial growers who want dependable hydration and storage efficiency.',
         path: 'blocks.html',
-        image: 'images/CoCoPeatProducts.jpeg'
+        image: 'images/actual-products/Brick.JPG'
       },
       {
         name: 'Coco GrowSlabs',
         benefit: 'Ready-to-use slabs designed for balanced moisture and smooth greenhouse placement.',
         path: 'coco-growslabs.html',
-        image: 'images/ALL products.png'
+        image: 'images/actual-products/premium.png'
       },
       {
         name: 'Coco Growbags',
         benefit: 'Flexible growbags built for easy transplanting, durable handling, and clean crop flow.',
         path: 'growbags.html',
-        image: 'images/GrowBag.jpeg'
+        image: 'images/actual-products/premium.png'
       },
       {
         name: 'Open Top Growbags',
         benefit: 'Open top growbags engineered for excellent aeration and simple crop access.',
         path: 'open-top-growbags.html',
-        image: 'images/Pots-ALlSizes.jpeg'
+        image: 'images/actual-products/Ready-Pot.JPG'
       },
       {
         name: 'Coco Loose Substrates',
         benefit: 'Loose cocopeat for custom media recipes, rapid potting, and flexible cultivation setups.',
         path: 'loose.html',
-        image: 'images/CoirPot.jpeg'
+        image: 'images/actual-products/Medium-Kit.JPG'
       }
     ],
     sourcingHubs: [
