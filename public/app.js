@@ -16,25 +16,25 @@ app.controller('mainController', function ($scope, $http) {
     formats: [
       {
         name: 'Ready Pot',
-        benefit: 'Ready-to-use pot format designed for efficient planting and simple nursery presentation.',
+        benefit: 'A ready-to-gift 4" eco-coir pot with coco peat and premium seeds in an eco-friendly gift box.',
         path: 'open-top-growbags.html',
         image: 'images/actual-products/Ready-Pot.JPG'
       },
       {
         name: 'Starter Kit',
-        benefit: 'Complete propagation kit designed for easy sowing, clean setup, and consistent germination.',
+        benefit: 'A compact 2-pot DIY coir kit with coco peat and premium seed balls for easy at-home growing.',
         path: 'tabs.html',
         image: 'images/actual-products/Strater-kit.JPG'
       },
       {
         name: 'Medium Kit',
-        benefit: 'Compact medium kit for plant starting, propagation, and flexible nursery applications.',
+        benefit: 'A complete 2-pot medium DIY coir kit with larger 6" pots, coco peat, and premium seed balls.',
         path: 'loose.html',
         image: 'images/actual-products/Medium-Kit.JPG'
       },
       {
         name: 'Premium Kit',
-        benefit: 'Durable premium growbag and grow slab kit built for clean transplanting, crop flow, and stable moisture control.',
+        benefit: 'Our top-tier kit with 6 eco-coir pots, a hanging coir basket, and a coco support pole in a luxury box.',
         path: 'growbags.html',
         image: 'images/actual-products/premium.png'
       },
