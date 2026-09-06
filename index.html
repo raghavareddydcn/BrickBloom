@@ -83,14 +83,6 @@
           <p>Choose your preferred substrate format engineered to match your farm setup.</p>
         </div>
 
-        <!-- Category Filter Tabs -->
-        <div class="product-filter-bar">
-          <button class="filter-btn" ng-class="{'active': selectedCategory === 'all'}" ng-click="setFilter('all')">All Products</button>
-          <button class="filter-btn" ng-class="{'active': selectedCategory === 'bricks'}" ng-click="setFilter('bricks')">Bricks & Blocks</button>
-          <button class="filter-btn" ng-class="{'active': selectedCategory === 'growbags'}" ng-click="setFilter('growbags')">Growbags & Slabs</button>
-          <button class="filter-btn" ng-class="{'active': selectedCategory === 'propagation'}" ng-click="setFilter('propagation')">Propagation & Loose</button>
-        </div>
-
         <div class="product-card-grid">
           <article class="product-card" ng-repeat="format in formats | filter:filterFormat">
             <a class="product-link" ng-href="{{format.path}}">

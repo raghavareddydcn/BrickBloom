@@ -15,50 +15,50 @@ app.controller('mainController', function ($scope, $http) {
     overview: 'Premium BrickBloom sourcing for hydroponics, nurseries, and commercial growers.',
     formats: [
       {
-        name: 'Coco Tabs',
-        benefit: 'Precision-fit starter tabs for clean sowing and fast, uniform germination.',
+        name: 'Starter Kit',
+        benefit: 'Complete propagation kit designed for easy sowing, clean setup, and consistent germination.',
         path: 'tabs.html',
         image: 'images/actual-products/Strater-kit.JPG'
       },
       {
-        name: 'Coco Grow Cubes',
-        benefit: 'Uniform propagation cubes that support strong rooting and tidy nursery handling.',
+        name: 'Coco Grow Disk',
+        benefit: 'Uniform coco grow disks for clean propagation, quick rooting, and tidy nursery handling.',
         path: 'coco-grow-cubes.html',
         image: 'images/actual-products/disk.png'
       },
       {
-        name: 'Coco Bricks',
-        benefit: 'Compact bricks that expand into a rich medium for nursery and potting programs.',
+        name: 'Coco Brick',
+        benefit: 'Compressed cocopeat brick for potting mixes, nursery beds, and dependable hydration.',
         path: 'coco-bricks.html',
         image: 'images/actual-products/Brick.JPG'
       },
       {
-        name: 'Coco Blocks',
-        benefit: 'Bulk blocks made for commercial growers who want dependable hydration and storage efficiency.',
+        name: 'Premium Cocopeat',
+        benefit: 'Premium cocopeat media formulated for strong root growth and reliable moisture retention.',
         path: 'blocks.html',
         image: 'images/actual-products/Brick.JPG'
       },
       {
-        name: 'Coco GrowSlabs',
-        benefit: 'Ready-to-use slabs designed for balanced moisture and smooth greenhouse placement.',
+        name: 'Premium Grow Slab',
+        benefit: 'Ready-to-use premium slab for greenhouse planting, balanced retention, and easy crop handling.',
         path: 'coco-growslabs.html',
         image: 'images/actual-products/premium.png'
       },
       {
-        name: 'Coco Growbags',
-        benefit: 'Flexible growbags built for easy transplanting, durable handling, and clean crop flow.',
+        name: 'Premium Growbag',
+        benefit: 'Durable growbag solution built for clean transplanting, crop flow, and stable moisture control.',
         path: 'growbags.html',
         image: 'images/actual-products/premium.png'
       },
       {
-        name: 'Open Top Growbags',
-        benefit: 'Open top growbags engineered for excellent aeration and simple crop access.',
+        name: 'Ready Pot',
+        benefit: 'Ready-to-use pot format designed for efficient planting and simple nursery presentation.',
         path: 'open-top-growbags.html',
         image: 'images/actual-products/Ready-Pot.JPG'
       },
       {
-        name: 'Coco Loose Substrates',
-        benefit: 'Loose cocopeat for custom media recipes, rapid potting, and flexible cultivation setups.',
+        name: 'Medium Kit',
+        benefit: 'Compact medium kit for plant starting, propagation, and flexible nursery applications.',
         path: 'loose.html',
         image: 'images/actual-products/Medium-Kit.JPG'
       }
@@ -94,15 +94,11 @@ app.controller('mainController', function ($scope, $http) {
   });
 
   $scope.setFilter = function (category) {
-    $scope.selectedCategory = category;
+    $scope.selectedCategory = 'all';
   };
 
   $scope.filterFormat = function (format) {
-    if ($scope.selectedCategory === 'all') return true;
-    if ($scope.selectedCategory === 'bricks' && (format.name.includes('Brick') || format.name.includes('Block'))) return true;
-    if ($scope.selectedCategory === 'growbags' && (format.name.includes('Growbag') || format.name.includes('Slab') || format.name.includes('GrowSlabs'))) return true;
-    if ($scope.selectedCategory === 'propagation' && (format.name.includes('Tab') || format.name.includes('Cube') || format.name.includes('Loose'))) return true;
-    return false;
+    return true;
   };
 
   $scope.submitLead = function () {
