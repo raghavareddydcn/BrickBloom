@@ -19,7 +19,7 @@
       href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=15" />
+    <link rel="stylesheet" href="styles.css?v=16" />
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   </head>
   <body ng-controller="mainController">
@@ -44,14 +44,31 @@
     </header>
 
     <main>
-      <!-- Full-Bleed Launch Hero -->
+      <!-- Full-Bleed Launch Hero — rotating banner carousel -->
       <section class="hero-fullbleed" role="banner">
-        <img
-          src="images/Banner.jpeg"
-          alt="BrickBloom — Premium Cocopeat Products by Konasema Coco Products LLP"
-          class="hero-fb-img"
-        />
+        <div class="hero-fb-slides">
+          <img
+            src="images/actual-products/image-1.jpeg"
+            alt="BrickBloom — Premium Coir Pots, Coco Peat and Gardening Kits"
+            class="hero-fb-slide is-active"
+          />
+          <img
+            src="images/actual-products/image-2.jpeg"
+            alt="BrickBloom — Premium Coir Gardening Solutions for Every Green Space"
+            class="hero-fb-slide"
+          />
+          <img
+            src="images/actual-products/image-3.jpeg"
+            alt="BrickBloom — Grow Greener, Live Better"
+            class="hero-fb-slide"
+          />
+        </div>
         <div class="hero-fb-overlay"></div>
+        <div class="hero-fb-dots" role="tablist" aria-label="Hero banner slides">
+          <button class="hero-fb-dot is-active" type="button" role="tab" aria-selected="true" aria-label="Slide 1"></button>
+          <button class="hero-fb-dot" type="button" role="tab" aria-selected="false" aria-label="Slide 2"></button>
+          <button class="hero-fb-dot" type="button" role="tab" aria-selected="false" aria-label="Slide 3"></button>
+        </div>
         <a class="hero-scroll-hint" href="#products" aria-label="Scroll to products">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
         </a>
@@ -255,7 +272,7 @@
     </footer>
 
     <script src="app.js?v=3"></script>
-    <script src="site.js?v=3" defer></script>
+    <script src="site.js?v=4" defer></script>
   </body>
 </html>
 

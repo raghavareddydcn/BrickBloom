@@ -107,4 +107,50 @@
       });
     });
   }
+
+  // Hero full-bleed rotating banner carousel — auto-advances with a
+  // crossfade, pauses on hover, and supports clicking the dots.
+  var heroSlides = Array.prototype.slice.call(document.querySelectorAll('.hero-fb-slide'));
+  var heroDots = Array.prototype.slice.call(document.querySelectorAll('.hero-fb-dot'));
+  if (heroSlides.length > 1) {
+    var heroIndex = Math.max(0, heroSlides.findIndex(function (s) { return s.classList.contains('is-active'); }));
+    var heroTimer = null;
+    var HERO_INTERVAL = 5000;
+
+    var showHeroSlide = function (nextIndex) {
+      heroSlides[heroIndex].classList.remove('is-active');
+      if (heroDots[heroIndex]) {
+        heroDots[heroIndex].classList.remove('is-active');
+        heroDots[heroIndex].setAttribute('aria-selected', 'false');
+      }
+      heroIndex = (nextIndex + heroSlides.length) % heroSlides.length;
+      heroSlides[heroIndex].classList.add('is-active');
+      if (heroDots[heroIndex]) {
+        heroDots[heroIndex].classList.add('is-active');
+        heroDots[heroIndex].setAttribute('aria-selected', 'true');
+      }
+    };
+
+    var startHeroTimer = function () {
+      clearInterval(heroTimer);
+      heroTimer = setInterval(function () {
+        showHeroSlide(heroIndex + 1);
+      }, HERO_INTERVAL);
+    };
+
+    heroDots.forEach(function (dot, i) {
+      dot.addEventListener('click', function () {
+        showHeroSlide(i);
+        startHeroTimer();
+      });
+    });
+
+    var heroSection = document.querySelector('.hero-fullbleed');
+    if (heroSection) {
+      heroSection.addEventListener('mouseenter', function () { clearInterval(heroTimer); });
+      heroSection.addEventListener('mouseleave', startHeroTimer);
+    }
+
+    startHeroTimer();
+  }
 })();
