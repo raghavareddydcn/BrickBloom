@@ -605,13 +605,60 @@ body {
   background: #0d1a13;
 }
 
-.hero-fb-img {
+.hero-fb-slides {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  object-position: center center;
+}
+
+.hero-fb-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  opacity: 0;
+  transition: opacity 1.4s ease-in-out;
+  will-change: opacity;
+}
+
+.hero-fb-slide.is-active {
+  opacity: 1;
+}
+
+.hero-fb-dots {
+  position: absolute;
+  bottom: 24px;
+  right: 28px;
+  z-index: 2;
+  display: flex;
+  gap: 10px;
+}
+
+.hero-fb-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.18);
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s, border-color 0.3s;
+}
+
+.hero-fb-dot:hover {
+  border-color: #fff;
+}
+
+.hero-fb-dot.is-active {
+  background: #fff;
+  transform: scale(1.2);
+}
+
+@media (max-width: 640px) {
+  .hero-fb-dots { bottom: 16px; right: 16px; }
 }
 
 .hero-fb-overlay {
@@ -701,12 +748,11 @@ body {
   .hero-fullbleed {
     height: auto;
     min-height: 0;
-    aspect-ratio: 1488 / 715;
+    aspect-ratio: 4 / 5;
   }
-  .hero-fb-img {
-    object-fit: contain;
-    object-position: center center;
-    animation: none;
+  .hero-fb-slide {
+    object-fit: cover;
+    object-position: center 15%;
   }
   .hero-stats-strip {
     flex-wrap: wrap;
@@ -726,12 +772,11 @@ body {
   .hero-fullbleed {
     height: auto;
     min-height: 0;
-    aspect-ratio: 1488 / 715;
+    aspect-ratio: 4 / 5;
   }
-  .hero-fb-img {
-    object-fit: contain;
-    object-position: center center;
-    animation: none;
+  .hero-fb-slide {
+    object-fit: cover;
+    object-position: center 15%;
   }
   .hero-fb-badge {
     font-size: 0.65rem;
