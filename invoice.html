@@ -687,7 +687,7 @@
     .inv-tbl thead th {
       background: var(--slate-800);
       color: white;
-      padding: 9px 6px;
+      padding: 9px 10px;
       font-size: 9.5px;
       font-weight: 700;
       letter-spacing: 0.4px;
@@ -697,17 +697,19 @@
       line-height: 1.25;
       word-break: break-word;
     }
-    .inv-tbl thead th:first-child { text-align: center; border-radius: 0; }
+    .inv-tbl thead th:first-child { text-align: center; border-radius: 0; padding-left: 6px; padding-right: 6px; }
     .inv-tbl thead th:nth-child(2) { text-align: left; }
+    .inv-tbl thead th + th { border-left: 1px solid rgba(255,255,255,0.14); }
 
     .inv-tbl tbody td {
-      padding: 9px 8px;
+      padding: 9px 12px;
       border-bottom: 1px solid var(--slate-100);
       vertical-align: middle;
       text-align: right;
     }
-    .inv-tbl tbody td:first-child { text-align: center; color: var(--slate-400); font-size: 11px; font-weight: 700; }
+    .inv-tbl tbody td:first-child { text-align: center; color: var(--slate-400); font-size: 11px; font-weight: 700; padding-left: 6px; padding-right: 6px; }
     .inv-tbl tbody td:nth-child(2) { text-align: left; }
+    .inv-tbl tbody td + td { border-left: 1px solid var(--slate-100); }
 
     .inv-tbl tbody tr:last-child td { border-bottom: none; }
     .inv-tbl tbody tr:nth-child(even) td { background: rgba(248,250,252,0.6); }
@@ -720,7 +722,7 @@
       background: var(--slate-50) !important;
       border-top: 2px solid var(--slate-300);
       border-bottom: 2px solid var(--slate-300);
-      padding: 9px 8px;
+      padding: 9px 12px;
       font-size: 12px;
       font-weight: 800;
       color: var(--slate-800);
