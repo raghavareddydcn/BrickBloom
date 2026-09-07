@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
   <style>
     /* ── Reset ─────────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -946,11 +948,6 @@
 
       .inv-items-section { padding: 0 16px; }
 
-      /* Hide HSN column on mobile */
-      .inv-tbl col.c-hsn,
-      .inv-tbl th:nth-child(3),
-      .inv-tbl td:nth-child(3) { display: none; }
-
       .inv-financials { grid-template-columns: 1fr; }
       .inv-fin-left { border-right: none; border-bottom: 1px solid var(--slate-100); padding: 14px 16px; }
       .inv-fin-right { padding: 14px 16px; min-width: unset; }
@@ -993,7 +990,7 @@
     <div class="drawer-head">
       <div>
         <div class="drawer-head-title">📋 Saved Invoices</div>
-        <div class="drawer-head-sub">Stored in repo: <strong>invoices/</strong> folder</div>
+        <div class="drawer-head-sub">Synced to the cloud — same list on every device</div>
       </div>
       <button class="drawer-close-btn" onclick="closeDrawer()">×</button>
     </div>
@@ -1214,36 +1211,101 @@
       document.getElementById('mobileMenu').classList.toggle('open');
     }
 
-    /* ── LocalStorage helpers ───────────────────────────────────────────── */
-    var STORE_KEY = 'bb_invoices';
+    /* ── Firebase (cross-device cloud persistence) ───────────────────────
+       GitHub Pages serves this file as a static asset with no backend, so
+       localStorage alone would silently diverge per browser/device. Firestore
+       is the single source of truth; localStorage is kept only as an
+       instant-paint / offline cache. ─────────────────────────────────── */
+    var firebaseConfig = {
+      apiKey: "AIzaSyCE9R7HACDhgVG-WH7KANSRzyEfhXHg8BQ",
+      authDomain: "brickbloom-invoices.firebaseapp.com",
+      projectId: "brickbloom-invoices",
+      storageBucket: "brickbloom-invoices.firebasestorage.app",
+      messagingSenderId: "988743230343",
+      appId: "1:988743230343:web:b2d850dd30c668e92ee922"
+    };
+    firebase.initializeApp(firebaseConfig);
+    var db          = firebase.firestore();
+    var invoicesCol = db.collection('invoices');
+    var countersCol = db.collection('counters');
 
-    function loadInvoices() {
+    var STORE_KEY     = 'bb_invoices';
+    var MIGRATE_KEY   = 'bb_migrated_v1';
+    var invoicesCache = loadLocalCache(); // seed instantly, replaced by live snapshot
+
+    function loadLocalCache() {
       try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); }
       catch (e) { return []; }
     }
 
-    function storeInvoices(arr) {
-      localStorage.setItem(STORE_KEY, JSON.stringify(arr));
-      var n = arr.length;
+    function saveLocalCache(arr) {
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(arr)); } catch (e) {}
+    }
+
+    /* Kept as the read API the rest of the app already uses. */
+    function loadInvoices() { return invoicesCache; }
+
+    function refreshBadges() {
+      var n = invoicesCache.length;
       document.getElementById('savedCount').textContent = n;
       document.getElementById('savedCountMobile').textContent = n;
     }
 
-    /* ── Sync from repo API ─────────────────────────────────────────────── */
-    async function syncFromRepo() {
-      try {
-        var res = await fetch('/api/invoices');
-        if (!res.ok) return;
-        var repo = await res.json();
-        if (!Array.isArray(repo) || !repo.length) return;
-        var local = loadInvoices();
-        var map = new Map();
-        local.forEach(function(i) { map.set(i.id, i); });
-        repo.forEach(function(i) { map.set(i.id, i); });
-        storeInvoices(Array.from(map.values()));
-        renderSavedList();
-      } catch (e) {}
+    /* Live cross-device sync: any save/delete on ANY device updates this
+       instantly on every open tab, everywhere. */
+    invoicesCol.onSnapshot(function(snap) {
+      var arr = [];
+      snap.forEach(function(doc) { arr.push(doc.data()); });
+      invoicesCache = arr;
+      saveLocalCache(arr);
+      refreshBadges();
+      renderSavedList();
+    }, function(err) {
+      console.error('Firestore sync error:', err);
+      showToast('⚠️ Offline — showing last synced invoices', 'err');
+    });
+
+    /* One-time migration of invoices already saved in this browser's
+       localStorage (from before cloud sync existed) up to Firestore. */
+    function migrateLocalToFirestore() {
+      if (localStorage.getItem(MIGRATE_KEY)) return;
+      var local = loadLocalCache();
+      if (!local.length) { localStorage.setItem(MIGRATE_KEY, '1'); return; }
+
+      var batch = db.batch();
+      var maxByFy = {};
+      local.forEach(function(inv) {
+        if (!inv || !inv.id) return;
+        batch.set(invoicesCol.doc(String(inv.id)), inv, { merge: true });
+        var m = /^BB\/(\d{2}-\d{2})\/(\d+)$/.exec(inv.refNo || '');
+        if (m) {
+          var fy = m[1], n = parseInt(m[2], 10);
+          if (!maxByFy[fy] || n > maxByFy[fy]) maxByFy[fy] = n;
+        }
+      });
+
+      batch.commit().then(function() {
+        var chain = Promise.resolve();
+        Object.keys(maxByFy).forEach(function(fy) {
+          chain = chain.then(function() {
+            var ref = countersCol.doc(fy);
+            return db.runTransaction(function(tx) {
+              return tx.get(ref).then(function(doc) {
+                var cur = doc.exists ? (doc.data().seq || 0) : 0;
+                if (maxByFy[fy] > cur) tx.set(ref, { seq: maxByFy[fy] }, { merge: true });
+              });
+            });
+          });
+        });
+        return chain;
+      }).then(function() {
+        localStorage.setItem(MIGRATE_KEY, '1');
+        showToast('✅ Migrated ' + local.length + ' saved invoice(s) to the cloud');
+      }).catch(function(err) {
+        console.error('Migration failed:', err);
+      });
     }
+    migrateLocalToFirestore();
 
     /* ── Get current form data ──────────────────────────────────────────── */
     function getFormData() {
@@ -1271,20 +1333,16 @@
     async function saveInvoice() {
       var data = getFormData();
       if (!data.refNo) { showToast('❌ Enter a Ref No first', 'err'); return; }
-      var all = loadInvoices();
-      var idx = all.findIndex(function(i) { return i.id === data.id; });
-      if (idx >= 0) { all[idx] = data; showToast('✅ Invoice updated: ' + data.refNo); }
-      else          { all.push(data); editingId = data.id; showToast('✅ Invoice saved: ' + data.refNo); }
-      storeInvoices(all);
+      var isUpdate = loadInvoices().some(function(i) { return i.id === data.id; });
+      if (!isUpdate) { editingId = data.id; }
       updateEditingBadge();
-      renderSavedList();
       try {
-        await fetch('/api/invoices', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-      } catch (e) {}
+        await invoicesCol.doc(String(data.id)).set(data);
+        showToast(isUpdate ? '✅ Invoice updated: ' + data.refNo : '✅ Invoice saved: ' + data.refNo);
+      } catch (e) {
+        console.error('Save failed:', e);
+        showToast('❌ Save failed — check your connection', 'err');
+      }
     }
 
     /* ── Edit invoice ───────────────────────────────────────────────────── */
@@ -1353,12 +1411,14 @@
     async function deleteInvoice(id) {
       var inv = loadInvoices().find(function(i) { return i.id === id; });
       if (!inv || !confirm('Delete invoice "' + inv.refNo + '"? This cannot be undone.')) return;
-      var updated = loadInvoices().filter(function(i) { return i.id !== id; });
-      storeInvoices(updated);
       if (editingId === id) { editingId = null; updateEditingBadge(); }
-      renderSavedList();
-      showToast('✅ Invoice deleted');
-      try { await fetch('/api/invoices/' + id, { method: 'DELETE' }); } catch (e) {}
+      try {
+        await invoicesCol.doc(String(id)).delete();
+        showToast('✅ Invoice deleted');
+      } catch (e) {
+        console.error('Delete failed:', e);
+        showToast('❌ Delete failed — check your connection', 'err');
+      }
     }
 
     /* ── Editing badge ──────────────────────────────────────────────────── */
@@ -1373,26 +1433,49 @@
       }
     }
 
-    /* ── Auto invoice number ────────────────────────────────────────────── */
-    function autoFillInvoiceNumber() {
-      var d    = new Date();
-      var m    = d.getMonth() + 1;
-      var y    = d.getFullYear();
-      var fys  = m >= 4 ? y : y - 1;
-      var pre  = 'BB/' + String(fys).slice(2) + '-' + String(fys + 1).slice(2) + '/';
-      var all  = loadInvoices();
-      var max  = 0;
-      all.forEach(function(inv) {
-        if (inv.refNo && inv.refNo.indexOf(pre) === 0) {
-          var n = parseInt(inv.refNo.slice(pre.length)) || 0;
-          if (n > max) max = n;
-        }
-      });
-      var next = pre + String(max + 1).padStart(3, '0');
-      set('refNo', next);
-      renderPreview();
-      updateEditingBadge();
-      showToast('✅ Generated: ' + next);
+    /* ── Auto invoice number ──────────────────────────────────────────────
+       Uses an atomic Firestore transaction on a per-financial-year counter
+       document, so two devices generating a number at the same moment can
+       never collide (unlike scanning existing refNos, which only works if
+       every device already has the full up-to-date list). ──────────────── */
+    async function autoFillInvoiceNumber() {
+      var d      = new Date();
+      var m      = d.getMonth() + 1;
+      var y      = d.getFullYear();
+      var fys    = m >= 4 ? y : y - 1;
+      var fyKey  = String(fys).slice(2) + '-' + String(fys + 1).slice(2);
+      var pre    = 'BB/' + fyKey + '/';
+      var ref    = countersCol.doc(fyKey);
+
+      try {
+        var next = await db.runTransaction(function(tx) {
+          return tx.get(ref).then(function(doc) {
+            var n = (doc.exists ? (doc.data().seq || 0) : 0) + 1;
+            tx.set(ref, { seq: n }, { merge: true });
+            return n;
+          });
+        });
+        var invNo = pre + String(next).padStart(3, '0');
+        set('refNo', invNo);
+        renderPreview();
+        updateEditingBadge();
+        showToast('✅ Generated: ' + invNo);
+      } catch (e) {
+        console.error('Auto-number failed, falling back to local scan:', e);
+        var all = loadInvoices();
+        var max = 0;
+        all.forEach(function(inv) {
+          if (inv.refNo && inv.refNo.indexOf(pre) === 0) {
+            var n = parseInt(inv.refNo.slice(pre.length)) || 0;
+            if (n > max) max = n;
+          }
+        });
+        var fallback = pre + String(max + 1).padStart(3, '0');
+        set('refNo', fallback);
+        renderPreview();
+        updateEditingBadge();
+        showToast('⚠️ Offline — generated locally: ' + fallback, 'err');
+      }
     }
 
     /* ── Drawer ─────────────────────────────────────────────────────────── */
@@ -1409,7 +1492,7 @@
     function renderSavedList() {
       var all = loadInvoices().sort(function(a, b) { return new Date(b.savedAt) - new Date(a.savedAt); });
       var el  = document.getElementById('invoicesList');
-      storeInvoices(all); // refresh counts
+      refreshBadges();
 
       if (!all.length) {
         el.innerHTML = '<div class="drawer-empty"><div class="drawer-empty-icon">📄</div><div style="font-size:13px;font-weight:700">No saved invoices yet</div><div style="font-size:11px;margin-top:4px">Fill the form and click Save.</div></div>';
@@ -1573,7 +1656,7 @@
 
       // Build item rows HTML
       var itemRowsHtml = items.length === 0
-        ? '<tr><td colspan="8" style="text-align:center;color:var(--slate-400);padding:20px;font-size:12px">No items added yet</td></tr>'
+        ? '<tr><td colspan="7" style="text-align:center;color:var(--slate-400);padding:20px;font-size:12px">No items added yet</td></tr>'
         : items.map(function(r, idx) {
             var qty  = parseFloat(r.qty || 0);
             var rate = parseFloat(r.price || 0);
@@ -1583,9 +1666,7 @@
               '<td>' + (idx+1) + '</td>' +
               '<td>' +
                 '<div class="inv-item-name">' + escH(r.name || '—') + '</div>' +
-                '<div class="inv-item-sub">HSN: 530500</div>' +
               '</td>' +
-              '<td>530500</td>' +
               '<td>' + fmtN(qty) + '</td>' +
               '<td>' + fmtN(rate) + '</td>' +
               '<td>' + fmtN(amt) + '</td>' +
@@ -1632,8 +1713,7 @@
             '<div class="inv-company-addr">' +
               'No 12, Ground Floor, AVP Complex, Sy No 97,<br>' +
               'Dommasandra Village, Virgo Nagar Post,<br>' +
-              'Bangalore, Karnataka – 560049<br>' +
-              '<strong>GSTIN:</strong> 29XXXXXXXXXX • <strong>PAN:</strong> XXXXX0000X' +
+              'Bangalore, Karnataka – 560049' +
             '</div>' +
             '<div class="inv-contact-row">' +
               '<span>📞 <a href="tel:+918951744898">+91 8951744898</a></span>' +
@@ -1650,7 +1730,6 @@
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Date:</span><span class="inv-hkv-v">' + (issueDate || '—') + '</span></div>' +
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Payment:</span><span class="inv-hkv-v">' + payTerms + '</span></div>' +
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Supply:</span><span class="inv-hkv-v">' + placeOfSupply + '</span></div>' +
-              '<div class="inv-hkv-row"><span class="inv-hkv-k">Reverse Charge:</span><span class="inv-hkv-v">No</span></div>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -1684,7 +1763,6 @@
             '<colgroup>' +
               '<col class="c-sr" />' +
               '<col class="c-desc" />' +
-              '<col class="c-hsn" />' +
               '<col class="c-qty" />' +
               '<col class="c-rate" />' +
               '<col class="c-taxable" />' +
@@ -1695,7 +1773,6 @@
               '<tr>' +
                 '<th style="text-align:center">#</th>' +
                 '<th style="text-align:left">Item / Description</th>' +
-                '<th>HSN/SAC</th>' +
                 '<th>Qty</th>' +
                 '<th>Rate (₹)</th>' +
                 '<th>Taxable Amt</th>' +
@@ -1804,10 +1881,9 @@
     set('issueDate', today());
     set('payTerms', 'Immediate');
     set('placeOfSupply', 'Karnataka (29)');
-    storeInvoices(loadInvoices()); // sync count badges
+    refreshBadges();
     autoFillInvoiceNumber();
     addRow('', '', '');
-    syncFromRepo();
   </script>
 </body>
 </html>
