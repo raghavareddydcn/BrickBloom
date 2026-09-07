@@ -515,10 +515,19 @@
     .inv-header {
       padding: 20px 24px 16px;
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: 1fr auto 1fr;
       gap: 16px;
       align-items: start;
       border-bottom: 2px solid var(--slate-100);
+    }
+
+    .inv-header-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+      padding-top: 2px;
     }
 
     .inv-company-logo {
@@ -530,6 +539,7 @@
       margin-bottom: 8px;
       display: block;
     }
+    .inv-header-center .inv-company-logo { margin-bottom: 0; }
     .inv-company-name {
       font-size: 20px;
       font-weight: 800;
@@ -649,12 +659,12 @@
     .inv-meta-rows { display: grid; gap: 5px; }
     .inv-meta-row {
       display: flex;
-      justify-content: space-between;
-      gap: 8px;
+      justify-content: flex-start;
+      gap: 10px;
       font-size: 11.5px;
     }
-    .inv-meta-k { color: var(--slate-500); font-weight: 600; white-space: nowrap; }
-    .inv-meta-v { color: var(--slate-900); font-weight: 700; text-align: right; }
+    .inv-meta-k { color: var(--slate-500); font-weight: 600; white-space: nowrap; min-width: 118px; }
+    .inv-meta-v { color: var(--slate-900); font-weight: 700; text-align: left; }
 
     /* ─ Line Items Table ── */
     .inv-items-section { padding: 0 24px; }
@@ -939,8 +949,10 @@
         gap: 12px;
         padding: 16px;
       }
+      .inv-header-center { order: -1; }
       .inv-header-right { text-align: left; }
       .inv-hkv-row { justify-content: flex-start; }
+      .inv-header-kv .inv-hkv-row { justify-content: flex-start; }
 
       .inv-parties { grid-template-columns: 1fr; }
       .inv-party + .inv-party { border-left: none; border-top: 1px solid var(--slate-100); }
@@ -1332,16 +1344,23 @@
     /* ── Save invoice ───────────────────────────────────────────────────── */
     async function saveInvoice() {
       var data = getFormData();
-      if (!data.refNo) { showToast('❌ Enter a Ref No first', 'err'); return; }
+      if (!data.refNo) { showToast('❌ Enter a Ref No first', 'err'); return false; }
       var isUpdate = loadInvoices().some(function(i) { return i.id === data.id; });
       if (!isUpdate) { editingId = data.id; }
       updateEditingBadge();
       try {
+        if (!isUpdate) {
+          data.refNo = await claimInvoiceNumber(data.refNo);
+          set('refNo', data.refNo);
+        }
         await invoicesCol.doc(String(data.id)).set(data);
         showToast(isUpdate ? '✅ Invoice updated: ' + data.refNo : '✅ Invoice saved: ' + data.refNo);
+        renderPreview();
+        return true;
       } catch (e) {
         console.error('Save failed:', e);
         showToast('❌ Save failed — check your connection', 'err');
+        return false;
       }
     }
 
@@ -1438,44 +1457,79 @@
        document, so two devices generating a number at the same moment can
        never collide (unlike scanning existing refNos, which only works if
        every device already has the full up-to-date list). ──────────────── */
+    /* Computes the FY prefix (e.g. "BB/26-27/") for today. */
+    function invoiceFyPrefix() {
+      var d     = new Date();
+      var m     = d.getMonth() + 1;
+      var y     = d.getFullYear();
+      var fys   = m >= 4 ? y : y - 1;
+      var fyKey = String(fys).slice(2) + '-' + String(fys + 1).slice(2);
+      return { fyKey: fyKey, pre: 'BB/' + fyKey + '/' };
+    }
+
+    /* Highest number already used by an actual saved invoice for a given FY
+       prefix — used as a floor so suggestions/claims always continue from
+       the real last invoice, even if the counters/{fy} doc drifted behind. */
+    function maxUsedInvoiceNumber(pre) {
+      var maxUsed = 0;
+      loadInvoices().forEach(function(inv) {
+        if (inv.refNo && inv.refNo.indexOf(pre) === 0) {
+          var n = parseInt(inv.refNo.slice(pre.length)) || 0;
+          if (n > maxUsed) maxUsed = n;
+        }
+      });
+      return maxUsed;
+    }
+
+    /* Read-only "next invoice number" preview — does NOT write to Firestore.
+       Used on page load and by the "Auto #" button so simply opening/
+       refreshing the page (or clicking Auto # without saving) never
+       reserves/burns a number. The number is only actually claimed and
+       committed to the counters/{fy} doc inside saveInvoice(). */
     async function autoFillInvoiceNumber() {
-      var d      = new Date();
-      var m      = d.getMonth() + 1;
-      var y      = d.getFullYear();
-      var fys    = m >= 4 ? y : y - 1;
-      var fyKey  = String(fys).slice(2) + '-' + String(fys + 1).slice(2);
-      var pre    = 'BB/' + fyKey + '/';
-      var ref    = countersCol.doc(fyKey);
+      var fy      = invoiceFyPrefix();
+      var pre     = fy.pre;
+      var maxUsed = maxUsedInvoiceNumber(pre);
 
       try {
-        var next = await db.runTransaction(function(tx) {
-          return tx.get(ref).then(function(doc) {
-            var n = (doc.exists ? (doc.data().seq || 0) : 0) + 1;
-            tx.set(ref, { seq: n }, { merge: true });
-            return n;
-          });
-        });
-        var invNo = pre + String(next).padStart(3, '0');
+        var doc   = await countersCol.doc(fy.fyKey).get();
+        var cur   = doc.exists ? (doc.data().seq || 0) : 0;
+        var invNo = pre + String(Math.max(cur, maxUsed) + 1).padStart(3, '0');
         set('refNo', invNo);
         renderPreview();
         updateEditingBadge();
-        showToast('✅ Generated: ' + invNo);
       } catch (e) {
-        console.error('Auto-number failed, falling back to local scan:', e);
-        var all = loadInvoices();
-        var max = 0;
-        all.forEach(function(inv) {
-          if (inv.refNo && inv.refNo.indexOf(pre) === 0) {
-            var n = parseInt(inv.refNo.slice(pre.length)) || 0;
-            if (n > max) max = n;
-          }
-        });
-        var fallback = pre + String(max + 1).padStart(3, '0');
+        console.error('Invoice number preview failed, using local scan:', e);
+        var fallback = pre + String(maxUsed + 1).padStart(3, '0');
         set('refNo', fallback);
         renderPreview();
         updateEditingBadge();
-        showToast('⚠️ Offline — generated locally: ' + fallback, 'err');
       }
+    }
+
+    /* Atomically claims/confirms an invoice number at actual save time —
+       this is the ONLY place the counters/{fy} doc is written, so numbers
+       are only ever consumed when an invoice is genuinely saved. If the
+       ref no already typed/suggested is still free it's kept as-is; if
+       another device claimed it (or a higher one) in the meantime, the
+       next free number is used instead. */
+    async function claimInvoiceNumber(refNo) {
+      var fy = invoiceFyPrefix();
+      var m  = new RegExp('^' + fy.pre.replace(/\//g, '\\/') + '(\\d+)$').exec(refNo || '');
+      if (!m) return refNo; // custom/non-standard ref no — leave untouched, don't touch counter
+      var requested = parseInt(m[1], 10);
+      var maxUsed   = maxUsedInvoiceNumber(fy.pre);
+      var ref       = countersCol.doc(fy.fyKey);
+      var floor     = Math.max(maxUsed, requested - 1);
+      var claimed   = await db.runTransaction(function(tx) {
+        return tx.get(ref).then(function(doc) {
+          var cur = doc.exists ? (doc.data().seq || 0) : 0;
+          var n = Math.max(cur, floor) + 1;
+          tx.set(ref, { seq: n }, { merge: true });
+          return n;
+        });
+      });
+      return fy.pre + String(claimed).padStart(3, '0');
     }
 
     /* ── Drawer ─────────────────────────────────────────────────────────── */
@@ -1707,7 +1761,6 @@
         /* HEADER */
         '<div class="inv-header">' +
           '<div>' +
-            '<img src="/images/OurProducts/Logo_new.jpeg" alt="BrickBloom" class="inv-company-logo" />' +
             '<div class="inv-company-name">BrickBloom</div>' +
             '<div class="inv-company-tagline">From Nature, For Nature</div>' +
             '<div class="inv-company-addr">' +
@@ -1720,6 +1773,10 @@
               '<span>✉ <a href="mailto:info@brickbloom.co.in">info@brickbloom.co.in</a></span>' +
               '<span>🌐 <a href="https://www.brickbloom.co.in">brickbloom.co.in</a></span>' +
             '</div>' +
+          '</div>' +
+
+          '<div class="inv-header-center">' +
+            '<img src="/images/OurProducts/Logo_new.jpeg" alt="BrickBloom" class="inv-company-logo" />' +
           '</div>' +
 
           '<div class="inv-header-right">' +
@@ -1830,7 +1887,9 @@
     }
 
     /* ── Export: Image ──────────────────────────────────────────────────── */
-    function saveAsImage() {
+    async function saveAsImage() {
+      var ok = await saveInvoice();
+      if (!ok) return;
       var el  = document.getElementById('invoiceDoc');
       var ref = v('refNo').replace(/\//g, '-') || 'invoice';
       showToast('📷 Generating high-res image…');
@@ -1846,7 +1905,11 @@
     }
 
     /* ── Export: PDF ────────────────────────────────────────────────────── */
-    function saveAsPdf() { window.print(); }
+    async function saveAsPdf() {
+      var ok = await saveInvoice();
+      if (!ok) return;
+      window.print();
+    }
 
     /* ── Clear form ─────────────────────────────────────────────────────── */
     function clearForm() {
