@@ -512,7 +512,7 @@
        Industry-standard: Compact, no column gaps, clear data hierarchy
     ══════════════════════════════════════════════════════════════════════ */
     #invoiceDoc {
-      background: white;
+      background: #f0e1c2;
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow-xl);
       overflow: hidden;
@@ -749,9 +749,9 @@
 
     /* Subtotal / totals rows */
     .inv-tbl .subtotal-row td {
-      background: var(--slate-50) !important;
-      border-top: 2px solid var(--slate-300);
-      border-bottom: 2px solid var(--slate-300);
+      background: #e6d4b2 !important;
+      border-top: 2px solid #d4c29e;
+      border-bottom: 2px solid #d4c29e;
       padding: 9px 12px;
       font-size: 12px;
       font-weight: 800;
@@ -859,12 +859,12 @@
 
     /* ─ Tagline ── */
     .inv-tagline {
-      background: var(--slate-50);
-      border-top: 1px solid var(--slate-200);
+      background: #e6d4b2;
+      border-top: 1px solid #d4c29e;
       padding: 9px 24px;
       text-align: center;
       font-size: 10.5px;
-      color: var(--slate-500);
+      color: var(--slate-700);
       font-weight: 600;
       letter-spacing: 0.3px;
     }
@@ -1249,7 +1249,7 @@
     var editingId = null;
 
     /* ── Product Catalog & Tiered Pricing Matrix ────────────────────────── */
-    var PRODUCT_CATALOG = [
+    var DEFAULT_PRODUCT_CATALOG = [
       { name: '2 Inch Pot',                price1: 25, price50: 22, price100: 20 },
       { name: '3 inch Pot',                price1: 40, price50: 30, price100: 25 },
       { name: '4 inch Pot',                price1: 50, price50: 35, price100: 30 },
@@ -1268,6 +1268,36 @@
       { name: 'Premium Kit',               price1: 699, price50: 659, price100: 649 },
       { name: 'Ready pot With Out Plant', price1: 130, price50: 119, price100: 99 }
     ];
+
+    function loadCustomProducts() {
+      try {
+        var saved = localStorage.getItem('bb_custom_products');
+        return saved ? JSON.parse(saved) : [];
+      } catch (e) { return []; }
+    }
+
+    function saveCustomProduct(itemObj) {
+      if (!itemObj || !itemObj.name) return;
+      var list = loadCustomProducts();
+      var idx = list.findIndex(function(p) { return p.name.toLowerCase() === itemObj.name.toLowerCase(); });
+      if (idx >= 0) { list[idx] = itemObj; }
+      else { list.push(itemObj); }
+      localStorage.setItem('bb_custom_products', JSON.stringify(list));
+      refreshProductCatalog();
+    }
+
+    var PRODUCT_CATALOG = [];
+    function refreshProductCatalog() {
+      var customList = loadCustomProducts();
+      var combined = JSON.parse(JSON.stringify(DEFAULT_PRODUCT_CATALOG));
+      customList.forEach(function(c) {
+        if (!combined.some(function(p) { return p.name.toLowerCase() === c.name.toLowerCase(); })) {
+          combined.push(c);
+        }
+      });
+      PRODUCT_CATALOG = combined;
+    }
+    refreshProductCatalog();
 
     function getAutoPrice(itemName, qtyVal) {
       var prod = PRODUCT_CATALOG.find(function(p) { return p.name === itemName; });
@@ -1689,11 +1719,14 @@
         td1.style.cssText = 'text-align:center;color:var(--slate-400);font-size:11px;font-weight:700';
         tr.appendChild(td1);
 
-        // Name Dropdown + Custom Text
+        // Name Dropdown + Custom Edit Button
         var td2 = document.createElement('td');
+        var wrapDiv = document.createElement('div');
+        wrapDiv.style.cssText = 'display:flex;align-items:center;gap:4px';
+
         var sel = document.createElement('select');
         sel.className = 'item-select';
-        sel.style.cssText = 'width:100%;padding:6px 7px;border:1.5px solid var(--slate-200);border-radius:5px;font-size:12px;background:white;outline:none;font-family:var(--font-body)';
+        sel.style.cssText = 'flex:1;padding:6px 7px;border:1.5px solid var(--slate-200);border-radius:5px;font-size:12px;background:white;outline:none;font-family:var(--font-body)';
 
         var optDefault = document.createElement('option');
         optDefault.value = '';
@@ -1708,22 +1741,22 @@
           sel.appendChild(opt);
         });
 
-        // Custom option fallback
+        // Custom option trigger
         var optCustom = document.createElement('option');
         optCustom.value = '__custom__';
-        optCustom.textContent = '✏️ Custom Product...';
-        if (item.name && !PRODUCT_CATALOG.some(function(p) { return p.name === item.name; })) {
-          optCustom.selected = true;
-        }
+        optCustom.textContent = '➕ Add New Custom Product...';
         sel.appendChild(optCustom);
 
         sel.onchange = (function(iid) {
           return function() {
             var selectedVal = this.value;
             if (selectedVal === '__custom__') {
-              var customName = prompt('Enter custom item description:', item.name || '');
-              if (customName) {
-                updateRow(iid, 'name', customName);
+              var customName = prompt('Enter new product name to add to catalog:');
+              if (customName && customName.trim()) {
+                var cleanName = customName.trim();
+                saveCustomProduct({ name: cleanName, price1: item.price || 0, price50: 0, price100: 0 });
+                updateRow(iid, 'name', cleanName);
+                showToast('✅ Saved "' + cleanName + '" to product catalog!');
               }
               return;
             }
@@ -1739,7 +1772,31 @@
           };
         })(item.id);
 
-        td2.appendChild(sel);
+        wrapDiv.appendChild(sel);
+
+        // Edit button for current item
+        if (item.name) {
+          var btnEdit = document.createElement('button');
+          btnEdit.type = 'button';
+          btnEdit.textContent = '✏️';
+          btnEdit.title = 'Edit product name or price';
+          btnEdit.style.cssText = 'background:none;border:none;cursor:pointer;font-size:13px;padding:3px 5px;border-radius:4px;color:var(--slate-600)';
+          btnEdit.onclick = (function(iid, currentName) {
+            return function() {
+              var newName = prompt('Edit product name:', currentName);
+              if (newName && newName.trim()) {
+                var cleanName = newName.trim();
+                var targetRow = items.find(function(r) { return r.id === iid; });
+                saveCustomProduct({ name: cleanName, price1: targetRow ? targetRow.price : 0, price50: 0, price100: 0 });
+                updateRow(iid, 'name', cleanName);
+                showToast('✅ Product updated in catalog!');
+              }
+            };
+          })(item.id, item.name);
+          wrapDiv.appendChild(btnEdit);
+        }
+
+        td2.appendChild(wrapDiv);
         tr.appendChild(td2);
 
         // Qty Text Input
