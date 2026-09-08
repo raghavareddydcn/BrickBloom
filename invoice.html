@@ -94,10 +94,13 @@
       flex-shrink: 0;
     }
     .topbar-logo {
-      height: 40px;
+      height: 48px;
       width: auto;
-      border-radius: 7px;
+      border-radius: 8px;
       object-fit: contain;
+      background-color: #f5ebd9;
+      padding: 3px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
     .topbar-text .title {
       font-size: 15px;
@@ -531,10 +534,12 @@
     }
 
     .inv-company-logo {
-      height: 50px;
+      height: 68px;
       width: auto;
-      border-radius: 7px;
+      border-radius: 8px;
       object-fit: contain;
+      background-color: #f5ebd9;
+      padding: 4px;
       border: 1px solid rgba(0,0,0,0.06);
       margin-bottom: 8px;
       display: block;
@@ -1099,8 +1104,8 @@
           </div>
           <div class="field-grid cols-2" style="margin-top:10px">
             <div class="field">
-              <label>Payment Terms</label>
-              <input type="text" id="payTerms" placeholder="Immediate / On Receipt" oninput="renderPreview()" />
+              <label>Payment Mode</label>
+              <input type="text" id="payTerms" placeholder="Immediate / On Receipt / UPI / NetBanking" oninput="renderPreview()" />
             </div>
             <div class="field">
               <label>Place of Supply</label>
@@ -1805,6 +1810,7 @@
             '<div class="inv-header-kv">' +
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Invoice No:</span><span class="inv-hkv-v inv-refno">' + refNo + '</span></div>' +
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Date:</span><span class="inv-hkv-v">' + (issueDate || '—') + '</span></div>' +
+              '<div class="inv-hkv-row"><span class="inv-hkv-k">Payment Mode:</span><span class="inv-hkv-v">' + payTerms + '</span></div>' +
             '</div>' +
           '</div>' +
         '</div>' +
