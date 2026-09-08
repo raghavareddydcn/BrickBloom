@@ -378,25 +378,38 @@
       color: var(--slate-600);
       white-space: nowrap;
     }
-    .items-tbl td { padding: 3px 3px; border-bottom: 1px solid var(--slate-100); vertical-align: middle; }
+    .items-tbl select.item-select {
+      border: 1.5px solid var(--slate-200);
+      border-radius: 6px;
+      font-size: 12px;
+      padding: 7px 6px;
+      background: white;
+      transition: all 0.18s;
+      cursor: pointer;
+    }
+    .items-tbl select.item-select:focus {
+      border-color: var(--green-700);
+      box-shadow: 0 0 0 2px rgba(21,128,61,0.15);
+    }
     .items-tbl input {
       width: 100%;
-      padding: 6px 7px;
+      padding: 7px 6px;
       border: 1.5px solid var(--slate-200);
-      border-radius: 5px;
+      border-radius: 6px;
       font-size: 12px;
       font-family: var(--font-body);
       background: white;
       outline: none;
+      transition: all 0.18s;
     }
     .items-tbl input.r { text-align: right; font-variant-numeric: tabular-nums; }
-    .items-tbl input:focus { border-color: var(--green-700); box-shadow: 0 0 0 2px rgba(21,128,61,0.12); }
+    .items-tbl input:focus { border-color: var(--green-700); box-shadow: 0 0 0 2px rgba(21,128,61,0.15); }
     .row-del {
       background: none; border: none;
-      color: var(--slate-300);
-      cursor: pointer; font-size: 15px;
-      padding: 4px 6px;
-      border-radius: 4px;
+      color: var(--slate-400);
+      cursor: pointer; font-size: 16px;
+      padding: 6px 8px;
+      border-radius: 6px;
       transition: all 0.15s;
       display: block;
       line-height: 1;
@@ -1235,6 +1248,37 @@
     var rowCounter = 0;
     var editingId = null;
 
+    /* ── Product Catalog & Tiered Pricing Matrix ────────────────────────── */
+    var PRODUCT_CATALOG = [
+      { name: '2 Inch Pot',                price1: 25, price50: 22, price100: 20 },
+      { name: '3 inch Pot',                price1: 40, price50: 30, price100: 25 },
+      { name: '4 inch Pot',                price1: 50, price50: 35, price100: 30 },
+      { name: '6 inch Pot (Std)',          price1: 60, price50: 50, price100: 45 },
+      { name: '6 inch Pot (Heavy)',        price1: 70, price50: 60, price100: 55 },
+      { name: '8 Inch Pot',                price1: 80, price50: 60, price100: 50 },
+      { name: 'Hangeer for 8 inch',        price1: 150, price50: 140, price100: 120 },
+      { name: '50 mm Disc',                price1: 15, price50: 12, price100: 10 },
+      { name: '100 mm Disc',               price1: 0,  price50: 0,  price100: 0 },
+      { name: '650 Gm Bric',               price1: 99, price50: 89, price100: 79 },
+      { name: '5Kg Block',                 price1: 300, price50: 269, price100: 249 },
+      { name: 'Pole 1 Feet',               price1: 0,  price50: 0,  price100: 0 },
+      { name: 'Ready Pot',                 price1: 149, price50: 135, price100: 129 },
+      { name: 'Starter Kit',               price1: 159, price50: 145, price100: 139 },
+      { name: 'Medium Kit',                price1: 249, price50: 235, price100: 229 },
+      { name: 'Premium Kit',               price1: 699, price50: 659, price100: 649 },
+      { name: 'Ready pot With Out Plant', price1: 130, price50: 119, price100: 99 }
+    ];
+
+    function getAutoPrice(itemName, qtyVal) {
+      var prod = PRODUCT_CATALOG.find(function(p) { return p.name === itemName; });
+      if (!prod) return null;
+      var q = parseFloat(qtyVal || 0);
+      if (q >= 100 && prod.price100 > 0) return prod.price100;
+      if (q >= 50 && prod.price50 > 0) return prod.price50;
+      if (prod.price1 > 0) return prod.price1;
+      return null;
+    }
+
     /* ── Toast ──────────────────────────────────────────────────────────── */
     function showToast(msg, type) {
       var t = document.getElementById('toast');
@@ -1645,33 +1689,108 @@
         td1.style.cssText = 'text-align:center;color:var(--slate-400);font-size:11px;font-weight:700';
         tr.appendChild(td1);
 
-        // Name
+        // Name Dropdown + Custom Text
         var td2 = document.createElement('td');
-        var inp = document.createElement('input');
-        inp.type = 'text'; inp.placeholder = 'Item name'; inp.value = item.name || '';
-        inp.oninput = (function(iid) { return function() { updateRow(iid, 'name', this.value); }; })(item.id);
-        td2.appendChild(inp); tr.appendChild(td2);
+        var sel = document.createElement('select');
+        sel.className = 'item-select';
+        sel.style.cssText = 'width:100%;padding:6px 7px;border:1.5px solid var(--slate-200);border-radius:5px;font-size:12px;background:white;outline:none;font-family:var(--font-body)';
 
-        // Qty
+        var optDefault = document.createElement('option');
+        optDefault.value = '';
+        optDefault.textContent = '-- Select Product --';
+        sel.appendChild(optDefault);
+
+        PRODUCT_CATALOG.forEach(function(p) {
+          var opt = document.createElement('option');
+          opt.value = p.name;
+          opt.textContent = p.name;
+          if (item.name === p.name) opt.selected = true;
+          sel.appendChild(opt);
+        });
+
+        // Custom option fallback
+        var optCustom = document.createElement('option');
+        optCustom.value = '__custom__';
+        optCustom.textContent = '✏️ Custom Product...';
+        if (item.name && !PRODUCT_CATALOG.some(function(p) { return p.name === item.name; })) {
+          optCustom.selected = true;
+        }
+        sel.appendChild(optCustom);
+
+        sel.onchange = (function(iid) {
+          return function() {
+            var selectedVal = this.value;
+            if (selectedVal === '__custom__') {
+              var customName = prompt('Enter custom item description:', item.name || '');
+              if (customName) {
+                updateRow(iid, 'name', customName);
+              }
+              return;
+            }
+            var targetRow = items.find(function(r) { return r.id === iid; });
+            if (targetRow) {
+              targetRow.name = selectedVal;
+              var autoP = getAutoPrice(selectedVal, targetRow.qty);
+              if (autoP !== null) {
+                targetRow.price = autoP;
+              }
+              rebuildTable();
+            }
+          };
+        })(item.id);
+
+        td2.appendChild(sel);
+        tr.appendChild(td2);
+
+        // Qty Text Input
         var td3 = document.createElement('td');
         var iq = document.createElement('input');
         iq.type = 'number'; iq.className = 'r'; iq.min = '0'; iq.placeholder = '0';
         iq.value = item.qty || '';
         iq.style.width = '54px';
-        iq.oninput = (function(iid) { return function() { updateRow(iid, 'qty', this.value); }; })(item.id);
+        iq.oninput = (function(iid) {
+          return function() {
+            var val = this.value;
+            var targetRow = items.find(function(r) { return r.id === iid; });
+            if (targetRow) {
+              targetRow.qty = val;
+              var autoP = getAutoPrice(targetRow.name, val);
+              if (autoP !== null) {
+                targetRow.price = autoP;
+                var pInput = tr.querySelector('.price-input');
+                if (pInput) pInput.value = autoP;
+              }
+              renderPreview();
+              var amtCell = tr.querySelector('.amt-cell');
+              if (amtCell) amtCell.textContent = fmtCur(parseFloat(targetRow.qty || 0) * parseFloat(targetRow.price || 0));
+            }
+          };
+        })(item.id);
         td3.appendChild(iq); tr.appendChild(td3);
 
-        // Price
+        // Price Text Input (Auto-calculated, editable)
         var td4 = document.createElement('td');
         var ip = document.createElement('input');
-        ip.type = 'number'; ip.className = 'r'; ip.min = '0'; ip.step = '0.01'; ip.placeholder = '0.00';
-        ip.value = item.price || '';
+        ip.type = 'number'; ip.className = 'r price-input'; ip.min = '0'; ip.step = '0.01'; ip.placeholder = '0.00';
+        ip.value = item.price !== undefined && item.price !== null ? item.price : '';
         ip.style.width = '68px';
-        ip.oninput = (function(iid) { return function() { updateRow(iid, 'price', this.value); }; })(item.id);
+        ip.oninput = (function(iid) {
+          return function() {
+            var val = this.value;
+            var targetRow = items.find(function(r) { return r.id === iid; });
+            if (targetRow) {
+              targetRow.price = val;
+              renderPreview();
+              var amtCell = tr.querySelector('.amt-cell');
+              if (amtCell) amtCell.textContent = fmtCur(parseFloat(targetRow.qty || 0) * parseFloat(targetRow.price || 0));
+            }
+          };
+        })(item.id);
         td4.appendChild(ip); tr.appendChild(td4);
 
         // Amount
         var td5 = document.createElement('td');
+        td5.className = 'amt-cell';
         td5.style.cssText = 'text-align:right;font-weight:700;font-size:12px;font-variant-numeric:tabular-nums';
         td5.textContent = fmtCur(parseFloat(item.qty || 0) * parseFloat(item.price || 0));
         tr.appendChild(td5);
@@ -1831,7 +1950,6 @@
             '<div class="inv-party-label">Dispatch Details</div>' +
             '<div class="inv-meta-rows">' +
               '<div class="inv-meta-row"><span class="inv-meta-k">Dispatched from</span><span class="inv-meta-v">Bangalore, Karnataka</span></div>' +
-              '<div class="inv-meta-row"><span class="inv-meta-k">Mode of Transport</span><span class="inv-meta-v">Road / Surface</span></div>' +
               '<div class="inv-meta-row"><span class="inv-meta-k">Transport Charges</span><span class="inv-meta-v">₹ ' + fmtN(t.transport) + '</span></div>' +
             '</div>' +
           '</div>' +
