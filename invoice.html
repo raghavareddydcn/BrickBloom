@@ -1270,9 +1270,16 @@
     var PRODUCT_CATALOG = [];
     async function saveCustomProduct(itemObj) {
       if (!itemObj || !itemObj.name) return;
+      // Immediately add to local catalog so dropdowns reflect it right away
+      var existing = PRODUCT_CATALOG.find(function(p) { return p.name === itemObj.name; });
+      if (!existing) {
+        PRODUCT_CATALOG.push(itemObj);
+      } else {
+        Object.assign(existing, itemObj);
+      }
       try {
         await db.collection('products').doc(itemObj.name).set(itemObj);
-        refreshProductCatalog();
+        await refreshProductCatalog(); // await so catalog is fully synced
       } catch(e) {
         console.error('Error saving product to Firestore:', e);
       }
@@ -1740,6 +1747,15 @@
         optDefault.textContent = '-- Select Product --';
         sel.appendChild(optDefault);
 
+        // If the saved item name is not in PRODUCT_CATALOG, add it as an option so it shows correctly
+        var catalogHasItem = PRODUCT_CATALOG.some(function(p) { return p.name === item.name; });
+        if (item.name && !catalogHasItem) {
+          var optMissing = document.createElement('option');
+          optMissing.value = item.name;
+          optMissing.textContent = item.name;
+          optMissing.selected = true;
+          sel.appendChild(optMissing);
+        }
         PRODUCT_CATALOG.forEach(function(p) {
           var opt = document.createElement('option');
           opt.value = p.name;
@@ -1761,8 +1777,11 @@
               var customName = prompt('Enter new product name to add to catalog:');
               if (customName && customName.trim()) {
                 var cleanName = customName.trim();
-                saveCustomProduct({ name: cleanName, price1: item.price || 0, price50: 0, price100: 0 });
-                updateRow(iid, 'name', cleanName);
+                // Update items array and rebuild dropdown so new product shows as selected
+                var targetRow3 = items.find(function(r) { return r.id === iid; });
+                if (targetRow3) targetRow3.name = cleanName;
+                saveCustomProduct({ name: cleanName, price1: targetRow3 ? (targetRow3.price || 0) : 0, price50: 0, price100: 0 });
+                rebuildTable();
                 showToast('✅ Saved "' + cleanName + '" to product catalog!');
               }
               return;
