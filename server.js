@@ -182,6 +182,145 @@ app.delete('/api/invoices/:id', (req, res) => {
   }
 });
 
+app.get('/whatsapp', (req, res) => {
+  res.sendFile(path.join(__dirname, 'whatsapp.html'));
+});
+
+// ─── WhatsApp Integration ────────────────────────────────────────────────
+const { Client, LocalAuth } = require('whatsapp-web.js');
+const qrcode = require('qrcode');
+
+let waClient = null;
+let waStatus = 'disconnected'; // 'disconnected', 'qr', 'ready'
+let waQrUrl = null;
+let qrSubscribers = [];
+
+function notifySubscribers(event, data) {
+  qrSubscribers.forEach(res => {
+    res.write(`event: ${event}\n`);
+    res.write(`data: ${data}\n\n`);
+  });
+}
+
+app.get('/api/wa/status', (req, res) => {
+  res.json({ state: waStatus });
+});
+
+app.get('/api/wa/stream', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  qrSubscribers.push(res);
+  
+  // Send immediate state
+  if (waStatus === 'qr' && waQrUrl) {
+    res.write(`event: qr\ndata: ${waQrUrl}\n\n`);
+  } else if (waStatus === 'ready') {
+    res.write(`event: ready\ndata: {}\n\n`);
+  }
+  
+  req.on('close', () => {
+    qrSubscribers = qrSubscribers.filter(s => s !== res);
+  });
+});
+
+app.post('/api/wa/connect', (req, res) => {
+  if (waClient) {
+    return res.json({ success: true, message: 'Already initializing or connected' });
+  }
+
+  waStatus = 'starting';
+  waClient = new Client({
+    authStrategy: new LocalAuth({ clientId: 'brickbloom' }),
+    puppeteer: {
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    }
+  });
+
+  waClient.on('qr', async (qr) => {
+    waStatus = 'qr';
+    waQrUrl = await qrcode.toDataURL(qr);
+    notifySubscribers('qr', waQrUrl);
+  });
+
+  waClient.on('ready', () => {
+    waStatus = 'ready';
+    waQrUrl = null;
+    notifySubscribers('ready', '{}');
+    console.log('WhatsApp Client is ready!');
+  });
+
+  waClient.on('disconnected', () => {
+    waStatus = 'disconnected';
+    waClient = null;
+    notifySubscribers('disconnected', '{}');
+  });
+
+  waClient.initialize().catch(err => {
+    console.error('WhatsApp Init Error:', err);
+    waStatus = 'disconnected';
+    waClient = null;
+  });
+
+  res.json({ success: true });
+});
+
+app.post('/api/wa/disconnect', async (req, res) => {
+  if (waClient) {
+    try {
+      await waClient.destroy();
+    } catch(e) {}
+  }
+  waClient = null;
+  waStatus = 'disconnected';
+  notifySubscribers('disconnected', '{}');
+  res.json({ success: true });
+});
+
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+app.post('/api/wa/send', async (req, res) => {
+  if (waStatus !== 'ready' || !waClient) {
+    return res.status(400).json({ error: 'WhatsApp is not ready' });
+  }
+
+  const { contacts, template } = req.body;
+  if (!contacts || !Array.isArray(contacts)) {
+    return res.status(400).json({ error: 'Invalid contacts array' });
+  }
+
+  res.setHeader('Content-Type', 'text/plain');
+  res.setHeader('Transfer-Encoding', 'chunked');
+
+  for (let i = 0; i < contacts.length; i++) {
+    const c = contacts[i];
+    const name = c.name || 'Customer';
+    let phone = c.phone.replace(/\D/g, '');
+    
+    // Add 91 if it is an Indian 10-digit number
+    if (phone.length === 10) phone = '91' + phone;
+    
+    const numberId = phone + '@c.us';
+    const message = template.replace(/{name}/gi, name);
+
+    try {
+      await waClient.sendMessage(numberId, message);
+      res.write(JSON.stringify({ status: 'success', name, phone }) + '\n');
+    } catch (err) {
+      res.write(JSON.stringify({ status: 'error', name, phone, error: err.message }) + '\n');
+    }
+
+    // Delay 3 seconds between sends to avoid getting banned
+    if (i < contacts.length - 1) {
+      await delay(3000);
+    }
+  }
+
+  res.write(JSON.stringify({ status: 'done' }) + '\n');
+  res.end();
+});
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });

@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>BrickBloom — WhatsApp Bulk Sender</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Use SheetJS from CDN for parsing Excel -->
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  
+  <style>
+    /* ── Reset & Tokens (Matching invoice.html) ─────────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --green-950: #052e16; --green-900: #14532d; --green-800: #166534; --green-700: #15803d;
+      --green-600: #16a34a; --green-100: #dcfce7; --green-50:  #f0fdf4;
+      --slate-950: #020617; --slate-900: #0f172a; --slate-800: #1e293b; --slate-700: #334155;
+      --slate-600: #475569; --slate-500: #64748b; --slate-400: #94a3b8; --slate-300: #cbd5e1;
+      --slate-200: #e2e8f0; --slate-100: #f1f5f9; --slate-50:  #f8fafc;
+      --amber-600: #d97706; --amber-500: #f59e0b; --red-600:   #dc2626; --blue-600:  #2563eb;
+
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Space Grotesk', 'Courier New', monospace;
+      --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px;
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: linear-gradient(145deg, #041d0e 0%, #0a2f18 40%, #113d22 80%, #082413 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: var(--slate-900);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── TOP BAR ────────────────────────────────────────────────────────────── */
+    .topbar {
+      position: sticky; top: 0; z-index: 100; height: 60px;
+      background: rgba(5, 46, 22, 0.97); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+    }
+
+    .topbar-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .topbar-logo {
+      height: 48px; width: auto; border-radius: 8px; object-fit: contain;
+      background-color: #f5ebd9; padding: 3px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .topbar-text .title { font-size: 15px; font-weight: 800; color: #fff; line-height: 1.1; }
+    .topbar-text .sub { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.6); letter-spacing: 1px; text-transform: uppercase; }
+
+    .topbar-actions { display: flex; align-items: center; gap: 6px; }
+
+    .tbtn {
+      display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px;
+      border: none; border-radius: var(--radius-sm); font-family: var(--font-body);
+      font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.18s;
+      text-decoration: none;
+    }
+    .tbtn-inv { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+    .tbtn-logout { background: rgba(220,38,38,0.2); color: #fca5a5; border: 1px solid rgba(220,38,38,0.3); }
+    .tbtn:hover { filter: brightness(1.12); transform: translateY(-1px); }
+
+    /* ── WORKSPACE ──────────────────────────────────────────────────────────── */
+    .workspace {
+      max-width: 1200px; margin: 20px auto; padding: 0 20px;
+      display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start;
+    }
+    @media (max-width: 900px) { .workspace { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: #fff; border-radius: var(--radius-lg); padding: 24px;
+      box-shadow: var(--shadow-md);
+    }
+
+    h2 { font-size: 16px; font-weight: 700; color: var(--slate-900); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+    /* ── FORM ELEMENTS ──────────────────────────────────────────────────────── */
+    label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--slate-500); margin-bottom: 6px; letter-spacing: 0.5px; }
+    input[type="file"], select, textarea, input[type="number"] {
+      width: 100%; padding: 10px 12px; border: 1.5px solid var(--slate-200);
+      border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 14px;
+      outline: none; transition: border-color 0.2s; background: var(--slate-50);
+      margin-bottom: 16px;
+    }
+    textarea { resize: vertical; min-height: 120px; }
+    input:focus, textarea:focus, select:focus { border-color: var(--green-600); background: #fff; }
+
+    .btn {
+      width: 100%; padding: 12px; border: none; border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s;
+    }
+    .btn-primary { background: var(--green-600); color: #fff; }
+    .btn-primary:hover { background: var(--green-700); }
+    .btn-danger { background: var(--red-600); color: #fff; }
+    .btn-danger:hover { background: #b91c1c; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .var-badge {
+      display: inline-block; padding: 2px 6px; background: var(--slate-200);
+      border-radius: 4px; font-size: 11px; cursor: pointer; font-family: var(--font-mono);
+      margin-bottom: 8px;
+    }
+    .var-badge:hover { background: var(--slate-300); }
+
+    /* ── PREVIEW TABLE ──────────────────────────────────────────────────────── */
+    .preview-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 12px; }
+    .preview-table th, .preview-table td { padding: 8px; text-align: left; border-bottom: 1px solid var(--slate-200); }
+    .preview-table th { background: var(--slate-50); color: var(--slate-500); font-weight: 700; text-transform: uppercase; font-size: 10px; }
+    
+    /* ── WHATSAPP STATUS ────────────────────────────────────────────────────── */
+    .wa-status-box { text-align: center; margin-bottom: 20px; padding: 20px; background: var(--slate-50); border-radius: var(--radius-md); border: 1.5px dashed var(--slate-300); }
+    .wa-status-text { font-weight: 700; margin-bottom: 10px; color: var(--slate-700); }
+    #qrCodeImg { max-width: 200px; display: none; margin: 0 auto 10px; border-radius: 8px; }
+    
+    .status-badge { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; margin-left: 8px; }
+    .status-badge.disconnected { background: #fee2e2; color: #991b1b; }
+    .status-badge.connected { background: #dcfce7; color: #166534; }
+
+    /* ── LOGS ─────────────────────────────────────────────────────────────── */
+    .log-box {
+      background: var(--slate-950); color: var(--green-400); font-family: var(--font-mono);
+      font-size: 11px; padding: 12px; border-radius: var(--radius-sm); height: 200px;
+      overflow-y: auto; display: flex; flex-direction: column; gap: 4px;
+    }
+    .log-entry { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; }
+    .log-success { color: #4ade80; }
+    .log-error { color: #f87171; }
+    .log-info { color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <script>
+    if (!sessionStorage.getItem('bb_admin')) {
+      window.location.href = '/admin';
+    }
+  </script>
+
+  <header class="topbar">
+    <a href="/invoice" class="topbar-brand">
+      <img src="/images/OurProducts/Logo_new.jpeg" alt="BrickBloom" class="topbar-logo" />
+      <div class="topbar-text">
+        <div class="title">BRICKBLOOM</div>
+        <div class="sub">WhatsApp Bulk Sender</div>
+      </div>
+    </a>
+    <div class="topbar-actions">
+      <a href="/invoice" class="tbtn tbtn-inv">📄 Back to Invoices</a>
+      <button class="tbtn tbtn-logout" onclick="logout()">🚪 Logout</button>
+    </div>
+  </header>
+
+  <div class="workspace">
+    <!-- LEFT: Data & Config -->
+    <div class="panel">
+      <h2>1. Load Contacts (Excel/CSV)</h2>
+      <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" />
+      
+      <div id="mappingSection" style="display:none;">
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1">
+            <label>Name Column</label>
+            <select id="nameCol"></select>
+          </div>
+          <div style="flex: 1">
+            <label>Phone Column</label>
+            <select id="phoneCol"></select>
+          </div>
+        </div>
+        
+        <label>Contacts Preview (Top 5)</label>
+        <table class="preview-table" id="previewTable">
+          <thead><tr><th>Name</th><th>Phone</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <hr style="border:none; border-top:1px solid var(--slate-200); margin: 24px 0;" />
+
+      <h2>2. Message Template</h2>
+      <div>
+        <span class="var-badge" onclick="insertVar('{name}')">+{name}</span>
+      </div>
+      <textarea id="msgTemplate" placeholder="Hi {name}, ..."></textarea>
+      
+      <label>Preview (First Contact)</label>
+      <div style="padding: 12px; background: var(--green-50); border-radius: var(--radius-sm); font-size: 13px; color: var(--slate-700); min-height: 40px;" id="msgPreview">
+        Upload contacts and write a template to see preview.
+      </div>
+    </div>
+
+    <!-- RIGHT: WhatsApp Engine & Send Controls -->
+    <div>
+      <div class="panel" style="margin-bottom: 20px;">
+        <h2>WhatsApp Engine <span id="waStatusBadge" class="status-badge disconnected">Disconnected</span></h2>
+        <div class="wa-status-box">
+          <div class="wa-status-text" id="waStatusText">Not connected to WhatsApp.</div>
+          <img id="qrCodeImg" alt="Scan QR Code" />
+          <button class="btn btn-primary" id="btnConnect" onclick="connectWA()">Connect WhatsApp Web</button>
+          <button class="btn btn-danger" id="btnDisconnect" style="display:none;" onclick="disconnectWA()">Disconnect</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>3. Send Messages</h2>
+        <label>Select Batch</label>
+        <select id="batchSelect">
+          <option value="all">Send to ALL loaded contacts</option>
+          <option value="10">First 10</option>
+          <option value="20">First 20</option>
+          <option value="50">First 50</option>
+        </select>
+        
+        <button class="btn btn-primary" id="btnSend" onclick="startSending()" disabled>Start Sending</button>
+
+        <label style="margin-top: 16px;">Activity Log</label>
+        <div class="log-box" id="logBox">
+          <div class="log-entry log-info">System ready.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let contacts = [];
+    let headers = [];
+    let rawData = [];
+
+    // --- Excel Parsing ---
+    document.getElementById('excelFile').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, {type: 'array'});
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        
+        rawData = XLSX.utils.sheet_to_json(worksheet, {defval: ""});
+        if (rawData.length === 0) {
+          alert("Spreadsheet is empty!");
+          return;
+        }
+
+        headers = Object.keys(rawData[0]);
+        setupMapping();
+      };
+      reader.readAsArrayBuffer(file);
+    });
+
+    function setupMapping() {
+      const nameSel = document.getElementById('nameCol');
+      const phoneSel = document.getElementById('phoneCol');
+      nameSel.innerHTML = ''; phoneSel.innerHTML = '';
+
+      let bestName = '', bestPhone = '';
+
+      headers.forEach(h => {
+        const hl = h.toLowerCase();
+        if (hl.includes('name') || hl.includes('customer') || hl.includes('company')) bestName = h;
+        if (hl.includes('phone') || hl.includes('mobile') || hl.includes('number') || hl.includes('whatsapp')) bestPhone = h;
+        
+        nameSel.add(new Option(h, h));
+        phoneSel.add(new Option(h, h));
+      });
+
+      if (bestName) nameSel.value = bestName;
+      if (bestPhone) phoneSel.value = bestPhone;
+
+      document.getElementById('mappingSection').style.display = 'block';
+      updateContactsList();
+
+      nameSel.addEventListener('change', updateContactsList);
+      phoneSel.addEventListener('change', updateContactsList);
+    }
+
+    function updateContactsList() {
+      const nameCol = document.getElementById('nameCol').value;
+      const phoneCol = document.getElementById('phoneCol').value;
+
+      contacts = rawData.map(row => ({
+        name: row[nameCol] || '',
+        phone: String(row[phoneCol] || '').replace(/[^0-9+]/g, '')
+      })).filter(c => c.phone.length >= 10);
+
+      const tbody = document.querySelector('#previewTable tbody');
+      tbody.innerHTML = '';
+      contacts.slice(0, 5).forEach(c => {
+        tbody.innerHTML += `<tr><td>${c.name}</td><td>${c.phone}</td></tr>`;
+      });
+      if (contacts.length > 5) {
+        tbody.innerHTML += `<tr><td colspan="2" style="text-align:center;color:#64748b;">... and ${contacts.length - 5} more</td></tr>`;
+      }
+
+      updateMsgPreview();
+      checkSendReady();
+    }
+
+    // --- Template & Preview ---
+    function insertVar(v) {
+      const el = document.getElementById('msgTemplate');
+      const start = el.selectionStart;
+      const end = el.selectionEnd;
+      const text = el.value;
+      el.value = text.slice(0, start) + v + text.slice(end);
+      el.focus();
+      el.selectionStart = el.selectionEnd = start + v.length;
+      updateMsgPreview();
+    }
+
+    document.getElementById('msgTemplate').addEventListener('input', updateMsgPreview);
+
+    function updateMsgPreview() {
+      const template = document.getElementById('msgTemplate').value;
+      if (contacts.length > 0 && template.trim() !== '') {
+        const c = contacts[0];
+        let merged = template.replace(/{name}/gi, c.name || 'Customer');
+        document.getElementById('msgPreview').innerText = merged;
+      } else {
+        document.getElementById('msgPreview').innerText = 'Upload contacts and write a template to see preview.';
+      }
+      checkSendReady();
+    }
+
+    function checkSendReady() {
+      const isConnected = document.getElementById('waStatusBadge').classList.contains('connected');
+      const hasContacts = contacts.length > 0;
+      const hasTemplate = document.getElementById('msgTemplate').value.trim() !== '';
+      document.getElementById('btnSend').disabled = !(isConnected && hasContacts && hasTemplate);
+    }
+
+    // --- WhatsApp Engine Integration ---
+    let sseSource = null;
+
+    async function checkWAStatus() {
+      try {
+        const res = await fetch('/api/wa/status');
+        const data = await res.json();
+        updateUIStatus(data.state);
+      } catch (e) {
+        logMsg('Failed to check WhatsApp status.', 'error');
+      }
+    }
+
+    function updateUIStatus(state) {
+      const badge = document.getElementById('waStatusBadge');
+      const text = document.getElementById('waStatusText');
+      const qrImg = document.getElementById('qrCodeImg');
+      const btnC = document.getElementById('btnConnect');
+      const btnD = document.getElementById('btnDisconnect');
+
+      if (state === 'ready') {
+        badge.className = 'status-badge connected'; badge.innerText = 'Connected';
+        text.innerText = 'WhatsApp Web is active and ready.';
+        qrImg.style.display = 'none';
+        btnC.style.display = 'none'; btnD.style.display = 'inline-block';
+        if(sseSource) { sseSource.close(); sseSource = null; }
+      } else if (state === 'qr') {
+        badge.className = 'status-badge disconnected'; badge.innerText = 'Scan QR';
+        text.innerText = 'Scan the QR code with your WhatsApp app.';
+        qrImg.style.display = 'block';
+        btnC.style.display = 'none'; btnD.style.display = 'inline-block';
+      } else {
+        badge.className = 'status-badge disconnected'; badge.innerText = 'Disconnected';
+        text.innerText = 'Not connected to WhatsApp.';
+        qrImg.style.display = 'none';
+        btnC.style.display = 'inline-block'; btnD.style.display = 'none';
+        if(sseSource) { sseSource.close(); sseSource = null; }
+      }
+      checkSendReady();
+    }
+
+    async function connectWA() {
+      logMsg('Initializing WhatsApp client...', 'info');
+      document.getElementById('btnConnect').disabled = true;
+      try {
+        await fetch('/api/wa/connect', { method: 'POST' });
+        // Start listening to SSE for QR and status updates
+        if(sseSource) sseSource.close();
+        sseSource = new EventSource('/api/wa/stream');
+        
+        sseSource.addEventListener('qr', function(e) {
+          updateUIStatus('qr');
+          document.getElementById('qrCodeImg').src = e.data;
+          logMsg('Waiting for QR scan...', 'info');
+        });
+
+        sseSource.addEventListener('ready', function(e) {
+          updateUIStatus('ready');
+          logMsg('WhatsApp Client is ready!', 'success');
+        });
+
+        sseSource.addEventListener('disconnected', function(e) {
+          updateUIStatus('disconnected');
+          logMsg('WhatsApp disconnected.', 'error');
+        });
+
+      } catch(e) {
+        logMsg('Connection request failed.', 'error');
+        document.getElementById('btnConnect').disabled = false;
+      }
+    }
+
+    async function disconnectWA() {
+      logMsg('Disconnecting...', 'info');
+      await fetch('/api/wa/disconnect', { method: 'POST' });
+      updateUIStatus('disconnected');
+    }
+
+    // --- Sending Logic ---
+    function logMsg(msg, type='info') {
+      const box = document.getElementById('logBox');
+      const time = new Date().toLocaleTimeString();
+      box.innerHTML += `<div class="log-entry log-${type}">[${time}] ${msg}</div>`;
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function startSending() {
+      const batchStr = document.getElementById('batchSelect').value;
+      const limit = batchStr === 'all' ? contacts.length : parseInt(batchStr, 10);
+      const toSend = contacts.slice(0, Math.min(limit, contacts.length));
+      const template = document.getElementById('msgTemplate').value;
+
+      if(toSend.length === 0) return alert("No valid contacts to send to.");
+      if(!confirm(`Are you sure you want to send ${toSend.length} messages?`)) return;
+
+      document.getElementById('btnSend').disabled = true;
+      logMsg(`Starting batch of ${toSend.length} messages...`, 'info');
+
+      try {
+        const res = await fetch('/api/wa/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contacts: toSend, template: template })
+        });
+        
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let done = false;
+
+        while (!done) {
+          const { value, done: readerDone } = await reader.read();
+          done = readerDone;
+          if (value) {
+            const chunk = decoder.decode(value, {stream: true});
+            const lines = chunk.split('\n');
+            lines.forEach(line => {
+              if (line.trim()) {
+                try {
+                  const data = JSON.parse(line);
+                  if(data.status === 'success') logMsg(`✅ Sent to ${data.name} (${data.phone})`, 'success');
+                  else if(data.status === 'error') logMsg(`❌ Failed for ${data.name}: ${data.error}`, 'error');
+                  else if(data.status === 'done') {
+                    logMsg(`Batch complete!`, 'info');
+                    document.getElementById('btnSend').disabled = false;
+                  }
+                } catch(e) { }
+              }
+            });
+          }
+        }
+      } catch (e) {
+        logMsg(`Error during sending: ${e.message}`, 'error');
+        document.getElementById('btnSend').disabled = false;
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem('bb_admin');
+      window.location.href = '/admin';
+    }
+
+    // Initial check
+    checkWAStatus();
+  </script>
+</body>
+</html>
