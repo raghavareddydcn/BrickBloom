@@ -211,15 +211,38 @@
 
       <div class="panel">
         <h2>3. Send Messages</h2>
+        
+        <label>Sending Mode</label>
+        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+          <label style="flex:1; display:flex; align-items:center; gap:5px; text-transform:none; font-weight:600; cursor:pointer;">
+            <input type="radio" name="sendMode" value="auto" checked onchange="updateSendMode()" /> Auto Bulk
+          </label>
+          <label style="flex:1; display:flex; align-items:center; gap:5px; text-transform:none; font-weight:600; cursor:pointer;">
+            <input type="radio" name="sendMode" value="manual" onchange="updateSendMode()" /> Manual (Review Each)
+          </label>
+        </div>
+
         <label>Select Batch</label>
         <select id="batchSelect">
-          <option value="all">Send to ALL loaded contacts</option>
+          <option value="all">ALL loaded contacts</option>
           <option value="10">First 10</option>
           <option value="20">First 20</option>
           <option value="50">First 50</option>
         </select>
         
         <button class="btn btn-primary" id="btnSend" onclick="startSending()" disabled>Start Sending</button>
+
+        <div id="manualReviewBox" style="display:none; background: var(--green-50); padding: 16px; border-radius: var(--radius-sm); border: 1.5px solid var(--green-600); margin-top: 16px;">
+          <h3 style="font-size: 13px; font-weight:700; color:var(--green-800); margin-bottom: 8px; text-transform:uppercase;" id="manualHeader">Review Contact</h3>
+          <div style="margin-bottom: 10px; font-size:14px; font-weight:600; color:var(--slate-800);" id="manualContactInfo"></div>
+          <label>Message preview (You can edit before sending):</label>
+          <textarea id="manualMsgEdit" style="min-height:80px; margin-bottom:12px;"></textarea>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-primary" onclick="manualSendNext()">🚀 Send & Next</button>
+            <button class="btn" onclick="manualSkip()" style="background:#e2e8f0; color:#475569;">⏭️ Skip</button>
+            <button class="btn btn-danger" onclick="manualCancel()">⏹️ Stop</button>
+          </div>
+        </div>
 
         <label style="margin-top: 16px;">Activity Log</label>
         <div class="log-box" id="logBox">
@@ -320,6 +343,15 @@
 
     document.getElementById('msgTemplate').addEventListener('input', updateMsgPreview);
 
+    let manualIndex = 0; let manualBatch = [];
+    
+    function updateSendMode() {
+      const mode = document.querySelector('input[name="sendMode"]:checked').value;
+      const btn = document.getElementById('btnSend');
+      btn.innerText = mode === 'manual' ? 'Review & Start Sending' : 'Start Auto Sending';
+      if(mode === 'auto') document.getElementById('manualReviewBox').style.display = 'none';
+    }
+
     function updateMsgPreview() {
       const template = document.getElementById('msgTemplate').value;
       if (contacts.length > 0 && template.trim() !== '') {
@@ -336,7 +368,7 @@
       const isConnected = document.getElementById('waStatusBadge').classList.contains('connected');
       const hasContacts = contacts.length > 0;
       const hasTemplate = document.getElementById('msgTemplate').value.trim() !== '';
-      document.getElementById('btnSend').disabled = !(isConnected && hasContacts && hasTemplate);
+      document.getElementById('btnSend').disabled = !(isConnected && hasContacts && hasTemplate); updateSendMode();
     }
 
     // --- WhatsApp Engine Integration ---
@@ -431,6 +463,19 @@
       const toSend = contacts.slice(0, Math.min(limit, contacts.length));
       const template = document.getElementById('msgTemplate').value;
 
+      const mode = document.querySelector('input[name="sendMode"]:checked').value;
+      
+      if(toSend.length === 0) return alert("No valid contacts to send to.");
+      
+      if (mode === 'manual') {
+        manualBatch = toSend;
+        manualIndex = 0;
+        document.getElementById('btnSend').style.display = 'none';
+        document.getElementById('manualReviewBox').style.display = 'block';
+        loadManualContact();
+        return;
+      }
+
       if(toSend.length === 0) return alert("No valid contacts to send to.");
       if(!confirm(`Are you sure you want to send ${toSend.length} messages?`)) return;
 
@@ -484,6 +529,84 @@
         logMsg(`Error during sending: ${e.message}`, 'error');
         document.getElementById('btnSend').disabled = false;
       }
+    }
+
+    
+    function loadManualContact() {
+      if (manualIndex >= manualBatch.length) {
+        logMsg(`Manual batch complete!`, `info`);
+        manualCancel();
+        return;
+      }
+      const c = manualBatch[manualIndex];
+      const template = document.getElementById(`msgTemplate`).value;
+      let merged = template.replace(/{name}/gi, c.name || `Customer`);
+      
+      document.getElementById(`manualHeader`).innerText = `Review Contact ${manualIndex + 1} of ${manualBatch.length}`;
+      document.getElementById(`manualContactInfo`).innerText = `${c.name} (${c.phone})`;
+      document.getElementById(`manualMsgEdit`).value = merged;
+    }
+
+    async function manualSendNext() {
+      const c = manualBatch[manualIndex];
+      const customMsg = document.getElementById(`manualMsgEdit`).value;
+      
+      logMsg(`Sending manually to ${c.name}...`, `info`);
+      
+      try {
+        let mediaPayload = null;
+        const mediaInput = document.getElementById(`mediaFile`);
+        if (mediaInput.files.length > 0) {
+          const file = mediaInput.files[0];
+          const b64 = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
+          mediaPayload = { mimetype: file.type, data: b64.split(`,`)[1], filename: file.name };
+        }
+        
+        // We use the same endpoint but with 1 contact and the overridden message
+        const res = await fetch(`/api/wa/send`, {
+          method: `POST`,
+          headers: { `Content-Type`: `application/json` },
+          body: JSON.stringify({ contacts: [c], template: customMsg, media: mediaPayload })
+        });
+        
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder(`utf-8`);
+        let done = false;
+        while (!done) {
+          const { value, done: readerDone } = await reader.read();
+          done = readerDone;
+          if (value) {
+            const chunk = decoder.decode(value, {stream: true});
+            const lines = chunk.split(`\n`);
+            lines.forEach(line => {
+              if (line.trim()) {
+                try {
+                  const data = JSON.parse(line);
+                  if(data.status === `success`) logMsg(`✅ Sent to ${data.name} (${data.phone})`, `success`);
+                  else if(data.status === `error`) logMsg(`❌ Failed for ${data.name}: ${data.error}`, `error`);
+                } catch(e) {}
+              }
+            });
+          }
+        }
+      } catch (e) {
+        logMsg(`Error: ${e.message}`, `error`);
+      }
+      
+      manualIndex++;
+      loadManualContact();
+    }
+
+    function manualSkip() {
+      logMsg(`Skipped ${manualBatch[manualIndex].name}`, `info`);
+      manualIndex++;
+      loadManualContact();
+    }
+
+    function manualCancel() {
+      document.getElementById(`manualReviewBox`).style.display = `none`;
+      document.getElementById(`btnSend`).style.display = `block`;
+      logMsg(`Stopped manual sending.`, `info`);
     }
 
     function logout() {
