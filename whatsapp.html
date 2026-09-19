@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -188,6 +188,8 @@
         <span class="var-badge" onclick="insertVar('{name}')">+{name}</span>
       </div>
       <textarea id="msgTemplate" placeholder="Hi {name}, ..."></textarea>
+      <label style="margin-top:16px;">Attach Media (Image / PDF)</label>
+      <input type="file" id="mediaFile" accept="image/*,.pdf" />
       
       <label>Preview (First Contact)</label>
       <div style="padding: 12px; background: var(--green-50); border-radius: var(--radius-sm); font-size: 13px; color: var(--slate-700); min-height: 40px;" id="msgPreview">
@@ -436,10 +438,21 @@
       logMsg(`Starting batch of ${toSend.length} messages...`, 'info');
 
       try {
+        let mediaPayload = null;
+        const mediaInput = document.getElementById('mediaFile');
+        if (mediaInput.files.length > 0) {
+          const file = mediaInput.files[0];
+          const b64 = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
+          mediaPayload = {
+            mimetype: file.type,
+            data: b64.split(',')[1],
+            filename: file.name
+          };
+        }
         const res = await fetch('/api/wa/send', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contacts: toSend, template: template })
+          body: JSON.stringify({ contacts: toSend, template: template, media: mediaPayload })
         });
         
         const reader = res.body.getReader();

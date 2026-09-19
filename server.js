@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const path = require('path');
 const cors = require('cors');
 
@@ -187,7 +187,7 @@ app.get('/whatsapp', (req, res) => {
 });
 
 // ─── WhatsApp Integration ────────────────────────────────────────────────
-const { Client, LocalAuth } = require('whatsapp-web.js');
+const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const qrcode = require('qrcode');
 
 let waClient = null;
@@ -285,13 +285,18 @@ app.post('/api/wa/send', async (req, res) => {
     return res.status(400).json({ error: 'WhatsApp is not ready' });
   }
 
-  const { contacts, template } = req.body;
+  const { contacts, template, media } = req.body;
   if (!contacts || !Array.isArray(contacts)) {
     return res.status(400).json({ error: 'Invalid contacts array' });
   }
 
   res.setHeader('Content-Type', 'text/plain');
   res.setHeader('Transfer-Encoding', 'chunked');
+
+  let mediaObj = null;
+  if (media && media.mimetype && media.data) {
+    mediaObj = new MessageMedia(media.mimetype, media.data, media.filename);
+  }
 
   for (let i = 0; i < contacts.length; i++) {
     const c = contacts[i];
@@ -305,7 +310,11 @@ app.post('/api/wa/send', async (req, res) => {
     const message = template.replace(/{name}/gi, name);
 
     try {
-      await waClient.sendMessage(numberId, message);
+      if (mediaObj) {
+        await waClient.sendMessage(numberId, mediaObj, { caption: message });
+      } else {
+        await waClient.sendMessage(numberId, message);
+      }
       res.write(JSON.stringify({ status: 'success', name, phone }) + '\n');
     } catch (err) {
       res.write(JSON.stringify({ status: 'error', name, phone, error: err.message }) + '\n');
