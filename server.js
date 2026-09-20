@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const path = require('path');
 const cors = require('cors');
 
@@ -6,8 +6,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static(path.join(__dirname)));
 
 const marketIntelligence = {
@@ -180,6 +180,276 @@ app.delete('/api/invoices/:id', (req, res) => {
   } catch (err) {
     res.status(500).json({ error: 'Failed to delete invoice' });
   }
+});
+
+app.get('/whatsapp', (req, res) => {
+  res.sendFile(path.join(__dirname, 'whatsapp.html'));
+});
+
+// ─── WhatsApp Integration ────────────────────────────────────────────────
+const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
+const qrcode = require('qrcode');
+
+// Simple debug logger: console + append to wa-debug.log
+const waLogFile = path.join(__dirname, 'wa-debug.log');
+function waDebug(level, msg) {
+  try {
+    const line = `[${new Date().toISOString()}] [${level}] ${msg}`;
+    console.log(line);
+    fs.appendFile(waLogFile, line + '\n', () => {});
+  } catch (e) {
+    console.error('waDebug error', e);
+  }
+}
+
+let waClient = null;
+let waStatus = 'disconnected'; // 'disconnected', 'qr', 'ready'
+let waQrUrl = null;
+let waLastError = null;
+let waInitTimer = null;
+let qrSubscribers = [];
+
+function notifySubscribers(event, data) {
+  qrSubscribers.forEach(res => {
+    res.write(`event: ${event}\n`);
+    res.write(`data: ${data}\n\n`);
+  });
+}
+
+app.get('/api/wa/status', (req, res) => {
+  res.json({ state: waStatus, error: waLastError });
+});
+
+app.get('/api/wa/stream', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  qrSubscribers.push(res);
+  
+  // Send immediate state
+  if (waStatus === 'qr' && waQrUrl) {
+    res.write(`event: qr\ndata: ${waQrUrl}\n\n`);
+  } else if (waStatus === 'ready') {
+    res.write(`event: ready\ndata: {}\n\n`);
+  } else if (waStatus === 'starting') {
+    res.write(`event: starting\ndata: {}\n\n`);
+  }
+  
+  req.on('close', () => {
+    qrSubscribers = qrSubscribers.filter(s => s !== res);
+  });
+});
+
+app.post('/api/wa/connect', (req, res) => {
+  if (waClient) {
+    return res.json({ success: true, message: 'Already initializing or connected' });
+  }
+  waDebug('info', 'POST /api/wa/connect called');
+  waStatus = 'starting';
+  waLastError = null;
+  clearTimeout(waInitTimer);
+  waClient = new Client({
+    authStrategy: new LocalAuth({ clientId: 'brickbloom' }),
+    webVersionCache: { type: 'none' },
+    takeoverOnConflict: true,
+    takeoverTimeoutMs: 1000,
+    puppeteer: {
+      headless: false,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    }
+  });
+
+  waClient.on('qr', async (qr) => {
+    waStatus = 'qr';
+    waQrUrl = await qrcode.toDataURL(qr);
+    waDebug('info', 'QR generated for scanning');
+    notifySubscribers('qr', waQrUrl);
+  });
+
+  // Notify listeners that initialization has started
+  notifySubscribers('starting', '{}');
+  waDebug('info', 'WhatsApp initialization started');
+
+  waClient.on('ready', () => {
+    clearTimeout(waInitTimer);
+    waStatus = 'ready';
+    waLastError = null;
+    waQrUrl = null;
+    notifySubscribers('ready', '{}');
+    waDebug('info', 'WhatsApp Client is ready');
+  });
+
+  waClient.on('authenticated', () => {
+    waDebug('info', 'WhatsApp authentication completed');
+  });
+
+  waClient.on('change_state', (state) => {
+    waDebug('info', `WhatsApp state changed: ${state}`);
+  });
+
+  waClient.on('disconnected', () => {
+    clearTimeout(waInitTimer);
+    waStatus = 'disconnected';
+    waDebug('warn', 'WhatsApp client disconnected');
+    waClient = null;
+    notifySubscribers('disconnected', '{}');
+  });
+
+  waClient.on('auth_failure', (message) => {
+    waLastError = `WhatsApp authentication failed: ${message}`;
+    waDebug('error', waLastError);
+    notifySubscribers('error', JSON.stringify({ message: waLastError }));
+  });
+
+  waClient.initialize().catch(err => {
+    clearTimeout(waInitTimer);
+    waLastError = err && err.message ? err.message : String(err);
+    waDebug('error', `WhatsApp Init Error: ${err && err.stack ? err.stack : err}`);
+    waStatus = 'disconnected';
+    waClient = null;
+    notifySubscribers('error', JSON.stringify({ message: waLastError }));
+    notifySubscribers('disconnected', '{}');
+  });
+
+  waInitTimer = setTimeout(async () => {
+    if (waStatus === 'starting' && waClient) {
+      await resetWAClient('WhatsApp initialization timed out. Please scan a fresh QR code.');
+    }
+  }, 30000);
+
+  res.json({ success: true });
+});
+
+app.post('/api/wa/disconnect', async (req, res) => {
+  const client = waClient;
+  clearTimeout(waInitTimer);
+  waClient = null;
+  waStatus = 'disconnected';
+  waLastError = null;
+  notifySubscribers('disconnected', '{}');
+  if (client) {
+    try {
+      await Promise.race([
+        client.destroy(),
+        new Promise(resolve => setTimeout(resolve, 5000))
+      ]);
+    } catch (err) {
+      waDebug('warn', `WhatsApp disconnect cleanup failed: ${err.message}`);
+    }
+  }
+  res.json({ success: true });
+});
+
+// Return recent WA debug log (last N chars) for quick inspection
+app.get('/api/wa/log', (req, res) => {
+  try {
+    if (!fs.existsSync(waLogFile)) return res.json({ ok: true, log: '' });
+    const stat = fs.statSync(waLogFile);
+    const max = 20000;
+    const size = stat.size;
+    const start = Math.max(0, size - max);
+    const fd = fs.openSync(waLogFile, 'r');
+    const buffer = Buffer.alloc(Math.min(max, size));
+    fs.readSync(fd, buffer, 0, buffer.length, start);
+    fs.closeSync(fd);
+    res.json({ ok: true, log: buffer.toString('utf8') });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: String(e) });
+  }
+});
+
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+async function waClientIsUsable() {
+  if (!waClient || waStatus !== 'ready') return false;
+  if (!waClient.pupBrowser || !waClient.pupBrowser.isConnected()) return false;
+  if (!waClient.pupPage || waClient.pupPage.isClosed()) return false;
+  return true;
+}
+
+async function resetWAClient(reason) {
+  waDebug('warn', `Resetting WhatsApp client: ${reason}`);
+  const client = waClient;
+  waClient = null;
+  waStatus = 'disconnected';
+  waLastError = reason;
+  notifySubscribers('error', JSON.stringify({ message: reason }));
+  notifySubscribers('disconnected', '{}');
+  if (client) {
+    try {
+      await client.destroy();
+    } catch (err) {
+      waDebug('warn', `WhatsApp client cleanup failed: ${err.message}`);
+    }
+  }
+}
+
+app.post('/api/wa/send', async (req, res) => {
+  if (!(await waClientIsUsable())) {
+    if (waClient) await resetWAClient('WhatsApp browser session is no longer active. Please reconnect.');
+    return res.status(400).json({ error: 'WhatsApp is not ready' });
+  }
+
+  const { contacts, template, media } = req.body;
+  if (!contacts || !Array.isArray(contacts)) {
+    return res.status(400).json({ error: 'Invalid contacts array' });
+  }
+
+  res.setHeader('Content-Type', 'text/plain');
+  res.setHeader('Transfer-Encoding', 'chunked');
+
+  let mediaObj = null;
+  if (media && media.mimetype && media.data) {
+    mediaObj = new MessageMedia(media.mimetype, media.data, media.filename);
+  }
+
+  waDebug('info', `Send requested: contacts=${contacts.length}, templateLen=${String(template||'').length}, media=${mediaObj ? 'yes' : 'no'}`);
+
+  for (let i = 0; i < contacts.length; i++) {
+    const c = contacts[i];
+    const name = c.name || 'Customer';
+    let phone = c.phone.replace(/\D/g, '');
+    
+    // Add 91 if it is an Indian 10-digit number
+    if (phone.length === 10) phone = '91' + phone;
+    
+    const numberId = phone + '@c.us';
+    const message = template.replace(/{name}/gi, name);
+
+    try {
+      const resolvedId = await waClient.getNumberId(phone);
+      if (!resolvedId || !resolvedId._serialized) {
+        throw new Error(`The number ${phone} is not registered on WhatsApp`);
+      }
+
+      waDebug('info', `Sending to ${resolvedId._serialized} (name=${name})`);
+      if (mediaObj) {
+        // Send the caption and attachment as one WhatsApp message.
+        await waClient.sendMessage(numberId, message, {
+          media: mediaObj,
+          sendMediaAsDocument: mediaObj.mimetype === 'application/pdf'
+        });
+      } else {
+        await waClient.sendMessage(resolvedId._serialized, message);
+      }
+      waDebug('info', `Sent to ${resolvedId._serialized} (name=${name})`);
+      res.write(JSON.stringify({ status: 'success', name, phone }) + '\n');
+    } catch (err) {
+      waDebug('error', `Send error to ${numberId} (name=${name}): ${err && err.stack ? err.stack : err}`);
+      if (/detached Frame|Target closed|Session closed|Execution context was destroyed/i.test(err.message || '')) {
+        await resetWAClient('WhatsApp browser session became inactive. Please reconnect.');
+      }
+      res.write(JSON.stringify({ status: 'error', name, phone, error: err.message }) + '\n');
+    }
+
+    // Delay 3 seconds between sends to avoid getting banned
+    if (i < contacts.length - 1) {
+      await delay(3000);
+    }
+  }
+
+  res.write(JSON.stringify({ status: 'done' }) + '\n');
+  res.end();
 });
 
 app.get('*', (req, res) => {

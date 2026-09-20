@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" ng-app="brickbloomSite">
   <head>
     <meta charset="UTF-8" />
@@ -24,24 +24,88 @@
   </head>
   <body ng-controller="mainController">
     <!-- Apple Floating Glass Topbar -->
-    <header class="topbar">
-      <div class="topbar-inner">
-        <a class="brand" href="index.html">
-          <img src="images/BGLogo.jpeg" alt="BrickBloom" class="brand-logo brand-logo-full" />
+    <header class="new-topbar">
+      <div class="new-topbar-inner">
+        <a class="new-brand" href="/" data-discover="true">
+          <img alt="BrickBloom logo" src="/images/OurProducts/Logo_new.jpeg" />
+          <span class="new-brand-text">BrickBloom</span>
         </a>
+        
         <input type="checkbox" id="nav-toggle" class="nav-toggle-input" />
-        <label for="nav-toggle" class="nav-toggle-btn" aria-label="Toggle navigation">
-          <span></span><span></span><span></span>
-        </label>
-        <nav class="nav-links">
-          <a href="#products">Products</a>
-          <a href="#brand">Our Craft</a>
-          <a href="#why">Why BrickBloom</a>
-          <a href="#contact">Contact</a>
-          <a href="#contact" class="btn-cta-nav">Request Quote</a>
+        
+        <nav class="new-nav-links">
+          <a aria-current="page" class="active" href="/" data-discover="true">Home</a>
+          <a href="#products" data-discover="true">Products</a>
+          <a href="#why" data-discover="true">Quality &amp; Specs</a>
         </nav>
+        
+        <div class="new-nav-actions">
+          <a class="new-btn-quote" href="/#contact" data-discover="true">Request Quote</a>
+          <label for="nav-toggle" class="new-nav-toggle-btn" aria-label="Open navigation">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+          </label>
+        </div>
       </div>
     </header>
+    
+    <style>
+      /* New Topbar Styles inspired by provided Tailwind reference */
+      .new-topbar {
+        position: sticky; top: 0; z-index: 50;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+      .new-topbar-inner {
+        max-width: 80rem; margin: 0 auto;
+        display: flex; height: 4rem; align-items: center; justify-content: space-between;
+        gap: 1.5rem; padding: 0 1rem;
+      }
+      @media (min-width: 640px) { .new-topbar-inner { padding: 0 1.5rem; } }
+      @media (min-width: 1024px) { .new-topbar-inner { padding: 0 2rem; } }
+      
+      .new-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+      .new-brand img { height: 2.5rem; width: auto; border-radius: 0.375rem; }
+      .new-brand-text { display: none; font-family: sans-serif; font-size: 1.125rem; font-weight: 600; letter-spacing: -0.025em; color: #166534; }
+      @media (min-width: 640px) { .new-brand-text { display: block; } }
+      
+      .new-nav-links { display: none; align-items: center; gap: 0.25rem; }
+      @media (min-width: 768px) { .new-nav-links { display: flex; } }
+      
+      .new-nav-links a {
+        border-radius: 9999px; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 600;
+        transition: colors 0.2s; color: #475569; text-decoration: none;
+      }
+      .new-nav-links a:hover { background: rgba(15, 23, 42, 0.05); color: #0f172a; }
+      .new-nav-links a.active { background: #dcfce7; color: #14532d; }
+      
+      .new-nav-actions { display: flex; align-items: center; gap: 0.75rem; }
+      .new-btn-quote {
+        display: inline-flex; align-items: center; justify-content: center;
+        border-radius: 9999px; font-weight: 600; letter-spacing: -0.025em;
+        cursor: pointer; background: #16a34a; color: white; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        transition: all 0.2s; height: 2.25rem; padding: 0 1rem; font-size: 0.875rem; text-decoration: none;
+      }
+      .new-btn-quote:hover { background: #15803d; }
+      .new-btn-quote:active { transform: scale(0.98); }
+      
+      .new-nav-toggle-btn {
+        display: inline-flex; height: 2.5rem; width: 2.5rem; align-items: center; justify-content: center;
+        border-radius: 9999px; color: #0f172a; cursor: pointer;
+      }
+      .new-nav-toggle-btn:hover { background: rgba(15, 23, 42, 0.05); }
+      @media (min-width: 768px) { .new-nav-toggle-btn { display: none; } }
+      
+      /* Mobile Menu Toggle Logic */
+      .nav-toggle-input { display: none; }
+      .nav-toggle-input:checked ~ .new-nav-links {
+        display: flex; flex-direction: column; position: absolute; top: 4rem; left: 0; width: 100%;
+        background: white; border-bottom: 1px solid rgba(0,0,0,0.1); padding: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        align-items: flex-start;
+      }
+      .nav-toggle-input:checked ~ .new-nav-links a { width: 100%; text-align: left; }
+    </style>
 
     <main>
       <!-- Full-Bleed Launch Hero — rotating banner carousel -->
