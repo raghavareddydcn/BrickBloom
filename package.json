@@ -12,6 +12,6 @@
     "express": "^4.22.2",
     "nodemailer": "^9.0.3",
     "qrcode": "^1.5.4",
-    "whatsapp-web.js": "^1.34.7"
+    "whatsapp-web.js": "github:Daniyal-Rashid-00/whatsapp-web.js#fix/lid-media-memoize-getter"
   }
 }

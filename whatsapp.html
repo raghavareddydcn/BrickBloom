@@ -284,6 +284,10 @@
 
         headers = Object.keys(rawData[0]);
         setupMapping();
+          } catch (err) {
+            console.error('Failed to parse contacts file:', err);
+            alert('Could not read this contacts file. Please check the format and try again.');
+          }
       };
       // Use text reader for CSV files, otherwise read as ArrayBuffer for Excel
       if (file.name && file.name.toLowerCase().endsWith('.csv')) {
@@ -354,6 +358,7 @@
     }
 
     document.getElementById('msgTemplate').addEventListener('input', updateMsgPreview);
+    document.getElementById('mediaFile').addEventListener('change', checkSendReady);
 
     let manualIndex = 0; let manualBatch = [];
     
@@ -380,7 +385,8 @@
       const isConnected = document.getElementById('waStatusBadge').classList.contains('connected');
       const hasContacts = contacts.length > 0;
       const hasTemplate = document.getElementById('msgTemplate').value.trim() !== '';
-      document.getElementById('btnSend').disabled = !(isConnected && hasContacts && hasTemplate); updateSendMode();
+      const hasMedia = document.getElementById('mediaFile').files.length > 0;
+      document.getElementById('btnSend').disabled = !(isConnected && hasContacts && (hasTemplate || hasMedia)); updateSendMode();
     }
 
     // --- WhatsApp Engine Integration ---
@@ -391,6 +397,7 @@
         const res = await fetch('/api/wa/status');
         const data = await res.json();
         updateUIStatus(data.state);
+        if (data.error) logMsg(`WhatsApp error: ${data.error}`, 'error');
       } catch (e) {
         logMsg('Failed to check WhatsApp status.', 'error');
       }
@@ -409,6 +416,12 @@
         qrImg.style.display = 'none';
         btnC.style.display = 'none'; btnD.style.display = 'inline-block';
         if(sseSource) { sseSource.close(); sseSource = null; }
+      } else if (state === 'starting') {
+        badge.className = 'status-badge disconnected'; badge.innerText = 'Starting';
+        text.innerText = 'Initializing WhatsApp Web — responding soon.';
+        qrImg.style.display = 'none';
+        btnC.style.display = 'none'; btnD.style.display = 'inline-block';
+        // keep SSE open
       } else if (state === 'qr') {
         badge.className = 'status-badge disconnected'; badge.innerText = 'Scan QR';
         text.innerText = 'Scan the QR code with your WhatsApp app.';
@@ -424,34 +437,70 @@
       checkSendReady();
     }
 
+    function openWAStream() {
+      if (sseSource) sseSource.close();
+      sseSource = new EventSource('/api/wa/stream');
+
+      sseSource.addEventListener('starting', function(e) {
+        updateUIStatus('starting');
+        logMsg('WhatsApp initialization started...', 'info');
+      });
+
+      sseSource.addEventListener('qr', function(e) {
+        updateUIStatus('qr');
+        document.getElementById('qrCodeImg').src = e.data;
+        logMsg('Waiting for QR scan...', 'info');
+      });
+
+      sseSource.addEventListener('ready', function(e) {
+        updateUIStatus('ready');
+        logMsg('WhatsApp Client is ready!', 'success');
+      });
+
+      sseSource.addEventListener('disconnected', function(e) {
+        updateUIStatus('disconnected');
+        logMsg('WhatsApp disconnected.', 'error');
+      });
+
+      sseSource.addEventListener('error', function(e) {
+        let message = 'WhatsApp initialization failed.';
+        try {
+          const data = JSON.parse(e.data);
+          if (data.message) message = data.message;
+        } catch (error) {}
+        logMsg(message, 'error');
+        updateUIStatus('disconnected');
+      });
+
+      sseSource.onerror = function(err) {
+        logMsg('SSE connection error or closed.', 'error');
+        document.getElementById('btnConnect').disabled = false;
+        updateUIStatus('disconnected');
+      };
+    }
+
     async function connectWA() {
       logMsg('Initializing WhatsApp client...', 'info');
       document.getElementById('btnConnect').disabled = true;
+
+      // Subscribe before starting the client so a fast QR/ready event is not missed.
+      openWAStream();
+
       try {
-        await fetch('/api/wa/connect', { method: 'POST' });
-        // Start listening to SSE for QR and status updates
-        if(sseSource) sseSource.close();
-        sseSource = new EventSource('/api/wa/stream');
-        
-        sseSource.addEventListener('qr', function(e) {
-          updateUIStatus('qr');
-          document.getElementById('qrCodeImg').src = e.data;
-          logMsg('Waiting for QR scan...', 'info');
-        });
-
-        sseSource.addEventListener('ready', function(e) {
-          updateUIStatus('ready');
-          logMsg('WhatsApp Client is ready!', 'success');
-        });
-
-        sseSource.addEventListener('disconnected', function(e) {
-          updateUIStatus('disconnected');
-          logMsg('WhatsApp disconnected.', 'error');
-        });
+        const resp = await fetch('/api/wa/connect', { method: 'POST' });
+        if (!resp.ok) {
+          let details = '';
+          try {
+            const body = await resp.json();
+            details = body.error || body.message || '';
+          } catch (e) {}
+          throw new Error(details || 'Server returned ' + resp.status);
+        }
 
       } catch(e) {
-        logMsg('Connection request failed.', 'error');
+        logMsg('Connection request failed: ' + (e && e.message ? e.message : e), 'error');
         document.getElementById('btnConnect').disabled = false;
+        if (sseSource) { sseSource.close(); sseSource = null; }
       }
     }
 
@@ -577,7 +626,7 @@
         // We use the same endpoint but with 1 contact and the overridden message
         const res = await fetch(`/api/wa/send`, {
           method: `POST`,
-          headers: { `Content-Type`: `application/json` },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ contacts: [c], template: customMsg, media: mediaPayload })
         });
         
@@ -626,8 +675,10 @@
       window.location.href = '/admin';
     }
 
-    // Initial check
+    // Keep the page synchronized even if the browser reconnects after an SSE drop.
     checkWAStatus();
+    openWAStream();
+    setInterval(checkWAStatus, 3000);
   </script>
 </body>
 </html>
