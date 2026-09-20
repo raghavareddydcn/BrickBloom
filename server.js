@@ -279,13 +279,18 @@ app.post('/api/wa/connect', async (req, res) => {
     takeoverTimeoutMs: 3000,
     puppeteer: {
       headless: true,
+      timeout: 0,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
-        '--disable-gpu'
+        '--disable-gpu',
+        '--disable-extensions',
+        '--disable-background-timer-throttling'
       ]
-    }
+    },
+    authTimeoutMs: 0,          // disable internal 30s auth wait
+    restartOnAuthFail: true    // auto-restart on auth failure
   });
 
   waClient = client;

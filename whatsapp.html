@@ -150,6 +150,33 @@
     if (!sessionStorage.getItem('bb_admin')) window.location.href = '/admin';
   </script>
 
+  <!-- WhatsApp tool requires local Node.js server — show a banner if accessed on production hosting -->
+  <script>
+    (function() {
+      const host = location.hostname;
+      const isLocal = host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.');
+      if (!isLocal) {
+        document.addEventListener('DOMContentLoaded', function() {
+          const banner = document.createElement('div');
+          banner.style.cssText = 'background:#fef3c7;border-bottom:2px solid #f59e0b;padding:14px 20px;font-size:13px;font-weight:600;color:#92400e;text-align:center;';
+          banner.innerHTML = '⚠️ <strong>WhatsApp Bulk Sender requires the local server</strong> — this tool only works when you run <code style="background:#fde68a;padding:2px 6px;border-radius:4px;">node server.js</code> on your PC and access it via <a href="http://localhost:3000/whatsapp" style="color:#92400e;">http://localhost:3000/whatsapp</a>. It cannot run on the hosted website.';
+          document.body.insertBefore(banner, document.body.firstChild);
+
+          // Disable connect button
+          const waitForBtn = setInterval(function() {
+            const btn = document.getElementById('btnConnect');
+            if (btn) {
+              btn.disabled = true;
+              btn.title = 'Run node server.js on your PC and use localhost:3000';
+              clearInterval(waitForBtn);
+            }
+          }, 100);
+        });
+      }
+    })();
+  </script>
+
+
   <header class="topbar">
     <a href="/invoice" class="topbar-brand">
       <img src="/images/OurProducts/Logo_new.jpeg" alt="BrickBloom" class="topbar-logo" />
