@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -7,139 +7,147 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  <!-- Use SheetJS from CDN for parsing Excel -->
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-  
+
   <style>
-    /* ── Reset & Tokens (Matching invoice.html) ─────────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
     :root {
-      --green-950: #052e16; --green-900: #14532d; --green-800: #166534; --green-700: #15803d;
-      --green-600: #16a34a; --green-100: #dcfce7; --green-50:  #f0fdf4;
-      --slate-950: #020617; --slate-900: #0f172a; --slate-800: #1e293b; --slate-700: #334155;
-      --slate-600: #475569; --slate-500: #64748b; --slate-400: #94a3b8; --slate-300: #cbd5e1;
-      --slate-200: #e2e8f0; --slate-100: #f1f5f9; --slate-50:  #f8fafc;
-      --amber-600: #d97706; --amber-500: #f59e0b; --red-600:   #dc2626; --blue-600:  #2563eb;
-
-      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'Space Grotesk', 'Courier New', monospace;
-      --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px;
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+      --green-950:#052e16; --green-900:#14532d; --green-800:#166534; --green-700:#15803d;
+      --green-600:#16a34a; --green-100:#dcfce7; --green-50:#f0fdf4;
+      --slate-950:#020617; --slate-900:#0f172a; --slate-700:#334155;
+      --slate-600:#475569; --slate-500:#64748b; --slate-400:#94a3b8; --slate-300:#cbd5e1;
+      --slate-200:#e2e8f0; --slate-100:#f1f5f9; --slate-50:#f8fafc;
+      --red-600:#dc2626; --amber-500:#f59e0b;
+      --font-body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+      --font-mono:'Space Grotesk','Courier New',monospace;
+      --radius-sm:6px; --radius-md:10px; --radius-lg:14px;
+      --shadow:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
     }
-
     body {
-      font-family: var(--font-body);
-      background: linear-gradient(145deg, #041d0e 0%, #0a2f18 40%, #113d22 80%, #082413 100%);
-      background-attachment: fixed;
-      min-height: 100vh;
-      color: var(--slate-900);
-      -webkit-font-smoothing: antialiased;
+      font-family:var(--font-body);
+      background:linear-gradient(145deg,#041d0e 0%,#0a2f18 40%,#113d22 80%,#082413 100%);
+      background-attachment:fixed; min-height:100vh;
+      color:var(--slate-900); -webkit-font-smoothing:antialiased;
     }
 
-    /* ── TOP BAR ────────────────────────────────────────────────────────────── */
+    /* ── TOPBAR ── */
     .topbar {
-      position: sticky; top: 0; z-index: 100; height: 60px;
-      background: rgba(5, 46, 22, 0.97); backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 20px; box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+      position:sticky; top:0; z-index:100; height:60px;
+      background:rgba(5,46,22,.97); backdrop-filter:blur(12px);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 20px; box-shadow:0 2px 16px rgba(0,0,0,.3);
     }
-
-    .topbar-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .topbar-brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
     .topbar-logo {
-      height: 48px; width: auto; border-radius: 8px; object-fit: contain;
-      background-color: #f5ebd9; padding: 3px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      height:48px; width:auto; border-radius:8px; object-fit:contain;
+      background-color:#f5ebd9; padding:3px; box-shadow:0 2px 6px rgba(0,0,0,.15);
     }
-    .topbar-text .title { font-size: 15px; font-weight: 800; color: #fff; line-height: 1.1; }
-    .topbar-text .sub { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.6); letter-spacing: 1px; text-transform: uppercase; }
-
-    .topbar-actions { display: flex; align-items: center; gap: 6px; }
-
+    .topbar-text .title { font-size:15px; font-weight:800; color:#fff; line-height:1.1; }
+    .topbar-text .sub { font-size:10px; font-weight:600; color:rgba(255,255,255,.6); letter-spacing:1px; text-transform:uppercase; }
+    .topbar-actions { display:flex; align-items:center; gap:6px; }
     .tbtn {
-      display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px;
-      border: none; border-radius: var(--radius-sm); font-family: var(--font-body);
-      font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.18s;
-      text-decoration: none;
+      display:inline-flex; align-items:center; gap:5px; padding:6px 12px;
+      border:none; border-radius:var(--radius-sm); font-family:var(--font-body);
+      font-size:12px; font-weight:700; cursor:pointer; transition:all .18s; text-decoration:none;
     }
-    .tbtn-inv { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
-    .tbtn-logout { background: rgba(220,38,38,0.2); color: #fca5a5; border: 1px solid rgba(220,38,38,0.3); }
-    .tbtn:hover { filter: brightness(1.12); transform: translateY(-1px); }
+    .tbtn-inv { background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.2); }
+    .tbtn-logout { background:rgba(220,38,38,.2); color:#fca5a5; border:1px solid rgba(220,38,38,.3); }
+    .tbtn:hover { filter:brightness(1.12); transform:translateY(-1px); }
 
-    /* ── WORKSPACE ──────────────────────────────────────────────────────────── */
+    /* ── LAYOUT ── */
     .workspace {
-      max-width: 1200px; margin: 20px auto; padding: 0 20px;
-      display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start;
+      max-width:1200px; margin:20px auto; padding:0 20px;
+      display:grid; grid-template-columns:1fr 360px; gap:20px; align-items:start;
     }
-    @media (max-width: 900px) { .workspace { grid-template-columns: 1fr; } }
-
-    .panel {
-      background: #fff; border-radius: var(--radius-lg); padding: 24px;
-      box-shadow: var(--shadow-md);
+    @media(max-width:900px){ .workspace{ grid-template-columns:1fr; } }
+    .panel { background:#fff; border-radius:var(--radius-lg); padding:24px; box-shadow:var(--shadow); }
+    h2 { font-size:15px; font-weight:700; color:var(--slate-900); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+    h3 { font-size:13px; font-weight:700; color:var(--slate-700); margin-bottom:10px; }
+    .field-label {
+      display:block; font-size:11px; font-weight:700; text-transform:uppercase;
+      color:var(--slate-500); margin-bottom:6px; letter-spacing:.5px;
     }
-
-    h2 { font-size: 16px; font-weight: 700; color: var(--slate-900); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-
-    /* ── FORM ELEMENTS ──────────────────────────────────────────────────────── */
-    label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--slate-500); margin-bottom: 6px; letter-spacing: 0.5px; }
-    input[type="file"], select, textarea, input[type="number"] {
-      width: 100%; padding: 10px 12px; border: 1.5px solid var(--slate-200);
-      border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 14px;
-      outline: none; transition: border-color 0.2s; background: var(--slate-50);
-      margin-bottom: 16px;
+    input[type="file"], select, textarea {
+      width:100%; padding:10px 12px; border:1.5px solid var(--slate-200);
+      border-radius:var(--radius-sm); font-family:var(--font-body); font-size:13px;
+      outline:none; transition:border-color .2s; background:var(--slate-50); margin-bottom:14px;
     }
-    textarea { resize: vertical; min-height: 120px; }
-    input:focus, textarea:focus, select:focus { border-color: var(--green-600); background: #fff; }
-
+    textarea { resize:vertical; min-height:110px; line-height:1.6; }
+    input:focus, textarea:focus, select:focus { border-color:var(--green-600); background:#fff; }
     .btn {
-      width: 100%; padding: 12px; border: none; border-radius: var(--radius-sm);
-      font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s;
+      width:100%; padding:11px; border:none; border-radius:var(--radius-sm);
+      font-size:13px; font-weight:700; cursor:pointer; transition:.18s;
     }
-    .btn-primary { background: var(--green-600); color: #fff; }
-    .btn-primary:hover { background: var(--green-700); }
-    .btn-danger { background: var(--red-600); color: #fff; }
-    .btn-danger:hover { background: #b91c1c; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background:var(--green-600); color:#fff; }
+    .btn-primary:hover:not(:disabled) { background:var(--green-700); }
+    .btn-danger { background:var(--red-600); color:#fff; }
+    .btn-danger:hover:not(:disabled) { background:#b91c1c; }
+    .btn-neutral { background:var(--slate-200); color:var(--slate-700); }
+    .btn-neutral:hover:not(:disabled) { background:var(--slate-300); }
+    .btn:disabled { opacity:.45; cursor:not-allowed; }
 
+    /* ── BADGE ── */
     .var-badge {
-      display: inline-block; padding: 2px 6px; background: var(--slate-200);
-      border-radius: 4px; font-size: 11px; cursor: pointer; font-family: var(--font-mono);
-      margin-bottom: 8px;
+      display:inline-block; padding:2px 7px; background:var(--slate-200);
+      border-radius:4px; font-size:11px; cursor:pointer; font-family:var(--font-mono); margin:0 4px 8px 0;
     }
-    .var-badge:hover { background: var(--slate-300); }
+    .var-badge:hover { background:var(--slate-300); }
 
-    /* ── PREVIEW TABLE ──────────────────────────────────────────────────────── */
-    .preview-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 12px; }
-    .preview-table th, .preview-table td { padding: 8px; text-align: left; border-bottom: 1px solid var(--slate-200); }
-    .preview-table th { background: var(--slate-50); color: var(--slate-500); font-weight: 700; text-transform: uppercase; font-size: 10px; }
-    
-    /* ── WHATSAPP STATUS ────────────────────────────────────────────────────── */
-    .wa-status-box { text-align: center; margin-bottom: 20px; padding: 20px; background: var(--slate-50); border-radius: var(--radius-md); border: 1.5px dashed var(--slate-300); }
-    .wa-status-text { font-weight: 700; margin-bottom: 10px; color: var(--slate-700); }
-    #qrCodeImg { max-width: 200px; display: none; margin: 0 auto 10px; border-radius: 8px; }
-    
-    .status-badge { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; margin-left: 8px; }
-    .status-badge.disconnected { background: #fee2e2; color: #991b1b; }
-    .status-badge.connected { background: #dcfce7; color: #166534; }
+    /* ── PREVIEW TABLE ── */
+    .preview-table { width:100%; border-collapse:collapse; margin-bottom:14px; font-size:12px; }
+    .preview-table th,.preview-table td { padding:7px 10px; text-align:left; border-bottom:1px solid var(--slate-200); }
+    .preview-table th { background:var(--slate-50); color:var(--slate-500); font-weight:700; text-transform:uppercase; font-size:10px; letter-spacing:.5px; }
 
-    /* ── LOGS ─────────────────────────────────────────────────────────────── */
+    /* ── WA STATUS BOX ── */
+    .wa-box {
+      text-align:center; padding:20px; background:var(--slate-50);
+      border-radius:var(--radius-md); border:1.5px dashed var(--slate-300); margin-bottom:16px;
+    }
+    .wa-box-text { font-weight:700; color:var(--slate-700); margin-bottom:12px; font-size:13px; }
+    #qrCodeImg { max-width:190px; display:none; margin:0 auto 12px; border-radius:8px; border:4px solid #fff; box-shadow:0 4px 12px rgba(0,0,0,.15); }
+    .status-pill {
+      display:inline-flex; align-items:center; gap:5px; padding:3px 10px;
+      border-radius:20px; font-size:11px; font-weight:700; margin-left:8px;
+    }
+    .status-pill::before { content:''; width:7px; height:7px; border-radius:50%; display:inline-block; }
+    .status-pill.disconnected { background:#fee2e2; color:#991b1b; }
+    .status-pill.disconnected::before { background:#dc2626; }
+    .status-pill.initializing { background:#fef3c7; color:#92400e; }
+    .status-pill.initializing::before { background:var(--amber-500); animation:pulse 1s infinite; }
+    .status-pill.qr { background:#dbeafe; color:#1e40af; }
+    .status-pill.qr::before { background:#3b82f6; animation:pulse 1s infinite; }
+    .status-pill.ready { background:var(--green-100); color:var(--green-900); }
+    .status-pill.ready::before { background:var(--green-600); }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    /* ── MANUAL REVIEW BOX ── */
+    .manual-box {
+      display:none; background:var(--green-50); padding:16px;
+      border-radius:var(--radius-sm); border:1.5px solid var(--green-600); margin-top:14px;
+    }
+    .manual-box textarea { min-height:80px; }
+    .manual-box-actions { display:flex; gap:8px; }
+    .manual-box-actions .btn { font-size:12px; padding:8px; }
+
+    /* ── LOG BOX ── */
     .log-box {
-      background: var(--slate-950); color: var(--green-400); font-family: var(--font-mono);
-      font-size: 11px; padding: 12px; border-radius: var(--radius-sm); height: 200px;
-      overflow-y: auto; display: flex; flex-direction: column; gap: 4px;
+      background:var(--slate-950); color:#94a3b8; font-family:var(--font-mono);
+      font-size:11px; padding:12px; border-radius:var(--radius-sm); height:210px;
+      overflow-y:auto; display:flex; flex-direction:column; gap:3px;
     }
-    .log-entry { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; }
-    .log-success { color: #4ade80; }
-    .log-error { color: #f87171; }
-    .log-info { color: #94a3b8; }
+    .le { border-bottom:1px solid rgba(255,255,255,.06); padding-bottom:3px; }
+    .le-s { color:#4ade80; }
+    .le-e { color:#f87171; }
+    .le-w { color:#fbbf24; }
+    .le-i { color:#94a3b8; }
+
+    hr.sep { border:none; border-top:1px solid var(--slate-200); margin:20px 0; }
   </style>
 </head>
 <body>
   <script>
-    if (!sessionStorage.getItem('bb_admin')) {
-      window.location.href = '/admin';
-    }
+    if (!sessionStorage.getItem('bb_admin')) window.location.href = '/admin';
   </script>
 
   <header class="topbar">
@@ -151,523 +159,477 @@
       </div>
     </a>
     <div class="topbar-actions">
-      <a href="/invoice" class="tbtn tbtn-inv">📄 Back to Invoices</a>
+      <a href="/invoice" class="tbtn tbtn-inv">📄 Invoices</a>
       <button class="tbtn tbtn-logout" onclick="logout()">🚪 Logout</button>
     </div>
   </header>
 
   <div class="workspace">
-    <!-- LEFT: Data & Config -->
+
+    <!-- ── LEFT: Contacts + Template ── -->
     <div class="panel">
-      <h2>1. Load Contacts (Excel/CSV)</h2>
-      <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" />
-      
+      <h2>1. Load Contacts (Excel / CSV)</h2>
+      <label class="field-label">Upload file</label>
+      <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" />
+
       <div id="mappingSection" style="display:none;">
-        <div style="display: flex; gap: 10px;">
-          <div style="flex: 1">
-            <label>Name Column</label>
+        <div style="display:flex;gap:10px;">
+          <div style="flex:1;">
+            <label class="field-label">Name Column</label>
             <select id="nameCol"></select>
           </div>
-          <div style="flex: 1">
-            <label>Phone Column</label>
+          <div style="flex:1;">
+            <label class="field-label">Phone Column</label>
             <select id="phoneCol"></select>
           </div>
         </div>
-        
-        <label>Contacts Preview (Top 5)</label>
+        <label class="field-label">Preview (first 5)</label>
         <table class="preview-table" id="previewTable">
-          <thead><tr><th>Name</th><th>Phone</th></tr></thead>
+          <thead><tr><th>#</th><th>Name</th><th>Phone</th></tr></thead>
           <tbody></tbody>
         </table>
+        <div id="contactCount" style="font-size:12px;color:var(--slate-500);margin-bottom:14px;"></div>
       </div>
 
-      <hr style="border:none; border-top:1px solid var(--slate-200); margin: 24px 0;" />
+      <hr class="sep" />
 
       <h2>2. Message Template</h2>
       <div>
-        <span class="var-badge" onclick="insertVar('{name}')">+{name}</span>
+        <span class="var-badge" onclick="insertVar('{name}')">+ {name}</span>
       </div>
-      <textarea id="msgTemplate" placeholder="Hi {name}, ..."></textarea>
-      <label style="margin-top:16px;">Attach Media (Image / PDF)</label>
+      <label class="field-label">Template message</label>
+      <textarea id="msgTemplate" placeholder="Hi {name}, we wanted to share..."></textarea>
+
+      <label class="field-label">Attach media (optional — image or PDF)</label>
       <input type="file" id="mediaFile" accept="image/*,.pdf" />
-      
-      <label>Preview (First Contact)</label>
-      <div style="padding: 12px; background: var(--green-50); border-radius: var(--radius-sm); font-size: 13px; color: var(--slate-700); min-height: 40px;" id="msgPreview">
+
+      <label class="field-label">Live preview (first contact)</label>
+      <div id="msgPreview" style="padding:12px;background:var(--green-50);border-radius:var(--radius-sm);font-size:13px;color:var(--slate-700);min-height:44px;white-space:pre-wrap;line-height:1.6;">
         Upload contacts and write a template to see preview.
       </div>
     </div>
 
-    <!-- RIGHT: WhatsApp Engine & Send Controls -->
+    <!-- ── RIGHT: Connection + Send ── -->
     <div>
-      <div class="panel" style="margin-bottom: 20px;">
-        <h2>WhatsApp Engine <span id="waStatusBadge" class="status-badge disconnected">Disconnected</span></h2>
-        <div class="wa-status-box">
-          <div class="wa-status-text" id="waStatusText">Not connected to WhatsApp.</div>
+
+      <!-- WhatsApp Connection Panel -->
+      <div class="panel" style="margin-bottom:16px;">
+        <h2>WhatsApp <span id="statusPill" class="status-pill disconnected">Disconnected</span></h2>
+        <div class="wa-box">
+          <div class="wa-box-text" id="waStatusText">Not connected to WhatsApp.</div>
           <img id="qrCodeImg" alt="Scan QR Code" />
+          <div id="waError" style="display:none;padding:8px;background:#fee2e2;border-radius:6px;font-size:12px;color:#991b1b;margin-bottom:10px;"></div>
           <button class="btn btn-primary" id="btnConnect" onclick="connectWA()">Connect WhatsApp Web</button>
-          <button class="btn btn-danger" id="btnDisconnect" style="display:none;" onclick="disconnectWA()">Disconnect</button>
+          <button class="btn btn-danger" id="btnDisconnect" style="display:none;margin-top:8px;" onclick="disconnectWA()">Disconnect</button>
         </div>
       </div>
 
+      <!-- Send Panel -->
       <div class="panel">
         <h2>3. Send Messages</h2>
-        
-        <label>Sending Mode</label>
-        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
-          <label style="flex:1; display:flex; align-items:center; gap:5px; text-transform:none; font-weight:600; cursor:pointer;">
-            <input type="radio" name="sendMode" value="auto" checked onchange="updateSendMode()" /> Auto Bulk
+
+        <label class="field-label">Mode</label>
+        <div style="display:flex;gap:10px;margin-bottom:14px;">
+          <label style="flex:1;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;cursor:pointer;">
+            <input type="radio" name="sendMode" value="auto" checked onchange="onModeChange()" /> Auto Batch
           </label>
-          <label style="flex:1; display:flex; align-items:center; gap:5px; text-transform:none; font-weight:600; cursor:pointer;">
-            <input type="radio" name="sendMode" value="manual" onchange="updateSendMode()" /> Manual (Review Each)
+          <label style="flex:1;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;cursor:pointer;">
+            <input type="radio" name="sendMode" value="manual" onchange="onModeChange()" /> Manual (1-by-1)
           </label>
         </div>
 
-        <label>Select Batch</label>
+        <label class="field-label">Batch size</label>
         <select id="batchSelect">
-          <option value="all">ALL loaded contacts</option>
+          <option value="all">All contacts</option>
           <option value="10">First 10</option>
           <option value="20">First 20</option>
           <option value="50">First 50</option>
         </select>
-        
+
+        <label class="field-label">Delay between messages</label>
+        <select id="delaySelect">
+          <option value="3000">3 seconds (default)</option>
+          <option value="5000">5 seconds (safer)</option>
+          <option value="8000">8 seconds (safest)</option>
+        </select>
+
         <button class="btn btn-primary" id="btnSend" onclick="startSending()" disabled>Start Sending</button>
 
-        <div id="manualReviewBox" style="display:none; background: var(--green-50); padding: 16px; border-radius: var(--radius-sm); border: 1.5px solid var(--green-600); margin-top: 16px;">
-          <h3 style="font-size: 13px; font-weight:700; color:var(--green-800); margin-bottom: 8px; text-transform:uppercase;" id="manualHeader">Review Contact</h3>
-          <div style="margin-bottom: 10px; font-size:14px; font-weight:600; color:var(--slate-800);" id="manualContactInfo"></div>
-          <label>Message preview (You can edit before sending):</label>
-          <textarea id="manualMsgEdit" style="min-height:80px; margin-bottom:12px;"></textarea>
-          <div style="display:flex; gap:10px;">
-            <button class="btn btn-primary" onclick="manualSendNext()">🚀 Send & Next</button>
-            <button class="btn" onclick="manualSkip()" style="background:#e2e8f0; color:#475569;">⏭️ Skip</button>
-            <button class="btn btn-danger" onclick="manualCancel()">⏹️ Stop</button>
+        <!-- Manual review box -->
+        <div class="manual-box" id="manualBox">
+          <h3 id="manualHeader">Review Contact 1 of N</h3>
+          <div style="font-size:13px;font-weight:600;color:var(--slate-700);margin-bottom:10px;" id="manualInfo"></div>
+          <label class="field-label">Edit message before sending:</label>
+          <textarea id="manualMsg"></textarea>
+          <div class="manual-box-actions">
+            <button class="btn btn-primary" onclick="manualSend()">🚀 Send &amp; Next</button>
+            <button class="btn btn-neutral" onclick="manualSkip()">⏭️ Skip</button>
+            <button class="btn btn-danger" onclick="manualStop()">⏹️ Stop</button>
           </div>
         </div>
 
-        <label style="margin-top: 16px;">Activity Log</label>
+        <label class="field-label" style="margin-top:16px;">Activity log</label>
         <div class="log-box" id="logBox">
-          <div class="log-entry log-info">System ready.</div>
+          <div class="le le-i">System ready.</div>
         </div>
       </div>
+
     </div>
   </div>
 
   <script>
-    let contacts = [];
-    let headers = [];
-    let rawData = [];
+    // ── State ──────────────────────────────────────────────────────────────────
+    let contacts   = [];
+    let rawData    = [];
+    let sseSource  = null;
+    let waReady    = false;
 
-    // --- Excel Parsing ---
-    document.getElementById('excelFile').addEventListener('change', function(e) {
+    let manualBatch = [];
+    let manualIdx   = 0;
+
+    // ── Logging ────────────────────────────────────────────────────────────────
+    function log(msg, type = 'i') {
+      const box  = document.getElementById('logBox');
+      const time = new Date().toLocaleTimeString();
+      box.insertAdjacentHTML('beforeend', `<div class="le le-${type}">[${time}] ${msg}</div>`);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    // ── Excel / CSV ────────────────────────────────────────────────────────────
+    document.getElementById('excelFile').addEventListener('change', function (e) {
       const file = e.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
-        reader.onload = function(e) {
-          try {
-            let workbook;
-            if (file.name && file.name.toLowerCase().endsWith('.csv')) {
-              const text = e.target.result;
-              workbook = XLSX.read(text, { type: 'string' });
-            } else {
-              const data = new Uint8Array(e.target.result);
-              workbook = XLSX.read(data, { type: 'array' });
-            }
-            const firstSheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[firstSheetName];
-          
-            rawData = XLSX.utils.sheet_to_json(worksheet, {defval: ""});
-        if (rawData.length === 0) {
-          alert("Spreadsheet is empty!");
-          return;
-        }
-
-        headers = Object.keys(rawData[0]);
-        setupMapping();
-          } catch (err) {
-            console.error('Failed to parse contacts file:', err);
-            alert('Could not read this contacts file. Please check the format and try again.');
+      reader.onload = function (ev) {
+        try {
+          let wb;
+          if (file.name.toLowerCase().endsWith('.csv')) {
+            wb = XLSX.read(ev.target.result, { type: 'string' });
+          } else {
+            wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
           }
+          rawData = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
+          if (!rawData.length) return alert('Spreadsheet appears empty.');
+          setupMapping(Object.keys(rawData[0]));
+        } catch (err) {
+          alert('Could not read file: ' + err.message);
+        }
       };
-      // Use text reader for CSV files, otherwise read as ArrayBuffer for Excel
-      if (file.name && file.name.toLowerCase().endsWith('.csv')) {
-        reader.readAsText(file, 'utf-8');
-      } else {
-        reader.readAsArrayBuffer(file);
-      }
+      file.name.toLowerCase().endsWith('.csv')
+        ? reader.readAsText(file, 'utf-8')
+        : reader.readAsArrayBuffer(file);
     });
 
-    function setupMapping() {
-      const nameSel = document.getElementById('nameCol');
-      const phoneSel = document.getElementById('phoneCol');
-      nameSel.innerHTML = ''; phoneSel.innerHTML = '';
-
-      let bestName = '', bestPhone = '';
-
+    function setupMapping(headers) {
+      const ns = document.getElementById('nameCol');
+      const ps = document.getElementById('phoneCol');
+      ns.innerHTML = ps.innerHTML = '';
+      let bestN = '', bestP = '';
       headers.forEach(h => {
         const hl = h.toLowerCase();
-        if (hl.includes('name') || hl.includes('customer') || hl.includes('company')) bestName = h;
-        if (hl.includes('phone') || hl.includes('mobile') || hl.includes('number') || hl.includes('whatsapp')) bestPhone = h;
-        
-        nameSel.add(new Option(h, h));
-        phoneSel.add(new Option(h, h));
+        if (/name|customer|company|client/.test(hl)) bestN = h;
+        if (/phone|mobile|number|whatsapp|wa/.test(hl)) bestP = h;
+        ns.add(new Option(h, h));
+        ps.add(new Option(h, h));
       });
-
-      if (bestName) nameSel.value = bestName;
-      if (bestPhone) phoneSel.value = bestPhone;
-
+      if (bestN) ns.value = bestN;
+      if (bestP) ps.value = bestP;
       document.getElementById('mappingSection').style.display = 'block';
-      updateContactsList();
-
-      nameSel.addEventListener('change', updateContactsList);
-      phoneSel.addEventListener('change', updateContactsList);
+      buildContacts();
+      ns.onchange = ps.onchange = buildContacts;
     }
 
-    function updateContactsList() {
-      const nameCol = document.getElementById('nameCol').value;
-      const phoneCol = document.getElementById('phoneCol').value;
-
-      contacts = rawData.map(row => ({
-        name: row[nameCol] || '',
-        phone: String(row[phoneCol] || '').replace(/[^0-9+]/g, '')
-      })).filter(c => c.phone.length >= 10);
-
+    function buildContacts() {
+      const nc = document.getElementById('nameCol').value;
+      const pc = document.getElementById('phoneCol').value;
+      contacts = rawData
+        .map(r => ({ name: String(r[nc] || '').trim(), phone: String(r[pc] || '').replace(/[^0-9+]/g, '') }))
+        .filter(c => c.phone.length >= 10);
       const tbody = document.querySelector('#previewTable tbody');
       tbody.innerHTML = '';
-      contacts.slice(0, 5).forEach(c => {
-        tbody.innerHTML += `<tr><td>${c.name}</td><td>${c.phone}</td></tr>`;
+      contacts.slice(0, 5).forEach((c, i) => {
+        tbody.insertAdjacentHTML('beforeend', `<tr><td>${i + 1}</td><td>${c.name}</td><td>${c.phone}</td></tr>`);
       });
-      if (contacts.length > 5) {
-        tbody.innerHTML += `<tr><td colspan="2" style="text-align:center;color:#64748b;">... and ${contacts.length - 5} more</td></tr>`;
-      }
-
-      updateMsgPreview();
-      checkSendReady();
+      const more = contacts.length - 5;
+      if (more > 0) tbody.insertAdjacentHTML('beforeend', `<tr><td colspan="3" style="text-align:center;color:var(--slate-500);">…and ${more} more</td></tr>`);
+      document.getElementById('contactCount').textContent = `${contacts.length} contacts loaded`;
+      refreshPreview();
+      checkReady();
     }
 
-    // --- Template & Preview ---
+    // ── Template preview ───────────────────────────────────────────────────────
+    document.getElementById('msgTemplate').addEventListener('input', refreshPreview);
+
     function insertVar(v) {
       const el = document.getElementById('msgTemplate');
-      const start = el.selectionStart;
-      const end = el.selectionEnd;
-      const text = el.value;
-      el.value = text.slice(0, start) + v + text.slice(end);
+      const s = el.selectionStart, e = el.selectionEnd;
+      el.value = el.value.slice(0, s) + v + el.value.slice(e);
       el.focus();
-      el.selectionStart = el.selectionEnd = start + v.length;
-      updateMsgPreview();
+      el.selectionStart = el.selectionEnd = s + v.length;
+      refreshPreview();
     }
 
-    document.getElementById('msgTemplate').addEventListener('input', updateMsgPreview);
-    document.getElementById('mediaFile').addEventListener('change', checkSendReady);
-
-    let manualIndex = 0; let manualBatch = [];
-    
-    function updateSendMode() {
-      const mode = document.querySelector('input[name="sendMode"]:checked').value;
-      const btn = document.getElementById('btnSend');
-      btn.innerText = mode === 'manual' ? 'Review & Start Sending' : 'Start Auto Sending';
-      if(mode === 'auto') document.getElementById('manualReviewBox').style.display = 'none';
+    function mergeMsg(template, contact) {
+      return template.replace(/{name}/gi, contact.name || 'Customer');
     }
 
-    function updateMsgPreview() {
-      const template = document.getElementById('msgTemplate').value;
-      if (contacts.length > 0 && template.trim() !== '') {
-        const c = contacts[0];
-        let merged = template.replace(/{name}/gi, c.name || 'Customer');
-        document.getElementById('msgPreview').innerText = merged;
-      } else {
-        document.getElementById('msgPreview').innerText = 'Upload contacts and write a template to see preview.';
-      }
-      checkSendReady();
+    function refreshPreview() {
+      const tmpl = document.getElementById('msgTemplate').value;
+      const el   = document.getElementById('msgPreview');
+      el.textContent = (contacts.length && tmpl.trim())
+        ? mergeMsg(tmpl, contacts[0])
+        : 'Upload contacts and write a template to see preview.';
+      checkReady();
     }
 
-    function checkSendReady() {
-      const isConnected = document.getElementById('waStatusBadge').classList.contains('connected');
-      const hasContacts = contacts.length > 0;
-      const hasTemplate = document.getElementById('msgTemplate').value.trim() !== '';
+    // ── Mode switch ────────────────────────────────────────────────────────────
+    function onModeChange() {
+      const isManual = document.querySelector('input[name="sendMode"]:checked').value === 'manual';
+      document.getElementById('btnSend').textContent = isManual ? 'Review & Start Sending' : 'Start Sending';
+    }
+
+    // ── checkReady ─────────────────────────────────────────────────────────────
+    function checkReady() {
+      const tmpl     = document.getElementById('msgTemplate').value.trim();
       const hasMedia = document.getElementById('mediaFile').files.length > 0;
-      document.getElementById('btnSend').disabled = !(isConnected && hasContacts && (hasTemplate || hasMedia)); updateSendMode();
+      document.getElementById('btnSend').disabled = !(waReady && contacts.length && (tmpl || hasMedia));
     }
 
-    // --- WhatsApp Engine Integration ---
-    let sseSource = null;
+    // ── SSE / WA status ────────────────────────────────────────────────────────
+    function openSSE() {
+      if (sseSource) { sseSource.close(); sseSource = null; }
+      sseSource = new EventSource('/api/wa/stream');
+
+      sseSource.addEventListener('state', e => {
+        try { applyState(JSON.parse(e.data)); } catch (_) {}
+      });
+
+      // SSE `error` fires when the browser HTTP connection drops (e.g., server restart).
+      // Don't treat this as a WA disconnect — it will auto-reconnect.
+      sseSource.onerror = () => {
+        // browser will retry automatically; no UI change needed
+      };
+    }
+
+    function applyState(s) {
+      const status = s.status || 'disconnected';
+      waReady = status === 'ready';
+
+      const pill      = document.getElementById('statusPill');
+      const text      = document.getElementById('waStatusText');
+      const qr        = document.getElementById('qrCodeImg');
+      const errDiv    = document.getElementById('waError');
+      const btnC      = document.getElementById('btnConnect');
+      const btnD      = document.getElementById('btnDisconnect');
+
+      pill.className = 'status-pill ' + status;
+
+      if (status === 'ready') {
+        pill.textContent  = '✓ Connected';
+        text.textContent  = 'WhatsApp Web is active and ready to send.';
+        qr.style.display  = 'none';
+        btnC.style.display = 'none';
+        btnD.style.display = 'block';
+        errDiv.style.display = 'none';
+      } else if (status === 'qr') {
+        pill.textContent  = 'Scan QR Code';
+        text.textContent  = 'Open WhatsApp → Linked Devices → Link a Device, then scan:';
+        qr.style.display  = 'block';
+        if (s.qr) qr.src  = s.qr;
+        btnC.style.display = 'none';
+        btnD.style.display = 'block';
+        errDiv.style.display = 'none';
+      } else if (status === 'initializing') {
+        pill.textContent  = 'Starting…';
+        text.textContent  = 'Launching WhatsApp Web — please wait…';
+        qr.style.display  = 'none';
+        btnC.style.display = 'none';
+        btnD.style.display = 'block';
+        errDiv.style.display = 'none';
+      } else {
+        pill.textContent  = 'Disconnected';
+        text.textContent  = 'Not connected to WhatsApp.';
+        qr.style.display  = 'none';
+        btnC.style.display = 'block';
+        btnD.style.display = 'none';
+        if (s.error) {
+          errDiv.textContent   = '⚠️ ' + s.error;
+          errDiv.style.display = 'block';
+        } else {
+          errDiv.style.display = 'none';
+        }
+        btnC.disabled = false;
+      }
+      checkReady();
+    }
 
     async function checkWAStatus() {
       try {
-        const res = await fetch('/api/wa/status');
-        const data = await res.json();
-        updateUIStatus(data.state);
-        if (data.error) logMsg(`WhatsApp error: ${data.error}`, 'error');
-      } catch (e) {
-        logMsg('Failed to check WhatsApp status.', 'error');
-      }
-    }
-
-    function updateUIStatus(state) {
-      const badge = document.getElementById('waStatusBadge');
-      const text = document.getElementById('waStatusText');
-      const qrImg = document.getElementById('qrCodeImg');
-      const btnC = document.getElementById('btnConnect');
-      const btnD = document.getElementById('btnDisconnect');
-
-      if (state === 'ready') {
-        badge.className = 'status-badge connected'; badge.innerText = 'Connected';
-        text.innerText = 'WhatsApp Web is active and ready.';
-        qrImg.style.display = 'none';
-        btnC.style.display = 'none'; btnD.style.display = 'inline-block';
-        if(sseSource) { sseSource.close(); sseSource = null; }
-      } else if (state === 'starting') {
-        badge.className = 'status-badge disconnected'; badge.innerText = 'Starting';
-        text.innerText = 'Initializing WhatsApp Web — responding soon.';
-        qrImg.style.display = 'none';
-        btnC.style.display = 'none'; btnD.style.display = 'inline-block';
-        // keep SSE open
-      } else if (state === 'qr') {
-        badge.className = 'status-badge disconnected'; badge.innerText = 'Scan QR';
-        text.innerText = 'Scan the QR code with your WhatsApp app.';
-        qrImg.style.display = 'block';
-        btnC.style.display = 'none'; btnD.style.display = 'inline-block';
-      } else {
-        badge.className = 'status-badge disconnected'; badge.innerText = 'Disconnected';
-        text.innerText = 'Not connected to WhatsApp.';
-        qrImg.style.display = 'none';
-        btnC.style.display = 'inline-block'; btnD.style.display = 'none';
-        if(sseSource) { sseSource.close(); sseSource = null; }
-      }
-      checkSendReady();
-    }
-
-    function openWAStream() {
-      if (sseSource) sseSource.close();
-      sseSource = new EventSource('/api/wa/stream');
-
-      sseSource.addEventListener('starting', function(e) {
-        updateUIStatus('starting');
-        logMsg('WhatsApp initialization started...', 'info');
-      });
-
-      sseSource.addEventListener('qr', function(e) {
-        updateUIStatus('qr');
-        document.getElementById('qrCodeImg').src = e.data;
-        logMsg('Waiting for QR scan...', 'info');
-      });
-
-      sseSource.addEventListener('ready', function(e) {
-        updateUIStatus('ready');
-        logMsg('WhatsApp Client is ready!', 'success');
-      });
-
-      sseSource.addEventListener('disconnected', function(e) {
-        updateUIStatus('disconnected');
-        logMsg('WhatsApp disconnected.', 'error');
-      });
-
-      sseSource.addEventListener('error', function(e) {
-        let message = 'WhatsApp initialization failed.';
-        try {
-          const data = JSON.parse(e.data);
-          if (data.message) message = data.message;
-        } catch (error) {}
-        logMsg(message, 'error');
-        updateUIStatus('disconnected');
-      });
-
-      sseSource.onerror = function(err) {
-        logMsg('SSE connection error or closed.', 'error');
-        document.getElementById('btnConnect').disabled = false;
-        updateUIStatus('disconnected');
-      };
+        const r = await fetch('/api/wa/status');
+        const d = await r.json();
+        applyState(d);
+      } catch (_) {}
     }
 
     async function connectWA() {
-      logMsg('Initializing WhatsApp client...', 'info');
       document.getElementById('btnConnect').disabled = true;
-
-      // Subscribe before starting the client so a fast QR/ready event is not missed.
-      openWAStream();
-
+      log('Connecting to WhatsApp Web…', 'i');
       try {
-        const resp = await fetch('/api/wa/connect', { method: 'POST' });
-        if (!resp.ok) {
-          let details = '';
-          try {
-            const body = await resp.json();
-            details = body.error || body.message || '';
-          } catch (e) {}
-          throw new Error(details || 'Server returned ' + resp.status);
-        }
-
-      } catch(e) {
-        logMsg('Connection request failed: ' + (e && e.message ? e.message : e), 'error');
+        const r = await fetch('/api/wa/connect', { method: 'POST' });
+        if (!r.ok) throw new Error('Server error ' + r.status);
+      } catch (err) {
+        log('Connect failed: ' + err.message, 'e');
         document.getElementById('btnConnect').disabled = false;
-        if (sseSource) { sseSource.close(); sseSource = null; }
       }
     }
 
     async function disconnectWA() {
-      logMsg('Disconnecting...', 'info');
-      await fetch('/api/wa/disconnect', { method: 'POST' });
-      updateUIStatus('disconnected');
+      log('Disconnecting…', 'i');
+      try {
+        await fetch('/api/wa/disconnect', { method: 'POST' });
+      } catch (_) {}
     }
 
-    // --- Sending Logic ---
-    function logMsg(msg, type='info') {
-      const box = document.getElementById('logBox');
-      const time = new Date().toLocaleTimeString();
-      box.innerHTML += `<div class="log-entry log-${type}">[${time}] ${msg}</div>`;
-      box.scrollTop = box.scrollHeight;
+    // ── Read media attachment as base64 ────────────────────────────────────────
+    async function readMedia() {
+      const input = document.getElementById('mediaFile');
+      if (!input.files.length) return null;
+      const file = input.files[0];
+      const b64  = await new Promise((res, rej) => {
+        const fr = new FileReader();
+        fr.onload  = () => res(fr.result);
+        fr.onerror = rej;
+        fr.readAsDataURL(file);
+      });
+      return { mimetype: file.type, data: b64.split(',')[1], filename: file.name };
     }
 
+    // ── Stream reader helper ────────────────────────────────────────────────────
+    async function readNDJSONStream(response, onRow) {
+      const reader  = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = '';
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const lines = buf.split('\n');
+        buf = lines.pop(); // keep incomplete last line
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          try { onRow(JSON.parse(line)); } catch (_) {}
+        }
+      }
+      // flush remainder
+      if (buf.trim()) { try { onRow(JSON.parse(buf)); } catch (_) {} }
+    }
+
+    // ── Auto batch send ────────────────────────────────────────────────────────
+    async function sendBatch(toSend, template, media) {
+      document.getElementById('btnSend').disabled = true;
+      log(`Sending to ${toSend.length} contacts…`, 'i');
+
+      try {
+        const r = await fetch('/api/wa/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contacts:  toSend,
+            template:  template,
+            media:     media,
+            delay_ms:  parseInt(document.getElementById('delaySelect').value)
+          })
+        });
+
+        if (!r.ok) {
+          const e = await r.json().catch(() => ({ error: 'Unknown error' }));
+          throw new Error(e.error || ('Server ' + r.status));
+        }
+
+        await readNDJSONStream(r, row => {
+          if (row.status === 'success') log(`✅ Sent to ${row.name} (${row.phone})`, 's');
+          else if (row.status === 'error')  log(`❌ ${row.name} (${row.phone}): ${row.error}`, 'e');
+          else if (row.status === 'fatal')  { log(`🔴 ${row.error}`, 'e'); applyState({ status: 'disconnected', error: row.error }); }
+          else if (row.status === 'done')   log('✔ Batch complete!', 'i');
+        });
+      } catch (err) {
+        log('Send error: ' + err.message, 'e');
+      }
+
+      document.getElementById('btnSend').disabled = !waReady;
+    }
+
+    // ── Start sending (entry point) ────────────────────────────────────────────
     async function startSending() {
       const batchStr = document.getElementById('batchSelect').value;
-      const limit = batchStr === 'all' ? contacts.length : parseInt(batchStr, 10);
-      const toSend = contacts.slice(0, Math.min(limit, contacts.length));
+      const limit    = batchStr === 'all' ? contacts.length : parseInt(batchStr);
+      const toSend   = contacts.slice(0, limit);
       const template = document.getElementById('msgTemplate').value;
+      const mode     = document.querySelector('input[name="sendMode"]:checked').value;
 
-      const mode = document.querySelector('input[name="sendMode"]:checked').value;
-      
-      if(toSend.length === 0) return alert("No valid contacts to send to.");
-      
+      if (!toSend.length) return alert('No valid contacts loaded.');
+
+      const media = await readMedia();
+
       if (mode === 'manual') {
         manualBatch = toSend;
-        manualIndex = 0;
+        manualIdx   = 0;
         document.getElementById('btnSend').style.display = 'none';
-        document.getElementById('manualReviewBox').style.display = 'block';
+        document.getElementById('manualBox').style.display = 'block';
         loadManualContact();
         return;
       }
 
-      if(toSend.length === 0) return alert("No valid contacts to send to.");
-      if(!confirm(`Are you sure you want to send ${toSend.length} messages?`)) return;
-
-      document.getElementById('btnSend').disabled = true;
-      logMsg(`Starting batch of ${toSend.length} messages...`, 'info');
-
-      try {
-        let mediaPayload = null;
-        const mediaInput = document.getElementById('mediaFile');
-        if (mediaInput.files.length > 0) {
-          const file = mediaInput.files[0];
-          const b64 = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
-          mediaPayload = {
-            mimetype: file.type,
-            data: b64.split(',')[1],
-            filename: file.name
-          };
-        }
-        const res = await fetch('/api/wa/send', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contacts: toSend, template: template, media: mediaPayload })
-        });
-        
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder('utf-8');
-        let done = false;
-
-        while (!done) {
-          const { value, done: readerDone } = await reader.read();
-          done = readerDone;
-          if (value) {
-            const chunk = decoder.decode(value, {stream: true});
-            const lines = chunk.split('\n');
-            lines.forEach(line => {
-              if (line.trim()) {
-                try {
-                  const data = JSON.parse(line);
-                  if(data.status === 'success') logMsg(`✅ Sent to ${data.name} (${data.phone})`, 'success');
-                  else if(data.status === 'error') logMsg(`❌ Failed for ${data.name}: ${data.error}`, 'error');
-                  else if(data.status === 'done') {
-                    logMsg(`Batch complete!`, 'info');
-                    document.getElementById('btnSend').disabled = false;
-                  }
-                } catch(e) { }
-              }
-            });
-          }
-        }
-      } catch (e) {
-        logMsg(`Error during sending: ${e.message}`, 'error');
-        document.getElementById('btnSend').disabled = false;
-      }
+      if (!confirm(`Send to ${toSend.length} contacts?`)) return;
+      await sendBatch(toSend, template, media);
     }
 
-    
+    // ── Manual mode ────────────────────────────────────────────────────────────
     function loadManualContact() {
-      if (manualIndex >= manualBatch.length) {
-        logMsg(`Manual batch complete!`, `info`);
-        manualCancel();
+      if (manualIdx >= manualBatch.length) {
+        log('Manual batch complete!', 'i');
+        manualStop();
         return;
       }
-      const c = manualBatch[manualIndex];
-      const template = document.getElementById(`msgTemplate`).value;
-      let merged = template.replace(/{name}/gi, c.name || `Customer`);
-      
-      document.getElementById(`manualHeader`).innerText = `Review Contact ${manualIndex + 1} of ${manualBatch.length}`;
-      document.getElementById(`manualContactInfo`).innerText = `${c.name} (${c.phone})`;
-      document.getElementById(`manualMsgEdit`).value = merged;
+      const c    = manualBatch[manualIdx];
+      const tmpl = document.getElementById('msgTemplate').value;
+      document.getElementById('manualHeader').textContent = `Review ${manualIdx + 1} of ${manualBatch.length}`;
+      document.getElementById('manualInfo').textContent   = `${c.name}  •  ${c.phone}`;
+      document.getElementById('manualMsg').value          = mergeMsg(tmpl, c);
     }
 
-    async function manualSendNext() {
-      const c = manualBatch[manualIndex];
-      const customMsg = document.getElementById(`manualMsgEdit`).value;
-      
-      logMsg(`Sending manually to ${c.name}...`, `info`);
-      
+    async function manualSend() {
+      const c       = manualBatch[manualIdx];
+      const msg     = document.getElementById('manualMsg').value;
+      const media   = await readMedia();
+      log(`Sending to ${c.name}…`, 'i');
       try {
-        let mediaPayload = null;
-        const mediaInput = document.getElementById(`mediaFile`);
-        if (mediaInput.files.length > 0) {
-          const file = mediaInput.files[0];
-          const b64 = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
-          mediaPayload = { mimetype: file.type, data: b64.split(`,`)[1], filename: file.name };
-        }
-        
-        // We use the same endpoint but with 1 contact and the overridden message
-        const res = await fetch(`/api/wa/send`, {
-          method: `POST`,
+        const r = await fetch('/api/wa/send', {
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contacts: [c], template: customMsg, media: mediaPayload })
+          body: JSON.stringify({ contacts: [c], template: msg, media })
         });
-        
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder(`utf-8`);
-        let done = false;
-        while (!done) {
-          const { value, done: readerDone } = await reader.read();
-          done = readerDone;
-          if (value) {
-            const chunk = decoder.decode(value, {stream: true});
-            const lines = chunk.split(`\n`);
-            lines.forEach(line => {
-              if (line.trim()) {
-                try {
-                  const data = JSON.parse(line);
-                  if(data.status === `success`) logMsg(`✅ Sent to ${data.name} (${data.phone})`, `success`);
-                  else if(data.status === `error`) logMsg(`❌ Failed for ${data.name}: ${data.error}`, `error`);
-                } catch(e) {}
-              }
-            });
-          }
-        }
-      } catch (e) {
-        logMsg(`Error: ${e.message}`, `error`);
+        await readNDJSONStream(r, row => {
+          if (row.status === 'success') log(`✅ Sent to ${row.name}`, 's');
+          else if (row.status === 'error') log(`❌ ${row.name}: ${row.error}`, 'e');
+        });
+      } catch (err) {
+        log('Send error: ' + err.message, 'e');
       }
-      
-      manualIndex++;
+      manualIdx++;
       loadManualContact();
     }
 
     function manualSkip() {
-      logMsg(`Skipped ${manualBatch[manualIndex].name}`, `info`);
-      manualIndex++;
+      log(`Skipped ${manualBatch[manualIdx].name}`, 'w');
+      manualIdx++;
       loadManualContact();
     }
 
-    function manualCancel() {
-      document.getElementById(`manualReviewBox`).style.display = `none`;
-      document.getElementById(`btnSend`).style.display = `block`;
-      logMsg(`Stopped manual sending.`, `info`);
+    function manualStop() {
+      document.getElementById('manualBox').style.display = 'none';
+      document.getElementById('btnSend').style.display  = 'block';
+      checkReady();
     }
 
     function logout() {
@@ -675,10 +637,10 @@
       window.location.href = '/admin';
     }
 
-    // Keep the page synchronized even if the browser reconnects after an SSE drop.
+    // ── Init ───────────────────────────────────────────────────────────────────
+    openSSE();
     checkWAStatus();
-    openWAStream();
-    setInterval(checkWAStatus, 3000);
+    document.getElementById('mediaFile').addEventListener('change', checkReady);
   </script>
 </body>
 </html>
