@@ -263,13 +263,20 @@
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = function(e) {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, {type: 'array'});
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        
-        rawData = XLSX.utils.sheet_to_json(worksheet, {defval: ""});
+        reader.onload = function(e) {
+          try {
+            let workbook;
+            if (file.name && file.name.toLowerCase().endsWith('.csv')) {
+              const text = e.target.result;
+              workbook = XLSX.read(text, { type: 'string' });
+            } else {
+              const data = new Uint8Array(e.target.result);
+              workbook = XLSX.read(data, { type: 'array' });
+            }
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+          
+            rawData = XLSX.utils.sheet_to_json(worksheet, {defval: ""});
         if (rawData.length === 0) {
           alert("Spreadsheet is empty!");
           return;
@@ -278,7 +285,12 @@
         headers = Object.keys(rawData[0]);
         setupMapping();
       };
-      reader.readAsArrayBuffer(file);
+      // Use text reader for CSV files, otherwise read as ArrayBuffer for Excel
+      if (file.name && file.name.toLowerCase().endsWith('.csv')) {
+        reader.readAsText(file, 'utf-8');
+      } else {
+        reader.readAsArrayBuffer(file);
+      }
     });
 
     function setupMapping() {
