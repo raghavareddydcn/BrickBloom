@@ -1198,7 +1198,7 @@
                   <th style="width:26px;text-align:center">#</th>
                   <th>Description</th>
                   <th style="width:54px;text-align:right">Qty</th>
-                  <th style="width:68px;text-align:right">Price ₹</th>
+                  <th style="width:68px;text-align:right">Price (Rs.)</th>
                   <th style="width:64px;text-align:center">GST %</th>
                   <th style="width:72px;text-align:right">Amount</th>
                   <th style="width:26px"></th>
@@ -1218,19 +1218,19 @@
           <div class="totals-grid">
             <div class="total-row">
               <label>Items Subtotal</label>
-              <span class="tval" id="st_subtotal">₹ 0.00</span>
+              <span class="tval" id="st_subtotal">Rs. 0.00</span>
             </div>
             <div class="total-row">
-              <label>Transport / Delivery (₹)</label>
+              <label>Transport / Delivery (Rs.)</label>
               <input class="num-input" type="number" id="transport" min="0" placeholder="0.00" oninput="renderPreview()" />
             </div>
             <div class="total-row">
               <label>GST Amount</label>
-              <span class="tval" id="st_tax">₹ 0.00</span>
+              <span class="tval" id="st_tax">Rs. 0.00</span>
             </div>
             <div class="total-row grand">
               <label>Grand Total</label>
-              <span class="tval" id="st_grand">₹ 0.00</span>
+              <span class="tval" id="st_grand">Rs. 0.00</span>
             </div>
           </div>
         </div>
@@ -1725,7 +1725,7 @@
             '<span class="isc-date">' + fmtDate(inv.issueDate) + '</span>' +
           '</div>' +
           '<div class="isc-cust">👤 ' + escH(inv.custName || '(no name)') + '</div>' +
-          '<div class="isc-total">₹ ' + fmtN(grand) + '</div>' +
+          '<div class="isc-total">Rs. ' + fmtN(grand) + '</div>' +
           '<div class="isc-actions">' +
             '<button class="isc-btn isc-edit" data-id="' + inv.id + '">✏️ Edit</button>' +
             '<button class="isc-btn isc-clone" data-id="' + inv.id + '">📋 New from this</button>' +
@@ -2010,7 +2010,7 @@
 
     /* -- Helpers ---------------------------------------------------------- */
     function fmtN(n) { return isNaN(n) ? '0.00' : n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
-    function fmtCur(n) { return isNaN(n) ? '₹ 0.00' : '₹ ' + fmtN(n); }
+    function fmtCur(n) { return isNaN(n) ? '₹ 0.00' : 'Rs. ' + fmtN(n); }
     function escH(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
     function fmtDate(d) {
       if (!d) return '';
@@ -2101,8 +2101,8 @@
           var taxAmt = t.taxBreakdown[rate];
           var halfRate = rate / 2;
           var halfTax = taxAmt / 2;
-          gstRowsHtml += '<div class="inv-sum-row"><span class="inv-sum-k">CGST @ ' + halfRate + '%</span><span class="inv-sum-v">₹ ' + fmtN(halfTax) + '</span></div>' +
-                         '<div class="inv-sum-row"><span class="inv-sum-k">SGST @ ' + halfRate + '%</span><span class="inv-sum-v">₹ ' + fmtN(halfTax) + '</span></div>';
+          gstRowsHtml += '<div class="inv-sum-row"><span class="inv-sum-k">CGST @ ' + halfRate + '%</span><span class="inv-sum-v">Rs. ' + fmtN(halfTax) + '</span></div>' +
+                         '<div class="inv-sum-row"><span class="inv-sum-k">SGST @ ' + halfRate + '%</span><span class="inv-sum-v">Rs. ' + fmtN(halfTax) + '</span></div>';
         });
       }
 
@@ -2158,7 +2158,7 @@
             '<div class="inv-party-label">Dispatch Details</div>' +
             '<div class="inv-meta-rows">' +
               '<div class="inv-meta-row"><span class="inv-meta-k">Dispatched from</span><span class="inv-meta-v">Bangalore, Karnataka</span></div>' +
-              '<div class="inv-meta-row"><span class="inv-meta-k">Transport Charges</span><span class="inv-meta-v">₹ ' + fmtN(t.transport) + '</span></div>' +
+              '<div class="inv-meta-row"><span class="inv-meta-k">Transport Charges</span><span class="inv-meta-v">Rs. ' + fmtN(t.transport) + '</span></div>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -2181,10 +2181,10 @@
                 '<th style="text-align:center">#</th>' +
                 '<th style="text-align:left">Item / Description</th>' +
                 '<th>Qty</th>' +
-                '<th>Rate (₹)</th>' +
+                '<th>Rate (Rs.)</th>' +
                 '<th>Taxable Amt</th>' +
                 '<th>GST Amt</th>' +
-                '<th>Total (₹)</th>' +
+                '<th>Total (Rs.)</th>' +
               '</tr>' +
             '</thead>' +
             '<tbody>' +
@@ -2203,14 +2203,14 @@
 
           '<div class="inv-fin-right">' +
             '<div class="inv-summary-rows">' +
-              '<div class="inv-sum-row"><span class="inv-sum-k">Taxable Value</span><span class="inv-sum-v">₹ ' + fmtN(t.subtotal) + '</span></div>' +
+              '<div class="inv-sum-row"><span class="inv-sum-k">Taxable Value</span><span class="inv-sum-v">Rs. ' + fmtN(t.subtotal) + '</span></div>' +
               gstRowsHtml +
-              '<div class="inv-sum-row"><span class="inv-sum-k">Transport</span><span class="inv-sum-v">₹ ' + fmtN(t.transport) + '</span></div>' +
+              '<div class="inv-sum-row"><span class="inv-sum-k">Transport</span><span class="inv-sum-v">Rs. ' + fmtN(t.transport) + '</span></div>' +
               '<div class="inv-sum-divider"></div>' +
             '</div>' +
             '<div class="inv-grand-row">' +
               '<span class="inv-grand-k">Total Payable</span>' +
-              '<span class="inv-grand-v">₹ ' + fmtN(t.grand) + '</span>' +
+              '<span class="inv-grand-v">Rs. ' + fmtN(t.grand) + '</span>' +
             '</div>' +
           '</div>' +
         '</div>' +
