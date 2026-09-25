@@ -367,7 +367,7 @@
 
     /* Items editor table */
     .items-scroller { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 10px; }
-    .items-tbl { width: 100%; border-collapse: collapse; min-width: 380px; }
+    .items-tbl { width: 100%; border-collapse: collapse; min-width: 520px; }
     .items-tbl th {
       background: var(--slate-100);
       padding: 7px 6px;
@@ -476,16 +476,13 @@
     .preview-col {
       position: sticky;
       top: 76px;
-      /* Fill available viewport height minus topbar + padding so the panel
-         scrolls independently of the form column when the invoice is tall
-         (e.g. 10+ items).  align-self keeps the sticky box at grid-start
-         so it doesn't stretch to match the form column's height. */
       align-self: start;
       max-height: calc(100vh - 96px);
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 14px;
+      min-height: 0;          /* allow flex children to overflow */
     }
     .preview-col::-webkit-scrollbar { width: 6px; }
     .preview-col::-webkit-scrollbar-track { background: var(--slate-100); border-radius: 4px; }
@@ -495,6 +492,7 @@
     .export-btns {
       display: flex;
       gap: 10px;
+      flex-shrink: 0;
     }
     .export-btn {
       flex: 1;
@@ -528,6 +526,7 @@
       font-size: 12.5px;
       color: var(--slate-800);
       line-height: 1.45;
+      flex-shrink: 0;         /* don't compress — let preview-col scroll */
     }
 
     /* ─ Accent top stripe ── */
@@ -715,45 +714,45 @@
        both the browser and the html2canvas PDF/PNG export, unlike a mix of
        fixed px widths + one "auto" column which html2canvas fails to
        stretch to the full table width. */
-    .inv-tbl col.c-sr      { width: 5%; }
-    .inv-tbl col.c-desc    { width: 45%; }
-    .inv-tbl col.c-qty     { width: 7%; }
-    .inv-tbl col.c-rate    { width: 11%; }
-    .inv-tbl col.c-taxable { width: 12%; }
-    .inv-tbl col.c-gst     { width: 10%; }
-    .inv-tbl col.c-total   { width: 10%; }
+    .inv-tbl col.c-sr      { width: 4%; }
+    .inv-tbl col.c-desc    { width: 32%; }
+    .inv-tbl col.c-qty     { width: 9%; }
+    .inv-tbl col.c-rate    { width: 12%; }
+    .inv-tbl col.c-taxable { width: 14%; }
+    .inv-tbl col.c-gst     { width: 14%; }
+    .inv-tbl col.c-total   { width: 15%; }
 
     .inv-tbl thead th {
       background: var(--slate-800);
       color: white;
-      padding: 9px 10px;
+      padding: 8px 6px;
       font-size: 9.5px;
       font-weight: 700;
       letter-spacing: 0.4px;
       text-transform: uppercase;
       text-align: right;
-      white-space: normal;
+      white-space: nowrap;
       line-height: 1.25;
-      word-break: break-word;
     }
-    .inv-tbl thead th:first-child { text-align: center; border-radius: 0; padding-left: 6px; padding-right: 6px; }
-    .inv-tbl thead th:nth-child(2) { text-align: left; }
+    .inv-tbl thead th:first-child { text-align: center; border-radius: 0; padding-left: 4px; padding-right: 4px; }
+    .inv-tbl thead th:nth-child(2) { text-align: left; white-space: normal; }
     .inv-tbl thead th + th { border-left: 1px solid rgba(255,255,255,0.14); }
 
     .inv-tbl tbody td {
-      padding: 9px 12px;
+      padding: 7px 6px;
       border-bottom: 1px solid var(--slate-100);
       vertical-align: middle;
       text-align: right;
+      white-space: nowrap;
     }
-    .inv-tbl tbody td:first-child { text-align: center; color: var(--slate-400); font-size: 11px; font-weight: 700; padding-left: 6px; padding-right: 6px; }
-    .inv-tbl tbody td:nth-child(2) { text-align: left; }
+    .inv-tbl tbody td:first-child { text-align: center; color: var(--slate-400); font-size: 11px; font-weight: 700; padding-left: 4px; padding-right: 4px; }
+    .inv-tbl tbody td:nth-child(2) { text-align: left; white-space: normal; word-break: break-word; }
     .inv-tbl tbody td + td { border-left: 1px solid var(--slate-100); }
 
     .inv-tbl tbody tr:last-child td { border-bottom: none; }
     .inv-tbl tbody tr:nth-child(even) td { background: rgba(248,250,252,0.6); }
 
-    .inv-item-name { font-weight: 700; color: var(--slate-900); font-size: 12.5px; }
+    .inv-item-name { font-weight: 700; color: var(--slate-900); font-size: 12px; }
     .inv-item-sub  { font-size: 10px; color: var(--slate-500); margin-top: 1px; }
 
     /* Subtotal / totals rows */
@@ -761,8 +760,8 @@
       background: #e6d4b2 !important;
       border-top: 2px solid #d4c29e;
       border-bottom: 2px solid #d4c29e;
-      padding: 9px 12px;
-      font-size: 12px;
+      padding: 7px 6px;
+      font-size: 11.5px;
       font-weight: 800;
       color: var(--slate-800);
     }
@@ -2062,9 +2061,9 @@
         '<td><strong>TOTAL</strong></td>' +
         '<td><strong>' + fmtN(totalQty) + '</strong></td>' +
         '<td></td>' +
-        '<td><strong>' + fmtN(t.subtotal) + '</strong></td>' +
-        '<td><strong>' + fmtN(t.tax) + '</strong></td>' +
-        '<td><strong>' + fmtN(t.subtotal + t.tax) + '</strong></td>' +
+        '<td><strong>₹ ' + fmtN(t.subtotal) + '</strong></td>' +
+        '<td><strong>₹ ' + fmtN(t.tax) + '</strong></td>' +
+        '<td><strong>₹ ' + fmtN(t.subtotal + t.tax) + '</strong></td>' +
       '</tr>';
 
       var refNo         = escH(v('refNo')         || 'BB/26-27/—');
