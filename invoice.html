@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -476,6 +476,11 @@
     .preview-col {
       position: sticky;
       top: 76px;
+      /* Fill available viewport height minus topbar + padding so the panel
+         scrolls independently of the form column when the invoice is tall
+         (e.g. 10+ items).  align-self keeps the sticky box at grid-start
+         so it doesn't stretch to match the form column's height. */
+      align-self: start;
       max-height: calc(100vh - 96px);
       overflow-y: auto;
       display: flex;
