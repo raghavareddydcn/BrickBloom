@@ -928,12 +928,16 @@
         border: 1px solid var(--slate-300) !important;
         font-size: 10px !important;
         line-height: 1.35 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: 286mm !important; /* Forces A4 height utilization */
       }
       /* Compact vertical padding for single-page print fit */
       .inv-header { padding: 10px 14px 8px !important; gap: 8px !important; }
-      .inv-company-logo { height: 90px !important; margin-bottom: 0 !important; }
+      .inv-company-logo { margin-bottom: 0 !important; }
       .inv-company-name { font-size: 18px !important; }
       .inv-party { padding: 8px 14px !important; }
+      .inv-items-section { flex-grow: 1 !important; } /* Pushes everything below it to the bottom */
       .inv-items-heading { padding: 6px 0 3px !important; }
       .inv-tbl th, .inv-tbl td { padding: 4px 5px !important; font-size: 10px !important; }
       .inv-tbl .subtotal-row td { padding: 5px 5px !important; }
