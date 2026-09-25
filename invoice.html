@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -482,6 +482,10 @@
       flex-direction: column;
       gap: 14px;
     }
+    .preview-col::-webkit-scrollbar { width: 6px; }
+    .preview-col::-webkit-scrollbar-track { background: var(--slate-100); border-radius: 4px; }
+    .preview-col::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 4px; }
+    .preview-col::-webkit-scrollbar-thumb:hover { background: var(--slate-400); }
 
     .export-btns {
       display: flex;
@@ -898,7 +902,7 @@
        PRINT STYLES
     ══════════════════════════════════════════════════════════════════════ */
     @media print {
-      @page { size: A4 portrait; margin: 5mm; }
+      @page { size: A4 portrait; margin: 4mm; }
       body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .topbar, .mobile-actions, .drawer-overlay, .drawer,
       .form-col, .export-btns, .editing-badge, .toast {
@@ -918,21 +922,23 @@
         box-shadow: none !important;
         border-radius: 0 !important;
         border: 1px solid var(--slate-300) !important;
-        font-size: 10.5px !important;
+        font-size: 10px !important;
+        line-height: 1.35 !important;
       }
       /* Compact vertical padding for single-page print fit */
-      .inv-header { padding: 12px 16px 10px !important; gap: 8px !important; }
-      .inv-company-logo { height: 42px !important; margin-bottom: 4px !important; }
-      .inv-party { padding: 10px 16px !important; }
-      .inv-items-heading { padding: 8px 0 4px !important; }
-      .inv-tbl th, .inv-tbl td { padding: 6px 6px !important; }
-      .inv-tbl .subtotal-row td { padding: 6px 6px !important; }
-      .inv-fin-left, .inv-fin-right { padding: 10px 16px !important; }
-      .inv-summary-rows { margin-bottom: 8px !important; gap: 4px !important; }
-      .inv-grand-row { padding: 8px 12px !important; }
-      .inv-footer-row { padding: 10px 16px 12px !important; gap: 10px !important; }
-      .inv-sign-co { margin-bottom: 24px !important; }
-      .inv-tagline { padding: 6px 16px !important; font-size: 9.5px !important; }
+      .inv-header { padding: 10px 14px 8px !important; gap: 8px !important; }
+      .inv-company-logo { height: 42px !important; margin-bottom: 0 !important; }
+      .inv-company-name { font-size: 18px !important; }
+      .inv-party { padding: 8px 14px !important; }
+      .inv-items-heading { padding: 6px 0 3px !important; }
+      .inv-tbl th, .inv-tbl td { padding: 4px 5px !important; font-size: 10px !important; }
+      .inv-tbl .subtotal-row td { padding: 5px 5px !important; }
+      .inv-fin-left, .inv-fin-right { padding: 8px 14px !important; }
+      .inv-summary-rows { margin-bottom: 6px !important; gap: 3px !important; }
+      .inv-grand-row { padding: 6px 10px !important; }
+      .inv-footer-row { padding: 8px 14px 10px !important; gap: 10px !important; }
+      .inv-sign-co { margin-bottom: 20px !important; }
+      .inv-tagline { padding: 5px 14px !important; font-size: 9px !important; }
     }
 
     /* ══════════════════════════════════════════════════════════════════════
@@ -1175,6 +1181,7 @@
                   <th>Description</th>
                   <th style="width:54px;text-align:right">Qty</th>
                   <th style="width:68px;text-align:right">Price ₹</th>
+                  <th style="width:64px;text-align:center">GST %</th>
                   <th style="width:72px;text-align:right">Amount</th>
                   <th style="width:26px"></th>
                 </tr>
@@ -1250,24 +1257,31 @@
 
     /* ── Product Catalog & Tiered Pricing Matrix ────────────────────────── */
     var DEFAULT_PRODUCT_CATALOG = [
-      { name: '2 Inch Pot',                price1: 25, price50: 22, price100: 20 },
-      { name: '3 inch Pot',                price1: 40, price50: 30, price100: 25 },
-      { name: '4 inch Pot',                price1: 50, price50: 35, price100: 30 },
-      { name: '6 inch Pot (Std)',          price1: 60, price50: 50, price100: 45 },
-      { name: '6 inch Pot (Heavy)',        price1: 70, price50: 60, price100: 55 },
-      { name: '8 Inch Pot',                price1: 80, price50: 60, price100: 50 },
-      { name: 'Hangeer for 8 inch',        price1: 150, price50: 140, price100: 120 },
-      { name: '50 mm Disc',                price1: 15, price50: 12, price100: 10 },
-      { name: '100 mm Disc',               price1: 0,  price50: 0,  price100: 0 },
-      { name: '650 Gm Bric',               price1: 99, price50: 89, price100: 79 },
-      { name: '5Kg Block',                 price1: 300, price50: 269, price100: 249 },
-      { name: 'Pole 1 Feet',               price1: 0,  price50: 0,  price100: 0 },
-      { name: 'Ready Pot',                 price1: 149, price50: 135, price100: 129 },
-      { name: 'Starter Kit',               price1: 159, price50: 145, price100: 139 },
-      { name: 'Medium Kit',                price1: 249, price50: 235, price100: 229 },
-      { name: 'Premium Kit',               price1: 699, price50: 659, price100: 649 },
-      { name: 'Ready pot With Out Plant', price1: 130, price50: 119, price100: 99 }
+      { name: '2 Inch Pot',                price1: 25, price50: 22, price100: 20, gstRate: 5 },
+      { name: '3 inch Pot',                price1: 40, price50: 30, price100: 25, gstRate: 5 },
+      { name: '4 inch Pot',                price1: 50, price50: 35, price100: 30, gstRate: 5 },
+      { name: '6 inch Pot (Std)',          price1: 60, price50: 50, price100: 45, gstRate: 5 },
+      { name: '6 inch Pot (Heavy)',        price1: 70, price50: 60, price100: 55, gstRate: 5 },
+      { name: '8 Inch Pot',                price1: 80, price50: 60, price100: 50, gstRate: 5 },
+      { name: 'Hangeer for 8 inch',        price1: 150, price50: 140, price100: 120, gstRate: 5 },
+      { name: '50 mm Disc',                price1: 15, price50: 12, price100: 10, gstRate: 5 },
+      { name: '100 mm Disc',               price1: 0,  price50: 0,  price100: 0, gstRate: 5 },
+      { name: '650 Gm Bric',               price1: 99, price50: 89, price100: 79, gstRate: 5 },
+      { name: '5Kg Block',                 price1: 300, price50: 269, price100: 249, gstRate: 5 },
+      { name: 'Pole 1 Feet',               price1: 0,  price50: 0,  price100: 0, gstRate: 5 },
+      { name: 'Ready Pot',                 price1: 149, price50: 135, price100: 129, gstRate: 5 },
+      { name: 'Starter Kit',               price1: 159, price50: 145, price100: 139, gstRate: 5 },
+      { name: 'Medium Kit',                price1: 249, price50: 235, price100: 229, gstRate: 5 },
+      { name: 'Premium Kit',               price1: 699, price50: 659, price100: 649, gstRate: 5 },
+      { name: 'Ready pot With Out Plant', price1: 130, price50: 119, price100: 99, gstRate: 5 },
+      { name: 'Packing',                   price1: 0,   price50: 0,   price100: 0,  gstRate: 5 }
     ];
+
+    function getProductDefaultGstRate(itemName) {
+      var prod = PRODUCT_CATALOG.find(function(p) { return p.name === itemName; });
+      if (prod && prod.gstRate !== undefined && prod.gstRate !== null) return parseFloat(prod.gstRate);
+      return 5;
+    }
 
     var PRODUCT_CATALOG = [];
     async function saveCustomProduct(itemObj) {
@@ -1706,15 +1720,16 @@
     }
 
     /* ── Row management ─────────────────────────────────────────────────── */
-    function addRow(name, qty, price) {
+    function addRow(name, qty, price, gstRate) {
       var id = ++rowCounter;
-      items.push({ id: id, name: name || '', qty: qty || '', price: price || '' });
+      var defaultGst = gstRate !== undefined && gstRate !== null ? parseFloat(gstRate) : getProductDefaultGstRate(name);
+      items.push({ id: id, name: name || '', qty: qty || '', price: price || '', gstRate: defaultGst });
       rebuildTable();
     }
 
     function removeRow(id) {
       items = items.filter(function(r) { return r.id !== id; });
-      if (!items.length) addRow('', '', '');
+      if (!items.length) addRow('', '', '', 5);
       else rebuildTable();
     }
 
@@ -1779,10 +1794,9 @@
               var customName = prompt('Enter new product name to add to catalog:');
               if (customName && customName.trim()) {
                 var cleanName = customName.trim();
-                // Update items array and rebuild dropdown so new product shows as selected
                 var targetRow3 = items.find(function(r) { return r.id === iid; });
-                if (targetRow3) targetRow3.name = cleanName;
-                saveCustomProduct({ name: cleanName, price1: targetRow3 ? (targetRow3.price || 0) : 0, price50: 0, price100: 0 });
+                if (targetRow3) { targetRow3.name = cleanName; targetRow3.gstRate = 5; }
+                saveCustomProduct({ name: cleanName, price1: targetRow3 ? (targetRow3.price || 0) : 0, price50: 0, price100: 0, gstRate: 5 });
                 rebuildTable();
                 showToast('✅ Saved "' + cleanName + '" to product catalog!');
               }
@@ -1795,6 +1809,7 @@
               if (autoP !== null) {
                 targetRow.price = autoP;
               }
+              targetRow.gstRate = getProductDefaultGstRate(selectedVal);
               rebuildTable();
             }
           };
@@ -1815,7 +1830,7 @@
               if (newName && newName.trim()) {
                 var cleanName = newName.trim();
                 var targetRow = items.find(function(r) { return r.id === iid; });
-                saveCustomProduct({ name: cleanName, price1: targetRow ? targetRow.price : 0, price50: 0, price100: 0 });
+                saveCustomProduct({ name: cleanName, price1: targetRow ? targetRow.price : 0, price50: 0, price100: 0, gstRate: targetRow ? targetRow.gstRate : 5 });
                 updateRow(iid, 'name', cleanName);
                 showToast('✅ Product updated in catalog!');
               }
@@ -1853,7 +1868,7 @@
         })(item.id);
         td3.appendChild(iq); tr.appendChild(td3);
 
-        // Price Text Input (Auto-calculated, editable)
+        // Price Text Input
         var td4 = document.createElement('td');
         var ip = document.createElement('input');
         ip.type = 'number'; ip.className = 'r price-input'; ip.min = '0'; ip.step = '0.01'; ip.placeholder = '0.00';
@@ -1872,6 +1887,30 @@
           };
         })(item.id);
         td4.appendChild(ip); tr.appendChild(td4);
+
+        // GST % Select
+        var tdGst = document.createElement('td');
+        var sg = document.createElement('select');
+        sg.className = 'item-select';
+        sg.style.cssText = 'width:64px;padding:5px 2px;border:1.5px solid var(--slate-200);border-radius:5px;font-size:11px;background:white;outline:none;font-family:var(--font-body);text-align:center';
+        [0, 5, 12, 18].forEach(function(rate) {
+          var opt = document.createElement('option');
+          opt.value = rate;
+          opt.textContent = rate + '%';
+          if (parseFloat(item.gstRate !== undefined ? item.gstRate : 5) === rate) opt.selected = true;
+          sg.appendChild(opt);
+        });
+        sg.onchange = (function(iid) {
+          return function() {
+            var val = parseFloat(this.value);
+            var targetRow = items.find(function(r) { return r.id === iid; });
+            if (targetRow) {
+              targetRow.gstRate = val;
+              renderPreview();
+            }
+          };
+        })(item.id);
+        tdGst.appendChild(sg); tr.appendChild(tdGst);
 
         // Amount
         var td5 = document.createElement('td');
@@ -1894,11 +1933,25 @@
 
     /* ── Calculations ───────────────────────────────────────────────────── */
     function calcTotals() {
-      var sub = items.reduce(function(s, r) { return s + parseFloat(r.qty||0) * parseFloat(r.price||0); }, 0);
-      var tr  = parseFloat(v('transport') || 0);
-      var rate= parseFloat(v('taxRate') || 0);
-      var tax = sub * rate / 100;
-      return { subtotal: sub, transport: tr, taxRate: rate, tax: tax, grand: sub + tr + tax };
+      var sub = 0;
+      var totalTax = 0;
+      var taxBreakdown = {};
+
+      items.forEach(function(r) {
+        var qty  = parseFloat(r.qty || 0);
+        var rate = parseFloat(r.price || 0);
+        var amt  = qty * rate;
+        var gstRate = r.gstRate !== undefined && r.gstRate !== null ? parseFloat(r.gstRate) : getProductDefaultGstRate(r.name);
+        var taxAmt = amt * gstRate / 100;
+        sub += amt;
+        totalTax += taxAmt;
+        if (gstRate > 0) {
+          taxBreakdown[gstRate] = (taxBreakdown[gstRate] || 0) + taxAmt;
+        }
+      });
+
+      var tr = parseFloat(v('transport') || 0);
+      return { subtotal: sub, transport: tr, tax: totalTax, taxBreakdown: taxBreakdown, grand: sub + tr + totalTax };
     }
 
     /* ── Helpers ────────────────────────────────────────────────────────── */
@@ -1945,7 +1998,8 @@
             var qty  = parseFloat(r.qty || 0);
             var rate = parseFloat(r.price || 0);
             var amt  = qty * rate;
-            var taxAmt = amt * t.taxRate / 100;
+            var gstRate = r.gstRate !== undefined && r.gstRate !== null ? parseFloat(r.gstRate) : getProductDefaultGstRate(r.name);
+            var taxAmt = amt * gstRate / 100;
             return '<tr>' +
               '<td>' + (idx+1) + '</td>' +
               '<td>' +
@@ -1954,8 +2008,8 @@
               '<td>' + fmtN(qty) + '</td>' +
               '<td>' + fmtN(rate) + '</td>' +
               '<td>' + fmtN(amt) + '</td>' +
-              (t.taxRate > 0
-                ? '<td>' + fmtN(taxAmt) + '</td>'
+              (gstRate > 0
+                ? '<td>' + fmtN(taxAmt) + ' (' + gstRate + '%)</td>'
                 : '<td style="color:var(--slate-400)">Exempt</td>') +
               '<td>' + fmtN(amt + taxAmt) + '</td>' +
             '</tr>';
@@ -1981,8 +2035,22 @@
       var custPhone     = escH(v('custPhone'));
       var custState     = escH(v('custState'));
       var custGstin     = escH(v('custGstin'));
-      var cgst = t.taxRate > 0 ? t.tax / 2 : 0;
-      var sgst = cgst;
+
+      // Build GST summary breakdown rows
+      var gstRowsHtml = '';
+      var activeRates = Object.keys(t.taxBreakdown).sort(function(a,b){ return parseFloat(a)-parseFloat(b); });
+      if (activeRates.length === 0) {
+        gstRowsHtml = '<div class="inv-sum-row"><span class="inv-sum-k">GST</span><span class="inv-sum-v" style="color:var(--green-600)">Exempt (0%)</span></div>';
+      } else {
+        activeRates.forEach(function(rateStr) {
+          var rate = parseFloat(rateStr);
+          var taxAmt = t.taxBreakdown[rate];
+          var halfRate = rate / 2;
+          var halfTax = taxAmt / 2;
+          gstRowsHtml += '<div class="inv-sum-row"><span class="inv-sum-k">CGST @ ' + halfRate + '%</span><span class="inv-sum-v">₹ ' + fmtN(halfTax) + '</span></div>' +
+                         '<div class="inv-sum-row"><span class="inv-sum-k">SGST @ ' + halfRate + '%</span><span class="inv-sum-v">₹ ' + fmtN(halfTax) + '</span></div>';
+        });
+      }
 
       document.getElementById('invoiceDoc').innerHTML =
         '<div class="inv-stripe"></div>' +
@@ -2061,7 +2129,7 @@
                 '<th>Qty</th>' +
                 '<th>Rate (₹)</th>' +
                 '<th>Taxable Amt</th>' +
-                '<th>GST (' + (t.taxRate > 0 ? t.taxRate + '%' : 'Exempt') + ')</th>' +
+                '<th>GST Amt</th>' +
                 '<th>Total (₹)</th>' +
               '</tr>' +
             '</thead>' +
@@ -2082,11 +2150,7 @@
           '<div class="inv-fin-right">' +
             '<div class="inv-summary-rows">' +
               '<div class="inv-sum-row"><span class="inv-sum-k">Taxable Value</span><span class="inv-sum-v">₹ ' + fmtN(t.subtotal) + '</span></div>' +
-              (t.taxRate > 0
-                ? '<div class="inv-sum-row"><span class="inv-sum-k">CGST @ ' + (t.taxRate/2) + '%</span><span class="inv-sum-v">₹ ' + fmtN(cgst) + '</span></div>' +
-                  '<div class="inv-sum-row"><span class="inv-sum-k">SGST @ ' + (t.taxRate/2) + '%</span><span class="inv-sum-v">₹ ' + fmtN(sgst) + '</span></div>'
-                : '<div class="inv-sum-row"><span class="inv-sum-k">GST</span><span class="inv-sum-v" style="color:var(--green-600)">Exempt (0%)</span></div>'
-              ) +
+              gstRowsHtml +
               '<div class="inv-sum-row"><span class="inv-sum-k">Transport</span><span class="inv-sum-v">₹ ' + fmtN(t.transport) + '</span></div>' +
               '<div class="inv-sum-divider"></div>' +
             '</div>' +
@@ -2115,7 +2179,7 @@
     }
 
     /* ── Export: Image ──────────────────────────────────────────────────── */
-        async function saveAsImage() {
+    async function saveAsImage() {
       var ok = await saveInvoice();
       if (!ok) return;
       var el  = document.getElementById('invoiceDoc');
@@ -2175,11 +2239,10 @@
       set('issueDate', today());
       set('payTerms', 'Immediate');
       set('placeOfSupply', 'Karnataka (29)');
-      set('taxRate', '0');
       items = []; rowCounter = 0;
       editingId = null;
       updateEditingBadge();
-      addRow('', '', '');
+      addRow('', '', '', 5);
       autoFillInvoiceNumber();
     }
 
@@ -2190,14 +2253,14 @@
     }
 
     /* ── Init ───────────────────────────────────────────────────────────── */
-    document.getElementById('addRowBtn').addEventListener('click', function() { addRow('', '', ''); });
+    document.getElementById('addRowBtn').addEventListener('click', function() { addRow('', '', '', 5); });
 
     set('issueDate', today());
     set('payTerms', 'Immediate');
     set('placeOfSupply', 'Karnataka (29)');
     refreshBadges();
     autoFillInvoiceNumber();
-    addRow('', '', '');
+    addRow('', '', '', 5);
   </script>
 </body>
 </html>
