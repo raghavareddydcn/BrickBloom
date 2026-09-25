@@ -1206,15 +1206,6 @@
               <label>Transport / Delivery (₹)</label>
               <input class="num-input" type="number" id="transport" min="0" placeholder="0.00" oninput="renderPreview()" />
             </div>
-            <div class="field" style="margin-top:4px">
-              <label>GST Tax Rate</label>
-              <select class="tax-select" id="taxRate" onchange="renderPreview()">
-                <option value="0">Exempted @ 0%</option>
-                <option value="5">GST 5% (CGST 2.5% + SGST 2.5%)</option>
-                <option value="12">GST 12% (CGST 6% + SGST 6%)</option>
-                <option value="18">GST 18% (CGST 9% + SGST 9%)</option>
-              </select>
-            </div>
             <div class="total-row">
               <label>GST Amount</label>
               <span class="tval" id="st_tax">₹ 0.00</span>
@@ -1509,8 +1500,13 @@
       set('custState',     inv.custState);
       set('custGstin',     inv.custGstin || '');
       set('transport',     inv.transport || '');
-      set('taxRate',       String(inv.taxRate || 0));
       items = inv.items ? JSON.parse(JSON.stringify(inv.items)) : [];
+      var defaultGstForOlder = (inv.taxRate !== undefined && inv.taxRate !== null && parseFloat(inv.taxRate) > 0) ? parseFloat(inv.taxRate) : 5;
+      items.forEach(function(r) {
+        if (r.gstRate === undefined || r.gstRate === null) {
+          r.gstRate = defaultGstForOlder;
+        }
+      });
       rowCounter = items.length ? Math.max.apply(null, items.map(function(i) { return i.id || 0; })) : 0;
       rebuildTable();
       updateEditingBadge();
@@ -1538,8 +1534,13 @@
       set('custState',     inv.custState);
       set('custGstin',     inv.custGstin || '');
       set('transport',     inv.transport || '');
-      set('taxRate',       String(inv.taxRate || 0));
       items = inv.items ? JSON.parse(JSON.stringify(inv.items)) : [];
+      var defaultGstForOlder = (inv.taxRate !== undefined && inv.taxRate !== null && parseFloat(inv.taxRate) > 0) ? parseFloat(inv.taxRate) : 5;
+      items.forEach(function(r) {
+        if (r.gstRate === undefined || r.gstRate === null) {
+          r.gstRate = defaultGstForOlder;
+        }
+      });
       rowCounter = items.length ? Math.max.apply(null, items.map(function(i) { return i.id || 0; })) : 0;
       rebuildTable();
       autoFillInvoiceNumber();
@@ -1713,9 +1714,18 @@
     });
 
     function calcFromInv(inv) {
-      var sub = (inv.items || []).reduce(function(s, r) { return s + parseFloat(r.qty||0) * parseFloat(r.price||0); }, 0);
-      var tr  = parseFloat(inv.transport || 0);
-      var tax = sub * parseFloat(inv.taxRate || 0) / 100;
+      var defaultGstForOlder = (inv.taxRate !== undefined && inv.taxRate !== null && parseFloat(inv.taxRate) > 0) ? parseFloat(inv.taxRate) : 5;
+      var sub = 0;
+      var tax = 0;
+      (inv.items || []).forEach(function(r) {
+        var qty  = parseFloat(r.qty || 0);
+        var rate = parseFloat(r.price || 0);
+        var amt  = qty * rate;
+        var gst  = r.gstRate !== undefined && r.gstRate !== null ? parseFloat(r.gstRate) : defaultGstForOlder;
+        sub += amt;
+        tax += amt * gst / 100;
+      });
+      var tr = parseFloat(inv.transport || 0);
       return { subtotal: sub, transport: tr, tax: tax };
     }
 
