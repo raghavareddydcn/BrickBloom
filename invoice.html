@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1512,7 +1512,14 @@
       updateEditingBadge();
       closeDrawer();
       showToast('✅ Loaded ' + inv.refNo + ' for editing');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Scroll the live invoice preview into view (preview-col is a sticky
+      // independently-scrolling container, so scrolling the window to 0 alone
+      // does not bring the rendered invoice into the viewport)
+      var previewCol = document.querySelector('.preview-col');
+      if (previewCol) previewCol.scrollTop = 0;
+      setTimeout(function() {
+        document.getElementById('invoiceDoc').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
     }
 
     function set(id, val) {
@@ -1547,7 +1554,12 @@
       updateEditingBadge();
       closeDrawer();
       showToast('✅ Pre-filled from ' + inv.refNo + ' as new invoice');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Same scroll fix — bring the rendered invoice preview into view
+      var previewCol = document.querySelector('.preview-col');
+      if (previewCol) previewCol.scrollTop = 0;
+      setTimeout(function() {
+        document.getElementById('invoiceDoc').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
     }
 
     function duplicateCurrentAsNew() {
@@ -2067,7 +2079,7 @@
 
         /* HEADER */
         '<div class="inv-header">' +
-          '<div>' +
+          '<div style="align-self:start">' +
             '<div class="inv-company-name">BrickBloom</div>' +
             '<div class="inv-company-tagline">From Nature, For Nature</div>' +
             '<div class="inv-company-addr">' +
@@ -2094,6 +2106,7 @@
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Invoice No:</span><span class="inv-hkv-v inv-refno">' + refNo + '</span></div>' +
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Date:</span><span class="inv-hkv-v">' + (issueDate || '—') + '</span></div>' +
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Payment Mode:</span><span class="inv-hkv-v">' + payTerms + '</span></div>' +
+              '<div class="inv-hkv-row"><span class="inv-hkv-k">Place of Supply:</span><span class="inv-hkv-v">' + placeOfSupply + '</span></div>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -2155,6 +2168,13 @@
           '<div class="inv-fin-left">' +
             '<div class="inv-fin-section-title">Amount in Words</div>' +
             '<div class="inv-words">' + numToWords(t.grand) + '</div>' +
+            '<div class="inv-fin-section-title" style="margin-top:10px">Bank Details</div>' +
+            '<div class="inv-bank-table">' +
+              '<span class="ibt-k">Bank Name</span><span class="ibt-v">State Bank of India</span>' +
+              '<span class="ibt-k">Account No</span><span class="ibt-v">42803608741</span>' +
+              '<span class="ibt-k">IFSC Code</span><span class="ibt-v">SBIN0010886</span>' +
+              '<span class="ibt-k">Branch</span><span class="ibt-v">Sarjapur Road, Bangalore</span>' +
+            '</div>' +
           '</div>' +
 
           '<div class="inv-fin-right">' +
