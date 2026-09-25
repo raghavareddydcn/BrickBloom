@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>BrickBloom � Tax Invoice</title>
+  <title>BrickBloom � Tax Invoice</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -526,7 +526,7 @@
       font-size: 12.5px;
       color: var(--slate-800);
       line-height: 1.45;
-      flex-shrink: 0;         /* don't compress � let preview-col scroll */
+      flex-shrink: 0;         /* don't compress � let preview-col scroll */
     }
 
     /* - Accent top stripe -- */
@@ -710,7 +710,7 @@
       font-size: 12.5px;
       table-layout: fixed;
     }
-    /* Percentage-based column widths (sum to 100%) � renders reliably in
+    /* Percentage-based column widths (sum to 100%) � renders reliably in
        both the browser and the html2canvas PDF/PNG export, unlike a mix of
        fixed px widths + one "auto" column which html2canvas fails to
        stretch to the full table width. */
@@ -1062,10 +1062,10 @@
   <div class="drawer" id="drawer">
     <div class="drawer-head">
       <div>
-        <div class="drawer-head-title">?? Saved Invoices</div>
-        <div class="drawer-head-sub">Synced to the cloud � same list on every device</div>
+        <div class="drawer-head-title">📂 Saved Invoices</div>
+        <div class="drawer-head-sub">Synced to the cloud � same list on every device</div>
       </div>
-      <button class="drawer-close-btn" onclick="closeDrawer()">�</button>
+      <button class="drawer-close-btn" onclick="closeDrawer()">�</button>
     </div>
     <div class="drawer-body" id="invoicesList"></div>
   </div>
@@ -1082,13 +1082,13 @@
 
     <!-- Desktop actions -->
     <div class="topbar-actions">
-      <a href="/whatsapp" class="tbtn" style="background:#16a34a; color:#fff; text-decoration:none;">?? WhatsApp</a>
-      <button class="tbtn tbtn-auto" onclick="autoFillInvoiceNumber()">? Auto #</button>
-      <button class="tbtn tbtn-save" onclick="saveInvoice()">?? Save</button>
-      <button class="tbtn tbtn-list" onclick="openDrawer()">?? Saved (<span id="savedCount">0</span>)</button>
-      <button class="tbtn tbtn-img" onclick="saveAsImage()">?? Image</button>
-      <button class="tbtn tbtn-pdf" onclick="saveAsPdf()">?? PDF</button>
-      <button class="tbtn tbtn-reset" onclick="clearForm()">?? Reset</button>
+      <a href="/whatsapp" class="tbtn" style="background:#16a34a; color:#fff; text-decoration:none;">💬 WhatsApp</a>
+      <button class="tbtn tbtn-auto" onclick="autoFillInvoiceNumber()">✨ Auto #</button>
+      <button class="tbtn tbtn-save" onclick="saveInvoice()">💾 Save</button>
+      <button class="tbtn tbtn-list" onclick="openDrawer()">📂 Saved (<span id="savedCount">0</span>)</button>
+      <button class="tbtn tbtn-img" onclick="saveAsImage()">🖼️ Image</button>
+      <button class="tbtn tbtn-pdf" onclick="saveAsPdf()">📄 PDF</button>
+      <button class="tbtn tbtn-reset" onclick="clearForm()">🔄 Reset</button>
       <button class="tbtn tbtn-logout" onclick="logout()">Logout</button>
     </div>
 
@@ -1100,13 +1100,13 @@
 
   <!-- Mobile action menu (hidden by default) -->
   <div class="mobile-actions" id="mobileMenu">
-    <a href="/whatsapp" class="tbtn" style="background:#16a34a; color:#fff; text-decoration:none;">?? WhatsApp Bulk Sender</a>
-    <button class="tbtn tbtn-auto" onclick="autoFillInvoiceNumber();toggleMobileMenu()">? Auto Invoice #</button>
-    <button class="tbtn tbtn-save" onclick="saveInvoice();toggleMobileMenu()">?? Save Invoice</button>
-    <button class="tbtn tbtn-list" onclick="openDrawer();toggleMobileMenu()">?? Saved Invoices (<span id="savedCountMobile">0</span>)</button>
-    <button class="tbtn tbtn-img" onclick="saveAsImage();toggleMobileMenu()">?? Save as Image</button>
-    <button class="tbtn tbtn-pdf" onclick="saveAsPdf();toggleMobileMenu()">?? Print / PDF</button>
-    <button class="tbtn tbtn-reset" onclick="clearForm();toggleMobileMenu()">?? Reset Form</button>
+    <a href="/whatsapp" class="tbtn" style="background:#16a34a; color:#fff; text-decoration:none;">💬 WhatsApp Bulk Sender</a>
+    <button class="tbtn tbtn-auto" onclick="autoFillInvoiceNumber();toggleMobileMenu()">✨ Auto Invoice #</button>
+    <button class="tbtn tbtn-save" onclick="saveInvoice();toggleMobileMenu()">💾 Save Invoice</button>
+    <button class="tbtn tbtn-list" onclick="openDrawer();toggleMobileMenu()">📂 Saved Invoices (<span id="savedCountMobile">0</span>)</button>
+    <button class="tbtn tbtn-img" onclick="saveAsImage();toggleMobileMenu()">🖼️ Save as Image</button>
+    <button class="tbtn tbtn-pdf" onclick="saveAsPdf();toggleMobileMenu()">🖨️ Print / PDF</button>
+    <button class="tbtn tbtn-reset" onclick="clearForm();toggleMobileMenu()">🔄 Reset Form</button>
     <button class="tbtn tbtn-logout" onclick="logout()">Logout</button>
   </div>
 
@@ -1118,16 +1118,16 @@
 
       <!-- Editing badge -->
       <div class="editing-badge" id="editingBadge">
-        <span>?? Editing: <strong id="editingRef"></strong></span>
+        <span>✏️ Editing: <strong id="editingRef"></strong></span>
         <div class="editing-badge-btns">
-          <button class="eb-btn eb-new" onclick="duplicateCurrentAsNew()">?? Save as New</button>
-          <button class="eb-btn eb-blank" onclick="clearForm()">? Blank</button>
+          <button class="eb-btn eb-new" onclick="duplicateCurrentAsNew()">📋 Save as New</button>
+          <button class="eb-btn eb-blank" onclick="clearForm()">➕ Blank</button>
         </div>
       </div>
 
       <!-- Panel 1: Invoice Details -->
       <div class="panel">
-        <div class="panel-head">?? Invoice Details</div>
+        <div class="panel-head">📝 Invoice Details</div>
         <div class="panel-body">
           <div class="field-grid cols-2">
             <div class="field">
@@ -1154,7 +1154,7 @@
 
       <!-- Panel 2: Customer Details -->
       <div class="panel">
-        <div class="panel-head">?? Bill To (Customer)</div>
+        <div class="panel-head">👤 Bill To (Customer)</div>
         <div class="panel-body">
           <div class="field-grid cols-1">
             <div class="field">
@@ -1189,7 +1189,7 @@
 
       <!-- Panel 3: Line Items -->
       <div class="panel">
-        <div class="panel-head">?? Line Items</div>
+        <div class="panel-head">📦 Line Items</div>
         <div class="panel-body">
           <div class="items-scroller">
             <table class="items-tbl">
@@ -1198,7 +1198,7 @@
                   <th style="width:26px;text-align:center">#</th>
                   <th>Description</th>
                   <th style="width:54px;text-align:right">Qty</th>
-                  <th style="width:68px;text-align:right">Price ?</th>
+                  <th style="width:68px;text-align:right">Price ₹</th>
                   <th style="width:64px;text-align:center">GST %</th>
                   <th style="width:72px;text-align:right">Amount</th>
                   <th style="width:26px"></th>
@@ -1213,24 +1213,24 @@
 
       <!-- Panel 4: Charges & Tax -->
       <div class="panel">
-        <div class="panel-head">?? Charges &amp; GST</div>
+        <div class="panel-head">💰 Charges &amp; GST</div>
         <div class="panel-body">
           <div class="totals-grid">
             <div class="total-row">
               <label>Items Subtotal</label>
-              <span class="tval" id="st_subtotal">? 0.00</span>
+              <span class="tval" id="st_subtotal">₹ 0.00</span>
             </div>
             <div class="total-row">
-              <label>Transport / Delivery (?)</label>
+              <label>Transport / Delivery (₹)</label>
               <input class="num-input" type="number" id="transport" min="0" placeholder="0.00" oninput="renderPreview()" />
             </div>
             <div class="total-row">
               <label>GST Amount</label>
-              <span class="tval" id="st_tax">? 0.00</span>
+              <span class="tval" id="st_tax">₹ 0.00</span>
             </div>
             <div class="total-row grand">
               <label>Grand Total</label>
-              <span class="tval" id="st_grand">? 0.00</span>
+              <span class="tval" id="st_grand">₹ 0.00</span>
             </div>
           </div>
         </div>
@@ -1422,7 +1422,7 @@
       renderSavedList();
     }, function(err) {
       console.error('Firestore sync error:', err);
-      showToast('?? Offline � showing last synced invoices', 'err');
+      showToast('⚠️ Offline — showing last synced invoices', 'err');
     });
 
     /* One-time migration of invoices already saved in this browser's
@@ -1460,7 +1460,7 @@
         return chain;
       }).then(function() {
         localStorage.setItem(MIGRATE_KEY, '1');
-        showToast('? Migrated ' + local.length + ' saved invoice(s) to the cloud');
+        showToast('✅ Migrated ' + local.length + ' saved invoice(s) to the cloud');
       }).catch(function(err) {
         console.error('Migration failed:', err);
       });
@@ -1492,7 +1492,7 @@
     /* -- Save invoice ----------------------------------------------------- */
     async function saveInvoice() {
       var data = getFormData();
-      if (!data.refNo) { showToast('? Enter a Ref No first', 'err'); return false; }
+      if (!data.refNo) { showToast('⚠️ Enter a Ref No first', 'err'); return false; }
       var isUpdate = loadInvoices().some(function(i) { return i.id === data.id; });
       if (!isUpdate) { editingId = data.id; }
       updateEditingBadge();
@@ -1502,12 +1502,12 @@
           set('refNo', data.refNo);
         }
         await invoicesCol.doc(String(data.id)).set(data);
-        showToast(isUpdate ? '? Invoice updated: ' + data.refNo : '? Invoice saved: ' + data.refNo);
+        showToast(isUpdate ? '✅ Invoice updated: ' + data.refNo : '✅ Invoice saved: ' + data.refNo);
         renderPreview();
         return true;
       } catch (e) {
         console.error('Save failed:', e);
-        showToast('? Save failed � check your connection', 'err');
+        showToast('❌ Save failed — check your connection', 'err');
         return false;
       }
     }
@@ -1538,8 +1538,8 @@
       rebuildTable();
       updateEditingBadge();
       closeDrawer();
-      showToast('? Loaded ' + inv.refNo + ' for editing');
-      // Scroll the right-side preview panel to the top � preview-col is its own
+      showToast('✅ Loaded ' + inv.refNo + ' for editing');
+      // Scroll the right-side preview panel to the top � preview-col is its own
       // scrollable container so only resetting its scrollTop works reliably.
       var previewCol = document.querySelector('.preview-col');
       if (previewCol) previewCol.scrollTop = 0;
@@ -1576,8 +1576,8 @@
       autoFillInvoiceNumber();
       updateEditingBadge();
       closeDrawer();
-      showToast('? Pre-filled from ' + inv.refNo + ' as new invoice');
-      // Scroll preview panel to top � same rationale as editInvoice.
+      showToast('✅ Pre-filled from ' + inv.refNo + ' as new invoice');
+      // Scroll preview panel to top � same rationale as editInvoice.
       var previewCol2 = document.querySelector('.preview-col');
       if (previewCol2) previewCol2.scrollTop = 0;
     }
@@ -1586,7 +1586,7 @@
       editingId = null;
       autoFillInvoiceNumber();
       updateEditingBadge();
-      showToast('? Ready as new invoice: ' + v('refNo'));
+      showToast('✅ Ready as new invoice: ' + v('refNo'));
     }
 
     /* -- Delete invoice --------------------------------------------------- */
@@ -1596,10 +1596,10 @@
       if (editingId === id) { editingId = null; updateEditingBadge(); }
       try {
         await invoicesCol.doc(String(id)).delete();
-        showToast('? Invoice deleted');
+        showToast('🗑️ Invoice deleted');
       } catch (e) {
         console.error('Delete failed:', e);
-        showToast('? Delete failed � check your connection', 'err');
+          showToast('❌ Delete failed — check your connection', 'err');
       }
     }
 
@@ -1631,7 +1631,7 @@
     }
 
     /* Highest number already used by an actual saved invoice for a given FY
-       prefix � used as a floor so suggestions/claims always continue from
+       prefix � used as a floor so suggestions/claims always continue from
        the real last invoice, even if the counters/{fy} doc drifted behind. */
     function maxUsedInvoiceNumber(pre) {
       var maxUsed = 0;
@@ -1644,7 +1644,7 @@
       return maxUsed;
     }
 
-    /* Read-only "next invoice number" preview � does NOT write to Firestore.
+    /* Read-only "next invoice number" preview � does NOT write to Firestore.
        Used on page load and by the "Auto #" button so simply opening/
        refreshing the page (or clicking Auto # without saving) never
        reserves/burns a number. The number is only actually claimed and
@@ -1670,7 +1670,7 @@
       }
     }
 
-    /* Atomically claims/confirms an invoice number at actual save time �
+    /* Atomically claims/confirms an invoice number at actual save time �
        this is the ONLY place the counters/{fy} doc is written, so numbers
        are only ever consumed when an invoice is genuinely saved. If the
        ref no already typed/suggested is still free it's kept as-is; if
@@ -1679,7 +1679,7 @@
     async function claimInvoiceNumber(refNo) {
       var fy = invoiceFyPrefix();
       var m  = new RegExp('^' + fy.pre.replace(/\//g, '\\/') + '(\\d+)$').exec(refNo || '');
-      if (!m) return refNo; // custom/non-standard ref no � leave untouched, don't touch counter
+      if (!m) return refNo; // custom/non-standard ref no � leave untouched, don't touch counter
       var requested = parseInt(m[1], 10);
       var maxUsed   = maxUsedInvoiceNumber(fy.pre);
       var ref       = countersCol.doc(fy.fyKey);
@@ -1712,7 +1712,7 @@
       refreshBadges();
 
       if (!all.length) {
-        el.innerHTML = '<div class="drawer-empty"><div class="drawer-empty-icon">??</div><div style="font-size:13px;font-weight:700">No saved invoices yet</div><div style="font-size:11px;margin-top:4px">Fill the form and click Save.</div></div>';
+        el.innerHTML = '<div class="drawer-empty"><div class="drawer-empty-icon">📭</div><div style="font-size:13px;font-weight:700">No saved invoices yet</div><div style="font-size:11px;margin-top:4px">Fill the form and click Save.</div></div>';
         return;
       }
 
@@ -1721,15 +1721,15 @@
         var grand = t.subtotal + t.transport + t.tax;
         return '<div class="inv-saved-card">' +
           '<div class="isc-head">' +
-            '<span class="isc-refno">' + escH(inv.refNo || '�') + '</span>' +
+            '<span class="isc-refno">' + escH(inv.refNo || '�') + '</span>' +
             '<span class="isc-date">' + fmtDate(inv.issueDate) + '</span>' +
           '</div>' +
-          '<div class="isc-cust">?? ' + escH(inv.custName || '(no name)') + '</div>' +
-          '<div class="isc-total">? ' + fmtN(grand) + '</div>' +
+          '<div class="isc-cust">👤 ' + escH(inv.custName || '(no name)') + '</div>' +
+          '<div class="isc-total">₹ ' + fmtN(grand) + '</div>' +
           '<div class="isc-actions">' +
-            '<button class="isc-btn isc-edit" data-id="' + inv.id + '">?? Edit</button>' +
-            '<button class="isc-btn isc-clone" data-id="' + inv.id + '">?? New from this</button>' +
-            '<button class="isc-btn isc-del" data-id="' + inv.id + '">?? Delete</button>' +
+            '<button class="isc-btn isc-edit" data-id="' + inv.id + '">✏️ Edit</button>' +
+            '<button class="isc-btn isc-clone" data-id="' + inv.id + '">📋 New from this</button>' +
+            '<button class="isc-btn isc-del" data-id="' + inv.id + '">🗑️ Delete</button>' +
           '</div>' +
         '</div>';
       }).join('');
@@ -1779,7 +1779,7 @@
     function removeRow(id) {
       // Don't allow deleting the Packing row (it's auto-managed)
       var row = items.find(function(r) { return r.id === id; });
-      if (row && row.name === 'Packing') { showToast('?? Packing row is pinned � edit price if needed', 'err'); return; }
+      if (row && row.name === 'Packing') { showToast('📌 Packing row is pinned — edit price if needed', 'err'); return; }
       items = items.filter(function(r) { return r.id !== id; });
       // If no non-Packing rows remain, add an empty one above Packing
       var nonPacking = items.filter(function(r) { return r.name !== 'Packing'; });
@@ -1838,7 +1838,7 @@
         // Custom option trigger
         var optCustom = document.createElement('option');
         optCustom.value = '__custom__';
-        optCustom.textContent = '? Add New Custom Product...';
+        optCustom.textContent = '➕ Add New Custom Product...';
         sel.appendChild(optCustom);
 
         sel.onchange = (function(iid) {
@@ -1852,7 +1852,7 @@
                 if (targetRow3) { targetRow3.name = cleanName; targetRow3.gstRate = 5; }
                 saveCustomProduct({ name: cleanName, price1: targetRow3 ? (targetRow3.price || 0) : 0, price50: 0, price100: 0, gstRate: 5 });
                 rebuildTable();
-                showToast('? Saved "' + cleanName + '" to product catalog!');
+                showToast('✅ Saved "' + cleanName + '" to product catalog!');
               }
               return;
             }
@@ -1875,7 +1875,7 @@
         if (item.name) {
           var btnEdit = document.createElement('button');
           btnEdit.type = 'button';
-          btnEdit.textContent = '??';
+          btnEdit.textContent = '✏️';
           btnEdit.title = 'Edit product name or price';
           btnEdit.style.cssText = 'background:none;border:none;cursor:pointer;font-size:13px;padding:3px 5px;border-radius:4px;color:var(--slate-600)';
           btnEdit.onclick = (function(iid, currentName) {
@@ -1886,7 +1886,7 @@
                 var targetRow = items.find(function(r) { return r.id === iid; });
                 saveCustomProduct({ name: cleanName, price1: targetRow ? targetRow.price : 0, price50: 0, price100: 0, gstRate: targetRow ? targetRow.gstRate : 5 });
                 updateRow(iid, 'name', cleanName);
-                showToast('? Product updated in catalog!');
+                showToast('✅ Product updated in catalog!');
               }
             };
           })(item.id, item.name);
@@ -1976,7 +1976,7 @@
         // Delete
         var td6 = document.createElement('td');
         var bd = document.createElement('button');
-        bd.className = 'row-del'; bd.textContent = '?'; bd.title = 'Remove';
+        bd.className = 'row-del'; bd.textContent = '❌'; bd.title = 'Remove';
         bd.onclick = (function(iid) { return function() { removeRow(iid); }; })(item.id);
         td6.appendChild(bd); tr.appendChild(td6);
 
@@ -2010,7 +2010,7 @@
 
     /* -- Helpers ---------------------------------------------------------- */
     function fmtN(n) { return isNaN(n) ? '0.00' : n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
-    function fmtCur(n) { return isNaN(n) ? '? 0.00' : '? ' + fmtN(n); }
+    function fmtCur(n) { return isNaN(n) ? '₹ 0.00' : '₹ ' + fmtN(n); }
     function escH(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
     function fmtDate(d) {
       if (!d) return '';
@@ -2057,7 +2057,7 @@
             return '<tr>' +
               '<td>' + (idx+1) + '</td>' +
               '<td>' +
-                '<div class="inv-item-name">' + escH(r.name || '�') + '</div>' +
+                '<div class="inv-item-name">' + escH(r.name || '�') + '</div>' +
               '</td>' +
               '<td>' + fmtN(qty) + '</td>' +
               '<td>' + fmtN(rate) + '</td>' +
@@ -2075,12 +2075,12 @@
         '<td><strong>TOTAL</strong></td>' +
         '<td><strong>' + fmtN(totalQty) + '</strong></td>' +
         '<td></td>' +
-        '<td><strong>? ' + fmtN(t.subtotal) + '</strong></td>' +
-        '<td><strong>? ' + fmtN(t.tax) + '</strong></td>' +
-        '<td><strong>? ' + fmtN(t.subtotal + t.tax) + '</strong></td>' +
+        '<td><strong>₹ ' + fmtN(t.subtotal) + '</strong></td>' +
+        '<td><strong>₹ ' + fmtN(t.tax) + '</strong></td>' +
+        '<td><strong>₹ ' + fmtN(t.subtotal + t.tax) + '</strong></td>' +
       '</tr>';
 
-      var refNo         = escH(v('refNo')         || 'BB/26-27/�');
+      var refNo         = escH(v('refNo')         || 'BB/26-27/�');
       var issueDate     = escH(fmtDate(v('issueDate')));
       var payTerms      = escH(v('payTerms')       || 'Immediate');
       var placeOfSupply = escH(v('placeOfSupply')  || 'Karnataka (29)');
@@ -2101,8 +2101,8 @@
           var taxAmt = t.taxBreakdown[rate];
           var halfRate = rate / 2;
           var halfTax = taxAmt / 2;
-          gstRowsHtml += '<div class="inv-sum-row"><span class="inv-sum-k">CGST @ ' + halfRate + '%</span><span class="inv-sum-v">? ' + fmtN(halfTax) + '</span></div>' +
-                         '<div class="inv-sum-row"><span class="inv-sum-k">SGST @ ' + halfRate + '%</span><span class="inv-sum-v">? ' + fmtN(halfTax) + '</span></div>';
+          gstRowsHtml += '<div class="inv-sum-row"><span class="inv-sum-k">CGST @ ' + halfRate + '%</span><span class="inv-sum-v">₹ ' + fmtN(halfTax) + '</span></div>' +
+                         '<div class="inv-sum-row"><span class="inv-sum-k">SGST @ ' + halfRate + '%</span><span class="inv-sum-v">₹ ' + fmtN(halfTax) + '</span></div>';
         });
       }
 
@@ -2116,13 +2116,13 @@
             '<div class="inv-company-addr">' +
               'No 12, Ground Floor, AVP Complex, Sy No 97,<br>' +
               'Dommasandra Village, Virgo Nagar Post,<br>' +
-              'Bangalore, Karnataka � 560049<br>' +
+              'Bangalore, Karnataka � 560049<br>' +
               '<strong>GSTIN: 29ABGFK2654K1ZX</strong>' +
             '</div>' +
             '<div class="inv-contact-row">' +
-              '<span>?? <a href="tel:+918951744898">+91 8951744898</a></span>' +
-              '<span>? <a href="mailto:info@brickbloom.co.in">info@brickbloom.co.in</a></span>' +
-              '<span>?? <a href="https://www.brickbloom.co.in">brickbloom.co.in</a></span>' +
+              '<span>📞 <a href="tel:+918951744898">+91 8951744898</a></span>' +
+              '<span>✉ <a href="mailto:info@brickbloom.co.in">info@brickbloom.co.in</a></span>' +
+              '<span>🌐 <a href="https://www.brickbloom.co.in">brickbloom.co.in</a></span>' +
             '</div>' +
           '</div>' +
 
@@ -2135,7 +2135,7 @@
             '<div class="inv-doc-original">Original for Recipient</div>' +
             '<div class="inv-header-kv">' +
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Invoice No:</span><span class="inv-hkv-v inv-refno">' + refNo + '</span></div>' +
-              '<div class="inv-hkv-row"><span class="inv-hkv-k">Date:</span><span class="inv-hkv-v">' + (issueDate || '�') + '</span></div>' +
+              '<div class="inv-hkv-row"><span class="inv-hkv-k">Date:</span><span class="inv-hkv-v">' + (issueDate || '�') + '</span></div>' +
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Payment Mode:</span><span class="inv-hkv-v">' + payTerms + '</span></div>' +
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Place of Supply:</span><span class="inv-hkv-v">' + placeOfSupply + '</span></div>' +
             '</div>' +
@@ -2148,7 +2148,7 @@
             '<div class="inv-party-label">Bill To</div>' +
             '<div class="inv-buyer-name">' + (custName || 'Customer Name') + '</div>' +
             '<div class="inv-buyer-info">' +
-              (custAddr || '�') + '<br>' +
+              (custAddr || '�') + '<br>' +
               (custState ? '<strong>State:</strong> ' + custState + '&nbsp;&nbsp;' : '') +
               (custPhone ? '<strong>Phone:</strong> ' + custPhone + '<br>' : '') +
               (custGstin ? '<strong>GSTIN:</strong> ' + custGstin : '') +
@@ -2158,7 +2158,7 @@
             '<div class="inv-party-label">Dispatch Details</div>' +
             '<div class="inv-meta-rows">' +
               '<div class="inv-meta-row"><span class="inv-meta-k">Dispatched from</span><span class="inv-meta-v">Bangalore, Karnataka</span></div>' +
-              '<div class="inv-meta-row"><span class="inv-meta-k">Transport Charges</span><span class="inv-meta-v">? ' + fmtN(t.transport) + '</span></div>' +
+              '<div class="inv-meta-row"><span class="inv-meta-k">Transport Charges</span><span class="inv-meta-v">₹ ' + fmtN(t.transport) + '</span></div>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -2181,10 +2181,10 @@
                 '<th style="text-align:center">#</th>' +
                 '<th style="text-align:left">Item / Description</th>' +
                 '<th>Qty</th>' +
-                '<th>Rate (?)</th>' +
+                '<th>Rate (₹)</th>' +
                 '<th>Taxable Amt</th>' +
                 '<th>GST Amt</th>' +
-                '<th>Total (?)</th>' +
+                '<th>Total (₹)</th>' +
               '</tr>' +
             '</thead>' +
             '<tbody>' +
@@ -2203,14 +2203,14 @@
 
           '<div class="inv-fin-right">' +
             '<div class="inv-summary-rows">' +
-              '<div class="inv-sum-row"><span class="inv-sum-k">Taxable Value</span><span class="inv-sum-v">? ' + fmtN(t.subtotal) + '</span></div>' +
+              '<div class="inv-sum-row"><span class="inv-sum-k">Taxable Value</span><span class="inv-sum-v">₹ ' + fmtN(t.subtotal) + '</span></div>' +
               gstRowsHtml +
-              '<div class="inv-sum-row"><span class="inv-sum-k">Transport</span><span class="inv-sum-v">? ' + fmtN(t.transport) + '</span></div>' +
+              '<div class="inv-sum-row"><span class="inv-sum-k">Transport</span><span class="inv-sum-v">₹ ' + fmtN(t.transport) + '</span></div>' +
               '<div class="inv-sum-divider"></div>' +
             '</div>' +
             '<div class="inv-grand-row">' +
               '<span class="inv-grand-k">Total Payable</span>' +
-              '<span class="inv-grand-v">? ' + fmtN(t.grand) + '</span>' +
+              '<span class="inv-grand-v">₹ ' + fmtN(t.grand) + '</span>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -2230,7 +2230,7 @@
           '</div>' +
         '</div>' +
 
-        '<div class="inv-tagline">?? Thank you for your business � BrickBloom: Sustainable Cocopeat Growing Media</div>';
+        '<div class="inv-tagline">🌱 Thank you for your business — BrickBloom: Sustainable Cocopeat Growing Media</div>';
     }
 
     /* -- Export: Image ---------------------------------------------------- */
