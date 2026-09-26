@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>BrickBloom – Inventory</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -16,6 +16,7 @@
       --green-800: #166534;
       --green-700: #15803d;
       --green-600: #16a34a;
+      --green-500: #22c55e;
       --green-100: #dcfce7;
       --amber-500: #f59e0b;
       --amber-100: #fef3c7;
@@ -32,20 +33,23 @@
       --slate-800: #1e293b;
       --slate-900: #0f172a;
       --cream:     #f0e1c2;
+      --card-bg:   #fdf6ec;
       --radius-md: 10px;
       --radius-lg: 14px;
       --radius-xl: 20px;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
       --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
-      --shadow-lg: 0 8px 32px rgba(0,0,0,0.1);
-      --font-sans: 'Inter', system-ui, sans-serif;
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
       --font-head: 'Space Grotesk', system-ui, sans-serif;
     }
 
     body {
       font-family: var(--font-sans);
-      background: #f0e1c2;
+      background: var(--cream);
       color: var(--slate-800);
       min-height: 100vh;
+      padding-bottom: 90px; /* Space for mobile sticky action bar */
     }
 
     /* ── Topbar ── */
@@ -68,7 +72,7 @@
     .topbar-subtitle { font-size: 11px; opacity: 0.7; letter-spacing: 0.5px; }
     .topbar-actions { display: flex; align-items: center; gap: 10px; }
     .tbtn {
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: var(--radius-md);
       border: none;
       cursor: pointer;
@@ -79,6 +83,7 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      white-space: nowrap;
     }
     .tbtn-invoice { background: rgba(255,255,255,0.15); color: white; }
     .tbtn-invoice:hover { background: rgba(255,255,255,0.25); }
@@ -86,65 +91,100 @@
     .tbtn-logout:hover { background: rgba(220,38,38,0.35); color: white; }
 
     /* ── Layout ── */
-    .page { max-width: 1300px; margin: 0 auto; padding: 28px 24px; }
+    .page { max-width: 1300px; margin: 0 auto; padding: 24px; }
 
     /* ── Page header ── */
     .page-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       flex-wrap: wrap;
       gap: 12px;
     }
     .page-title { font-family: var(--font-head); font-size: 26px; font-weight: 800; color: var(--slate-900); }
-    .page-subtitle { font-size: 13px; color: var(--slate-500); margin-top: 2px; }
+    .page-subtitle { font-size: 13px; color: var(--slate-600); margin-top: 2px; }
+    
     .btn-save-all {
-      background: var(--green-700);
+      background: linear-gradient(135deg, var(--green-700), var(--green-800));
       color: white;
-      padding: 10px 20px;
+      padding: 12px 22px;
       border-radius: var(--radius-md);
       border: none;
       cursor: pointer;
       font-size: 14px;
       font-weight: 700;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 8px;
-      transition: background 0.2s, transform 0.15s;
-      box-shadow: var(--shadow-md);
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(21,128,61,0.3);
     }
-    .btn-save-all:hover { background: var(--green-800); transform: translateY(-1px); }
-    .btn-save-all:disabled { background: var(--slate-400); cursor: not-allowed; transform: none; }
+    .btn-save-all:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(21,128,61,0.4); }
+    .btn-save-all:active { transform: translateY(0); }
 
     /* ── Summary Cards ── */
     .summary-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-bottom: 28px;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
     }
     .summary-card {
-      background: #fdf6ec;
+      background: var(--card-bg);
       border-radius: var(--radius-lg);
-      padding: 20px;
-      box-shadow: var(--shadow-md);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm);
       border-left: 4px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
     }
+    .summary-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
     .summary-card.total  { border-color: var(--green-600); }
+    .summary-card.units  { border-color: var(--slate-400); }
     .summary-card.low    { border-color: var(--amber-500); }
     .summary-card.out    { border-color: var(--red-600); }
-    .summary-card.units  { border-color: var(--slate-400); }
-    .sc-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--slate-500); margin-bottom: 6px; }
-    .sc-value { font-family: var(--font-head); font-size: 32px; font-weight: 800; color: var(--slate-900); }
-    .sc-sub   { font-size: 12px; color: var(--slate-400); margin-top: 4px; }
+    .sc-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--slate-500); margin-bottom: 4px; }
+    .sc-value { font-family: var(--font-head); font-size: 30px; font-weight: 800; color: var(--slate-900); }
+    .sc-sub   { font-size: 11.5px; color: var(--slate-500); margin-top: 2px; }
 
-    /* ── Table card ── */
+    /* ── Filter Tabs (Segmented Control) ── */
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .filter-tabs::-webkit-scrollbar { display: none; }
+    .filter-tab {
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.7);
+      border: 1.5px solid #d8c4a0;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--slate-700);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .filter-tab.active {
+      background: var(--slate-900);
+      color: white;
+      border-color: var(--slate-900);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    /* ── Table Card Container ── */
     .table-card {
-      background: #fdf6ec;
+      background: var(--card-bg);
       border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow-md);
       overflow: hidden;
+      border: 1px solid #e8d5b5;
     }
     .table-toolbar {
       padding: 16px 20px;
@@ -155,119 +195,167 @@
       gap: 12px;
       flex-wrap: wrap;
     }
-    .table-toolbar h2 { font-size: 15px; font-weight: 700; color: var(--slate-800); }
+    .table-toolbar h2 { font-size: 16px; font-weight: 700; color: var(--slate-800); }
+    
+    .search-wrap { position: relative; flex: 1; max-width: 320px; }
     .search-box {
-      padding: 8px 14px;
-      border: 1.5px solid var(--slate-200);
+      width: 100%;
+      padding: 9px 14px 9px 36px;
+      border: 1.5px solid #d8c4a0;
       border-radius: var(--radius-md);
-      font-size: 13px;
-      width: 220px;
+      font-size: 13.5px;
       outline: none;
-      transition: border-color 0.2s;
+      background: white;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .search-box:focus { border-color: var(--green-600); }
+    .search-box:focus { border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(22,163,74,0.15); }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.5; font-size: 14px; pointer-events: none; }
 
+    /* ── Desktop Table View ── */
     .inv-table { width: 100%; border-collapse: collapse; }
     .inv-table th {
       background: #f5e9d5;
-      padding: 11px 14px;
+      padding: 12px 14px;
       text-align: left;
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      color: var(--slate-500);
-      border-bottom: 1px solid var(--slate-200);
+      color: var(--slate-600);
+      border-bottom: 1px solid #e8d5b5;
       white-space: nowrap;
     }
     .inv-table td {
-      padding: 12px 14px;
+      padding: 14px;
       border-bottom: 1px solid #eddfc5;
-      font-size: 13.5px;
+      font-size: 14px;
       vertical-align: middle;
     }
     .inv-table tr:last-child td { border-bottom: none; }
     .inv-table tr:hover td { background: #f5e9d5; }
 
-    .prod-name { font-weight: 600; color: var(--slate-800); }
+    .prod-name { font-weight: 700; color: var(--slate-900); font-size: 14.5px; }
+    .item-num { color: var(--slate-400); font-size: 12px; font-weight: 600; margin-right: 6px; }
 
-    /* Stock input */
+    /* Inputs */
     .stock-input {
-      width: 80px;
-      padding: 6px 10px;
-      border: 1.5px solid var(--slate-200);
+      width: 85px;
+      padding: 7px 10px;
+      border: 1.5px solid #d8c4a0;
       border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 700;
       text-align: center;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      background: white;
+      font-family: var(--font-sans);
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
     }
     .stock-input:focus { border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(22,163,74,0.15); }
     .stock-input.changed { border-color: var(--amber-500); background: var(--amber-100); }
 
     .unit-select {
-      padding: 6px 10px;
-      border: 1.5px solid var(--slate-200);
+      padding: 7px 10px;
+      border: 1.5px solid #d8c4a0;
       border-radius: 8px;
       font-size: 13px;
+      font-weight: 600;
       outline: none;
       background: white;
       cursor: pointer;
-      transition: border-color 0.2s;
     }
-    .unit-select:focus { border-color: var(--green-600); }
 
     .threshold-input {
-      width: 70px;
-      padding: 6px 8px;
-      border: 1.5px solid var(--slate-200);
+      width: 65px;
+      padding: 7px 6px;
+      border: 1.5px solid #d8c4a0;
       border-radius: 8px;
       font-size: 13px;
       text-align: center;
       outline: none;
-      transition: border-color 0.2s;
+      background: white;
     }
-    .threshold-input:focus { border-color: var(--green-600); }
 
-    /* Adj buttons */
+    /* Quick adjustment buttons */
     .adj-btns { display: flex; gap: 4px; align-items: center; }
     .adj-btn {
-      padding: 4px 8px;
+      padding: 5px 9px;
       border-radius: 6px;
-      border: 1.5px solid var(--slate-200);
+      border: 1.5px solid #d8c4a0;
       background: white;
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
-      color: var(--slate-600);
+      color: var(--slate-700);
       transition: all 0.15s;
       white-space: nowrap;
+      user-select: none;
+      touch-action: manipulation;
     }
-    .adj-btn:hover { background: var(--green-100); border-color: var(--green-600); color: var(--green-800); }
+    .adj-btn:active { transform: scale(0.94); }
+    .adj-btn.plus:hover { background: var(--green-100); border-color: var(--green-600); color: var(--green-800); }
     .adj-btn.minus:hover { background: var(--red-100); border-color: var(--red-600); color: var(--red-600); }
 
-    /* Status badge */
+    /* Badges */
     .status-badge {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 4px 10px;
+      padding: 5px 11px;
       border-radius: 999px;
-      font-size: 11.5px;
+      font-size: 12px;
       font-weight: 700;
       white-space: nowrap;
     }
-    .badge-instock  { background: var(--green-100); color: var(--green-800); }
-    .badge-low      { background: var(--amber-100); color: #92400e; }
-    .badge-outstock { background: var(--red-100);   color: var(--red-600); }
+    .badge-instock  { background: var(--green-100); color: var(--green-800); border: 1px solid rgba(22,163,74,0.3); }
+    .badge-low      { background: var(--amber-100); color: #92400e; border: 1px solid rgba(245,158,11,0.3); }
+    .badge-outstock { background: var(--red-100);   color: var(--red-600); border: 1px solid rgba(220,38,38,0.3); }
 
-    .last-updated { font-size: 11px; color: var(--slate-400); white-space: nowrap; }
+    .last-updated { font-size: 11.5px; color: var(--slate-500); white-space: nowrap; }
 
-    /* ── Toast ── */
+    /* Mobile Details Wrapper */
+    .m-badge-wrap { display: none; }
+
+    /* ── Sticky Mobile Bottom Bar ── */
+    .mobile-bottom-bar {
+      display: none; /* Desktop hidden */
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 12px 16px 16px;
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .m-changes-text { color: #cbd5e1; font-size: 13px; font-weight: 600; }
+    .m-save-btn {
+      flex: 1;
+      background: linear-gradient(135deg, var(--green-600), var(--green-700));
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: none;
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(22,163,74,0.4);
+      cursor: pointer;
+    }
+
+    /* ── Toast & Spinner ── */
     .toast {
       position: fixed;
-      bottom: 24px;
+      bottom: 80px;
       left: 50%;
       transform: translateX(-50%) translateY(80px);
       background: var(--slate-900);
@@ -286,21 +374,21 @@
     .toast.ok  { background: var(--green-800); }
     .toast.err { background: #b91c1c; }
 
-    /* ── Spinner ── */
     .spinner-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(255,255,255,0.7);
-      z-index: 200;
+      background: rgba(255,255,255,0.75);
+      z-index: 2000;
       align-items: center;
       justify-content: center;
       flex-direction: column;
       gap: 14px;
+      backdrop-filter: blur(4px);
     }
     .spinner-overlay.show { display: flex; }
     .spinner {
-      width: 40px; height: 40px;
+      width: 44px; height: 44px;
       border: 4px solid var(--slate-200);
       border-top-color: var(--green-600);
       border-radius: 50%;
@@ -308,23 +396,152 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Empty state ── */
     .empty-state {
       text-align: center;
-      padding: 60px 20px;
-      color: var(--slate-400);
+      padding: 50px 20px;
+      color: var(--slate-500);
     }
-    .empty-state-icon { font-size: 48px; margin-bottom: 12px; }
-    .empty-state p { font-size: 14px; }
+    .empty-state-icon { font-size: 42px; margin-bottom: 10px; }
 
+    /* ── 📱 NATIVE MOBILE APP MODE (@media <= 768px) ── */
     @media (max-width: 768px) {
-      .page { padding: 16px 12px; }
-      .topbar { padding: 0 14px; }
-      .summary-cards { grid-template-columns: repeat(2, 1fr); }
-      .inv-table th:nth-child(5),
-      .inv-table td:nth-child(5),
-      .inv-table th:nth-child(6),
-      .inv-table td:nth-child(6) { display: none; }
+      body { padding-bottom: 90px; }
+      .page { padding: 14px 12px; }
+
+      .topbar { padding: 0 14px; height: 58px; }
+      .topbar-logo { height: 32px; }
+      .topbar-title { font-size: 16px; }
+      .topbar-subtitle { display: none; }
+      .tbtn { padding: 7px 11px; font-size: 12px; }
+
+      .page-header { margin-bottom: 14px; }
+      .page-title { font-size: 22px; }
+      .page-subtitle { font-size: 12px; }
+      .page-header .btn-save-all { display: none; } /* Show sticky bottom bar instead */
+
+      /* Summary Cards Grid on Mobile */
+      .summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .summary-card { padding: 12px 14px; }
+      .sc-label { font-size: 10px; }
+      .sc-value { font-size: 24px; }
+      .sc-sub { font-size: 10.5px; }
+
+      .table-card {
+        background: transparent;
+        box-shadow: none;
+        border: none;
+        overflow: visible;
+      }
+      .table-toolbar {
+        background: var(--card-bg);
+        border-radius: 14px;
+        padding: 12px;
+        margin-bottom: 12px;
+        border: 1px solid #e8d5b5;
+      }
+      .search-wrap { max-width: 100%; }
+
+      /* Transform table into Native Cards */
+      .inv-table, .inv-table tbody { display: block; width: 100%; }
+      .inv-table thead { display: none; } /* Hide table header */
+
+      .inv-table tr {
+        display: block;
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 14px;
+        border: 1.5px solid #e5d2b0;
+        box-shadow: var(--shadow-sm);
+        position: relative;
+      }
+
+      .inv-table tr td {
+        display: block;
+        padding: 0;
+        border: none;
+      }
+
+      /* Card Header: Product Name + Badge */
+      .inv-table tr td:nth-child(1) { display: none; } /* Hide # col */
+      
+      .inv-table tr td:nth-child(2) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #e2d0af;
+      }
+      .m-badge-wrap { display: block; }
+
+      /* Stock Qty & Unit Input Row */
+      .inv-table tr td:nth-child(3),
+      .inv-table tr td:nth-child(4) {
+        display: inline-block;
+      }
+
+      .inv-table tr td:nth-child(4) .stock-input {
+        width: 100px;
+        height: 44px;
+        font-size: 18px;
+        border-radius: 10px;
+      }
+      .inv-table tr td:nth-child(3) .unit-select {
+        height: 44px;
+        font-size: 14px;
+        border-radius: 10px;
+        margin-left: 6px;
+      }
+
+      /* Quick Adjust Buttons Row */
+      .inv-table tr td:nth-child(5) {
+        display: block;
+        margin: 12px 0;
+      }
+      .adj-btns {
+        display: flex;
+        gap: 6px;
+        width: 100%;
+      }
+      .adj-btn {
+        flex: 1;
+        height: 40px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: white;
+      }
+
+      /* Card Footer: Low Stock Threshold + Last Updated */
+      .inv-table tr td:nth-child(6) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 10px;
+        border-top: 1px solid #ebdcb5;
+        font-size: 12px;
+        color: var(--slate-600);
+      }
+      .inv-table tr td:nth-child(6)::before {
+        content: "Low stock alert at:";
+        font-weight: 600;
+      }
+
+      .inv-table tr td:nth-child(7) { display: none; } /* Badge handled in top row flex */
+      .inv-table tr td:nth-child(8) {
+        margin-top: 6px;
+        text-align: right;
+        font-size: 11px;
+      }
+
+      .mobile-bottom-bar { display: flex; }
     }
   </style>
 </head>
@@ -340,7 +557,7 @@
   <!-- Spinner -->
   <div class="spinner-overlay" id="spinnerOverlay">
     <div class="spinner"></div>
-    <div style="font-size:13px;color:var(--slate-600);font-weight:600;">Saving to cloud…</div>
+    <div style="font-size:14px;color:var(--slate-800);font-weight:700;">Saving stock changes…</div>
   </div>
 
   <!-- Topbar -->
@@ -365,7 +582,7 @@
     <div class="page-header">
       <div>
         <div class="page-title">📦 Stock Inventory</div>
-        <div class="page-subtitle">Live stock levels for all products · Auto-deducted when invoices are saved</div>
+        <div class="page-subtitle">Live stock levels · Auto-deducted when invoices are saved</div>
       </div>
       <button class="btn-save-all" id="saveAllBtn" onclick="saveAll()">
         💾 Save All Changes
@@ -374,33 +591,44 @@
 
     <!-- Summary cards -->
     <div class="summary-cards">
-      <div class="summary-card total">
+      <div class="summary-card total" onclick="setFilterTab('all')">
         <div class="sc-label">Total SKUs</div>
         <div class="sc-value" id="sc-total">–</div>
         <div class="sc-sub">products tracked</div>
       </div>
-      <div class="summary-card units">
+      <div class="summary-card units" onclick="setFilterTab('all')">
         <div class="sc-label">Total Units</div>
         <div class="sc-value" id="sc-units">–</div>
         <div class="sc-sub">on hand</div>
       </div>
-      <div class="summary-card low">
+      <div class="summary-card low" onclick="setFilterTab('low')">
         <div class="sc-label">Low Stock</div>
         <div class="sc-value" id="sc-low">–</div>
         <div class="sc-sub">need restocking</div>
       </div>
-      <div class="summary-card out">
+      <div class="summary-card out" onclick="setFilterTab('out')">
         <div class="sc-label">Out of Stock</div>
         <div class="sc-value" id="sc-out">–</div>
         <div class="sc-sub">unavailable</div>
       </div>
     </div>
 
-    <!-- Table -->
+    <!-- Filter Tabs (Segmented Control) -->
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-tab="all" onclick="setFilterTab('all')">All Items</button>
+      <button class="filter-tab" data-tab="instock" onclick="setFilterTab('instock')">🟢 In Stock</button>
+      <button class="filter-tab" data-tab="low" onclick="setFilterTab('low')">🟡 Low Stock</button>
+      <button class="filter-tab" data-tab="out" onclick="setFilterTab('out')">🔴 Out of Stock</button>
+    </div>
+
+    <!-- Table Card -->
     <div class="table-card">
       <div class="table-toolbar">
-        <h2>All Products</h2>
-        <input class="search-box" type="search" placeholder="🔍 Search products…" oninput="filterTable(this.value)" />
+        <h2>Products List</h2>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input class="search-box" id="searchInput" type="search" placeholder="Search products..." oninput="handleSearch(this.value)" />
+        </div>
       </div>
       <div style="overflow-x:auto;">
         <table class="inv-table" id="invTable">
@@ -410,19 +638,27 @@
               <th>Product Name</th>
               <th>Unit</th>
               <th>Stock on Hand</th>
-              <th>Adjust</th>
-              <th>Low Stock At</th>
+              <th>Quick Adjust</th>
+              <th>Low Stock Alert</th>
               <th>Status</th>
               <th>Last Updated</th>
             </tr>
           </thead>
           <tbody id="invTableBody">
-            <tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">ℹ️</div><p>Loading inventory…</p></div></td></tr>
+            <tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">⏳</div><p>Loading inventory…</p></div></td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
+  </div>
+
+  <!-- Mobile Sticky Bottom Action Bar -->
+  <div class="mobile-bottom-bar">
+    <div class="m-changes-text" id="mChangesText">No changes</div>
+    <button class="m-save-btn" id="mSaveBtn" onclick="saveAll()">
+      💾 Save All Changes
+    </button>
   </div>
 
   <!-- Toast -->
@@ -445,6 +681,8 @@
     var inventoryData = {};  // { productName: { stock, unit, lowStockThreshold, lastUpdated } }
     var productList   = [];  // ordered list of product names from 'products' collection
     var pendingChanges = {}; // tracks which rows have unsaved edits
+    var currentFilterTab = 'all';
+    var currentSearchText = '';
 
     /* ── Helpers ── */
     function showToast(msg, type) {
@@ -486,16 +724,44 @@
       document.getElementById('sc-out').textContent   = out;
     }
 
-    /* ── Render table ── */
-    function renderTable(filter) {
+    /* ── Filter Tabs Handler ── */
+    function setFilterTab(tab) {
+      currentFilterTab = tab;
+      document.querySelectorAll('.filter-tab').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.tab === tab);
+      });
+      renderTable();
+    }
+
+    function handleSearch(val) {
+      currentSearchText = val || '';
+      renderTable();
+    }
+
+    /* ── Render Table & Mobile Cards ── */
+    function renderTable() {
       var tbody = document.getElementById('invTableBody');
       var rows  = '';
+
       var filtered = productList.filter(function(name) {
-        return !filter || name.toLowerCase().includes(filter.toLowerCase());
+        var d      = inventoryData[name] || {};
+        var stock  = parseInt(d.stock) || 0;
+        var thresh = parseInt(d.lowStockThreshold) || 10;
+
+        // Search match
+        var matchesSearch = !currentSearchText || name.toLowerCase().includes(currentSearchText.toLowerCase());
+        if (!matchesSearch) return false;
+
+        // Tab match
+        if (currentFilterTab === 'instock') return stock > thresh;
+        if (currentFilterTab === 'low')     return stock > 0 && stock <= thresh;
+        if (currentFilterTab === 'out')     return stock <= 0;
+
+        return true;
       });
 
       if (!filtered.length) {
-        tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">ℹ️</div><p>No products found</p></div></td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">🔍</div><p>No matching products found</p></div></td></tr>';
         return;
       }
 
@@ -504,9 +770,13 @@
         var stock  = parseInt(d.stock) || 0;
         var unit   = d.unit || 'pcs';
         var thresh = parseInt(d.lowStockThreshold) || 10;
+
         rows += '<tr data-name="' + escAttr(name) + '">' +
-          '<td style="color:var(--slate-400);font-size:12px">' + (idx + 1) + '</td>' +
-          '<td><span class="prod-name">' + escH(name) + '</span></td>' +
+          '<td><span class="item-num">#' + (idx + 1) + '</span></td>' +
+          '<td>' +
+            '<span class="prod-name">' + escH(name) + '</span>' +
+            '<div class="m-badge-wrap">' + getBadge(stock, thresh) + '</div>' +
+          '</td>' +
           '<td>' +
             '<select class="unit-select" data-name="' + escAttr(name) + '" onchange="markChanged(this)">' +
               ['pcs','bags','kgs','boxes','sets','rolls'].map(function(u) {
@@ -515,9 +785,8 @@
             '</select>' +
           '</td>' +
           '<td>' +
-            '<input class="stock-input" type="number" min="0" value="' + stock + '" ' +
+            '<input class="stock-input" type="number" inputmode="numeric" min="0" value="' + stock + '" ' +
               'data-name="' + escAttr(name) + '" ' +
-              'data-original="' + stock + '" ' +
               'oninput="markChanged(this); updateRowBadge(this)" />' +
           '</td>' +
           '<td>' +
@@ -530,7 +799,7 @@
             '</div>' +
           '</td>' +
           '<td>' +
-            '<input class="threshold-input" type="number" min="0" value="' + thresh + '" ' +
+            '<input class="threshold-input" type="number" inputmode="numeric" min="0" value="' + thresh + '" ' +
               'data-name="' + escAttr(name) + '" ' +
               'oninput="markChanged(this); updateRowBadge(this)" />' +
           '</td>' +
@@ -549,7 +818,11 @@
     function markChanged(el) {
       el.classList.add('changed');
       pendingChanges[el.dataset.name] = true;
-      document.getElementById('saveAllBtn').textContent = '💾 Save All Changes (' + Object.keys(pendingChanges).length + ')';
+      var count = Object.keys(pendingChanges).length;
+      var text = '💾 Save All Changes (' + count + ')';
+      document.getElementById('saveAllBtn').textContent = text;
+      document.getElementById('mSaveBtn').textContent = text;
+      document.getElementById('mChangesText').textContent = count + ' item' + (count > 1 ? 's' : '') + ' modified';
     }
 
     function updateRowBadge(el) {
@@ -559,12 +832,16 @@
       var stockInput = row.querySelector('.stock-input');
       var threshInput = row.querySelector('.threshold-input');
       var badgeCell   = row.querySelector('td:nth-child(7)');
-      if (badgeCell) {
-        badgeCell.innerHTML = getBadge(
-          parseInt(stockInput ? stockInput.value : 0),
-          parseInt(threshInput ? threshInput.value : 10)
-        );
-      }
+      var mBadgeCell  = row.querySelector('.m-badge-wrap');
+
+      var badgeHtml = getBadge(
+        parseInt(stockInput ? stockInput.value : 0),
+        parseInt(threshInput ? threshInput.value : 10)
+      );
+
+      if (badgeCell) badgeCell.innerHTML = badgeHtml;
+      if (mBadgeCell) mBadgeCell.innerHTML = badgeHtml;
+
       updateSummaryCards();
     }
 
@@ -581,12 +858,8 @@
       });
     }
 
-    function filterTable(val) {
-      renderTable(val);
-    }
-
-    /* ── Load data ── */
-        async function loadInventory() {
+    /* ── Load Data ── */
+    async function loadInventory() {
       try {
         var prodSnap = await db.collection('products').get();
         productList = [];
@@ -610,12 +883,12 @@
       } catch(e) {
         console.error(e);
         document.getElementById('invTableBody').innerHTML =
-          '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">ℹ️</div><p>Failed to load.</p></div></td></tr>';
+          '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Failed to load inventory.</p></div></td></tr>';
         showToast('❌ Failed to load inventory', 'err');
-        }
       }
+    }
 
-    /* ── Save all changes ── */
+    /* ── Save All Changes ── */
     async function saveAll() {
       var rows = document.querySelectorAll('#invTableBody tr[data-name]');
       var batch = db.batch();
@@ -643,17 +916,18 @@
             lastUpdated:        now
           }, { merge: true });
 
-          // Update local cache
           inventoryData[name] = { stock, unit, lowStockThreshold: thresh, lastUpdated: now };
-
-          // Reset changed state
           stockInput.classList.remove('changed');
           count++;
         });
 
         await batch.commit();
         pendingChanges = {};
-        document.getElementById('saveAllBtn').textContent = '💾 Save All Changes';
+        var text = '💾 Save All Changes';
+        document.getElementById('saveAllBtn').textContent = text;
+        document.getElementById('mSaveBtn').textContent = text;
+        document.getElementById('mChangesText').textContent = 'No changes';
+        renderTable();
         updateSummaryCards();
         showToast('✅ Inventory saved — ' + count + ' products updated', 'ok');
       } catch(e) {
@@ -673,7 +947,6 @@
     /* ── Init ── */
     loadInventory();
 
-    // Warn before leaving with unsaved changes
     window.addEventListener('beforeunload', function(e) {
       if (Object.keys(pendingChanges).length > 0) {
         e.preventDefault();
