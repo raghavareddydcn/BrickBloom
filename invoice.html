@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>BrickBloom � Tax Invoice</title>
+  <title>BrickBloom – Tax Invoice</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -1253,7 +1253,7 @@
             </div>
             <div class="total-row grand" style="background:linear-gradient(135deg,#052e16,#166534);border-radius:8px;padding:8px 12px;margin-top:4px;">
               <label style="color:rgba(255,255,255,0.85);font-weight:700;">Balance Due</label>
-              <span class="tval" id="st_balance" style="color:#86efac;font-weight:800;">Rs. 0.00</span>
+              <span class="tval" id="st_balance" style="color:#86efac;font-weight:800;letter-spacing:0.5px;">Rs. 0.00</span>
             </div>
           </div>
         </div>
@@ -2254,16 +2254,16 @@
             '</div>' +
             '<div class="inv-grand-row">' +
               '<span class="inv-grand-k">Total Payable</span>' +
-              '<span class="inv-grand-v">Rs. ' + fmtN(t.grand) + '</span>' +
+              '<span class="inv-grand-v">Rs. ' + fmtN(t.grand) + '</span>' +
             '</div>' +
             (t.advancePaid > 0 ?
               '<div class="inv-advance-row">' +
                 '<span class="inv-adv-k">Advance Paid</span>' +
-                '<span class="inv-adv-v">(−) Rs. ' + fmtN(t.advancePaid) + '</span>' +
+                '<span class="inv-adv-v">(−) Rs. ' + fmtN(t.advancePaid) + '</span>' +
               '</div>' +
               '<div class="inv-balance-row">' +
                 '<span class="inv-bal-k">Balance Due</span>' +
-                '<span class="inv-bal-v">Rs. ' + fmtN(t.balance) + '</span>' +
+                '<span class="inv-bal-v">Rs. ' + fmtN(t.balance) + '</span>' +
               '</div>'
             : '') +
           '</div>' +
