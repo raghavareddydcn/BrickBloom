@@ -557,12 +557,23 @@
 
           var timeStr = d.timestamp ? new Date(d.timestamp).toLocaleString('en-IN') : '–';
 
+          var detailsHtml = '';
+          if (d.details && d.details.changes && Array.isArray(d.details.changes)) {
+            detailsHtml += '<div style="margin-top:6px;padding-top:6px;border-top:1px dashed #e2e8f0;font-size:12px;color:#475569;">';
+            d.details.changes.forEach(function(c) {
+              var sign = c.delta > 0 ? '+' : '';
+              detailsHtml += '<div>• <strong>' + escH(c.product || '') + '</strong>: ' + (c.oldStock !== undefined ? c.oldStock : '–') + ' → <strong>' + (c.newStock !== undefined ? c.newStock : '–') + ' ' + escH(c.unit || '') + '</strong> (' + sign + c.delta + ')</div>';
+            });
+            detailsHtml += '</div>';
+          }
+
           html += '<div class="audit-item">' +
             '<div class="audit-item-top">' +
               '<span class="audit-action-badge ' + badgeClass + '">' + (d.action || 'LOG') + '</span>' +
               '<span class="audit-time">' + timeStr + '</span>' +
             '</div>' +
             '<div class="audit-summary">' + escH(d.summary || '') + '</div>' +
+            detailsHtml +
           '</div>';
         });
 
