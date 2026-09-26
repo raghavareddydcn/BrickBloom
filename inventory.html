@@ -1094,10 +1094,15 @@
         if (count > 0) {
           await batch.commit();
 
+          var changeSummaries = auditDetailsList.map(function(c) {
+            var sign = c.delta > 0 ? '+' : '';
+            return c.product + ' (' + c.oldStock + ' → ' + c.newStock + ' ' + c.unit + ' [' + sign + c.delta + '])';
+          });
+
           logAuditEvent(
             'INVENTORY_MANUAL_UPDATE',
             'Products Inventory',
-            'Admin manually updated stock for ' + count + ' product' + (count > 1 ? 's' : '') + ' (' + modifiedNames.join(', ') + ')',
+            'Updated stock for ' + count + ' product' + (count > 1 ? 's' : '') + ': ' + changeSummaries.join(', '),
             { updatedCount: count, changes: auditDetailsList }
           );
         }
