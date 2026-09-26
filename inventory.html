@@ -456,7 +456,7 @@
     }
 
     function fmtDate(iso) {
-      if (!iso) return '–';
+      if (!iso) return '-';
       var d = new Date(iso);
       return d.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'2-digit', hour:'2-digit', minute:'2-digit' });
     }
@@ -586,36 +586,34 @@
     }
 
     /* ── Load data ── */
-    async function loadInventory() {
+        async function loadInventory() {
       try {
-        // Load products list
         var prodSnap = await db.collection('products').get();
         productList = [];
-        prodSnap.forEach(function(doc) { productList.push(doc.data().name || doc.id); });
-        productList.sort();
-
-        // Load inventory
-        var invSnap = await db.collection('products').get();
         inventoryData = {};
-        invSnap.forEach(function(doc) {
-          inventoryData[doc.id] = doc.data();
+
+        prodSnap.forEach(function(doc) {
+          var d = doc.data();
+          var name = d.name || doc.id;
+          productList.push(name);
+          inventoryData[name] = {
+            stock:             d.stock !== undefined ? d.stock : 0,
+            unit:              d.unit || 'pcs',
+            lowStockThreshold: d.lowStockThreshold !== undefined ? d.lowStockThreshold : 10,
+            lastUpdated:       d.lastUpdated || null
+          };
         });
 
-        // Init any missing products with stock = 0
-        productList.forEach(function(name) {
-          if (!inventoryData[name]) {
-            inventoryData[name] = { stock: 0, unit: 'pcs', lowStockThreshold: 10, lastUpdated: null };
-          }
-        });
-
+        productList.sort();
         renderTable();
         updateSummaryCards();
       } catch(e) {
         console.error(e);
         document.getElementById('invTableBody').innerHTML =
-          '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Failed to load. Check your connection.</p></div></td></tr>';
+          '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Failed to load.</p></div></td></tr>';
         showToast('❌ Failed to load inventory', 'err');
       }
+    }
     }
 
     /* ── Save all changes ── */
