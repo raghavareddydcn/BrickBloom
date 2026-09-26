@@ -1035,24 +1035,40 @@
 
     /* ── Save All Changes ── */
     async function saveAll() {
-      var rows = document.querySelectorAll('#invTableBody tr[data-name]');
+      var modifiedNames = Object.keys(pendingChanges);
+      if (modifiedNames.length === 0) {
+        showToast('No changes to save', 'ok');
+        return;
+      }
+
       var batch = db.batch();
       var count = 0;
+      var auditDetailsList = [];
 
       document.getElementById('spinnerOverlay').classList.add('show');
 
       try {
-        rows.forEach(function(row) {
-          var name        = row.getAttribute('data-name');
+        var allRows = document.querySelectorAll('#invTableBody tr[data-name]');
+        
+        modifiedNames.forEach(function(name) {
+          var row = null;
+          allRows.forEach(function(r) {
+            if (r.getAttribute('data-name') === name) row = r;
+          });
+          if (!row) return;
+
           var stockInput  = row.querySelector('.stock-input');
           var unitSelect  = row.querySelector('.unit-select');
           var threshInput = row.querySelector('.threshold-input');
-          if (!name || !stockInput) return;
+          if (!stockInput) return;
 
           var stock  = Math.max(0, parseInt(stockInput.value) || 0);
           var unit   = unitSelect ? unitSelect.value : 'pcs';
           var thresh = Math.max(0, parseInt(threshInput ? threshInput.value : 10) || 10);
           var now    = new Date().toISOString();
+
+          var oldData = inventoryData[name] || {};
+          var oldStock = oldData.stock !== undefined ? oldData.stock : 0;
 
           batch.set(db.collection('products').doc(name), {
             stock:              stock,
@@ -1062,25 +1078,36 @@
           }, { merge: true });
 
           inventoryData[name] = { stock, unit, lowStockThreshold: thresh, lastUpdated: now };
+          stockInput.classList.remove('changed');
+
+          auditDetailsList.push({
+            product: name,
+            oldStock: oldStock,
+            newStock: stock,
+            delta: stock - oldStock,
+            unit: unit
+          });
+
           count++;
         });
 
-        await batch.commit();
-        var modifiedList = Object.keys(pendingChanges);
+        if (count > 0) {
+          await batch.commit();
+
+          logAuditEvent(
+            'INVENTORY_MANUAL_UPDATE',
+            'Products Inventory',
+            'Admin manually updated stock for ' + count + ' product' + (count > 1 ? 's' : '') + ' (' + modifiedNames.join(', ') + ')',
+            { updatedCount: count, changes: auditDetailsList }
+          );
+        }
+
         pendingChanges = {};
-
-        logAuditEvent(
-          'INVENTORY_MANUAL_UPDATE',
-          'Products Inventory',
-          'Admin manually updated stock for ' + count + ' products',
-          { updatedCount: count, products: modifiedList }
-        );
-
         var text = '💾 Save All Changes';
         document.getElementById('saveAllBtn').textContent = text;
         document.getElementById('mSaveBtn').textContent = text;
         document.getElementById('mChangesText').textContent = 'No changes';
-        
+
         isEditMode = false;
         document.getElementById('modeToggleBtn').innerHTML = '✏️ Edit Inventory';
         document.getElementById('modeToggleBtn').style.background = 'var(--slate-900)';
@@ -1092,7 +1119,7 @@
 
         renderTable();
         updateSummaryCards();
-        showToast('✅ Inventory saved — ' + count + ' products updated', 'ok');
+        showToast('✅ Inventory saved — ' + count + ' product' + (count > 1 ? 's' : '') + ' updated', 'ok');
       } catch(e) {
         console.error(e);
         showToast('❌ Save failed — ' + e.message, 'err');
