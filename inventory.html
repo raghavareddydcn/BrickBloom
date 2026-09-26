@@ -595,7 +595,7 @@
         productList.sort();
 
         // Load inventory
-        var invSnap = await db.collection('inventory').get();
+        var invSnap = await db.collection('products').get();
         inventoryData = {};
         invSnap.forEach(function(doc) {
           inventoryData[doc.id] = doc.data();
@@ -639,13 +639,12 @@
           var thresh = Math.max(0, parseInt(threshInput ? threshInput.value : 10) || 10);
           var now    = new Date().toISOString();
 
-          batch.set(db.collection('inventory').doc(name), {
-            name:               name,
+          batch.set(db.collection('products').doc(name), {
             stock:              stock,
             unit:               unit,
             lowStockThreshold:  thresh,
             lastUpdated:        now
-          });
+          }, { merge: true });
 
           // Update local cache
           inventoryData[name] = { stock, unit, lowStockThreshold: thresh, lastUpdated: now };

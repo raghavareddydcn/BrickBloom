@@ -1534,7 +1534,7 @@
           if (!item.name || item.name === 'Packing') return;
           var qty = parseFloat(item.qty) || 0;
           if (qty <= 0) return;
-          var invRef = db.collection('inventory').doc(item.name);
+          var invRef = db.collection('products').doc(item.name);
           invBatch.set(invRef, {
             name: item.name,
             stock: firebase.firestore.FieldValue.increment(-qty),
