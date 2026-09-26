@@ -49,7 +49,7 @@
       background: var(--cream);
       color: var(--slate-800);
       min-height: 100vh;
-      padding-bottom: 90px; /* Space for mobile sticky action bar */
+      padding-bottom: 90px;
     }
 
     /* ── Topbar ── */
@@ -93,7 +93,7 @@
     /* ── Layout ── */
     .page { max-width: 1300px; margin: 0 auto; padding: 24px; }
 
-    /* ── Page header ── */
+    /* ── Page Header ── */
     .page-header {
       display: flex;
       align-items: center;
@@ -104,24 +104,42 @@
     }
     .page-title { font-family: var(--font-head); font-size: 26px; font-weight: 800; color: var(--slate-900); }
     .page-subtitle { font-size: 13px; color: var(--slate-600); margin-top: 2px; }
+
+    .header-btns { display: flex; align-items: center; gap: 10px; }
     
+    .btn-mode-toggle {
+      background: var(--slate-900);
+      color: white;
+      padding: 11px 20px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-mode-toggle:hover { background: var(--slate-800); transform: translateY(-1px); }
+
     .btn-save-all {
       background: linear-gradient(135deg, var(--green-700), var(--green-800));
       color: white;
-      padding: 12px 22px;
+      padding: 11px 22px;
       border-radius: var(--radius-md);
       border: none;
       cursor: pointer;
       font-size: 14px;
       font-weight: 700;
-      display: inline-flex;
+      display: none; /* Shown in Edit Mode */
       align-items: center;
       gap: 8px;
       transition: all 0.2s;
       box-shadow: 0 4px 14px rgba(21,128,61,0.3);
     }
     .btn-save-all:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(21,128,61,0.4); }
-    .btn-save-all:active { transform: translateY(0); }
 
     /* ── Summary Cards ── */
     .summary-cards {
@@ -148,7 +166,7 @@
     .sc-value { font-family: var(--font-head); font-size: 30px; font-weight: 800; color: var(--slate-900); }
     .sc-sub   { font-size: 11.5px; color: var(--slate-500); margin-top: 2px; }
 
-    /* ── Filter Tabs (Segmented Control) ── */
+    /* ── Filter Tabs ── */
     .filter-tabs {
       display: flex;
       gap: 8px;
@@ -195,8 +213,19 @@
       gap: 12px;
       flex-wrap: wrap;
     }
-    .table-toolbar h2 { font-size: 16px; font-weight: 700; color: var(--slate-800); }
+    .table-toolbar h2 { font-size: 16px; font-weight: 700; color: var(--slate-800); display: flex; align-items: center; gap: 8px; }
     
+    .mode-badge {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+    .mode-badge.view-mode { background: #e2e8f0; color: #475569; }
+    .mode-badge.edit-mode { background: var(--amber-100); color: #92400e; border: 1px solid rgba(245,158,11,0.4); }
+
     .search-wrap { position: relative; flex: 1; max-width: 320px; }
     .search-box {
       width: 100%;
@@ -211,7 +240,7 @@
     .search-box:focus { border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(22,163,74,0.15); }
     .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.5; font-size: 14px; pointer-events: none; }
 
-    /* ── Desktop Table View ── */
+    /* ── Table View ── */
     .inv-table { width: 100%; border-collapse: collapse; }
     .inv-table th {
       background: #f5e9d5;
@@ -237,7 +266,21 @@
     .prod-name { font-weight: 700; color: var(--slate-900); font-size: 14.5px; }
     .item-num { color: var(--slate-400); font-size: 12px; font-weight: 600; margin-right: 6px; }
 
-    /* Inputs */
+    /* Read-only View Mode Stock Badge */
+    .view-stock-val {
+      font-family: var(--font-head);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--slate-900);
+    }
+    .view-unit-val {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--slate-500);
+      margin-left: 4px;
+    }
+
+    /* Edit Mode Inputs */
     .stock-input {
       width: 85px;
       padding: 7px 10px;
@@ -318,7 +361,7 @@
 
     /* ── Sticky Mobile Bottom Bar ── */
     .mobile-bottom-bar {
-      display: none; /* Desktop hidden */
+      display: none; /* Controlled by Edit mode + screen width */
       position: fixed;
       bottom: 0;
       left: 0;
@@ -403,7 +446,7 @@
     }
     .empty-state-icon { font-size: 42px; margin-bottom: 10px; }
 
-    /* ── 📱 NATIVE MOBILE APP MODE (@media <= 768px) ── */
+    /* ── 📱 MOBILE STYLING (@media <= 768px) ── */
     @media (max-width: 768px) {
       body { padding-bottom: 90px; }
       .page { padding: 14px 12px; }
@@ -417,9 +460,8 @@
       .page-header { margin-bottom: 14px; }
       .page-title { font-size: 22px; }
       .page-subtitle { font-size: 12px; }
-      .page-header .btn-save-all { display: none; } /* Show sticky bottom bar instead */
+      .page-header .btn-save-all { display: none; }
 
-      /* Summary Cards Grid on Mobile */
       .summary-cards {
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
@@ -445,9 +487,9 @@
       }
       .search-wrap { max-width: 100%; }
 
-      /* Transform table into Native Cards */
+      /* Mobile App Cards */
       .inv-table, .inv-table tbody { display: block; width: 100%; }
-      .inv-table thead { display: none; } /* Hide table header */
+      .inv-table thead { display: none; }
 
       .inv-table tr {
         display: block;
@@ -467,7 +509,7 @@
       }
 
       /* Card Header: Product Name + Badge */
-      .inv-table tr td:nth-child(1) { display: none; } /* Hide # col */
+      .inv-table tr td:nth-child(1) { display: none; }
       
       .inv-table tr td:nth-child(2) {
         display: flex;
@@ -479,7 +521,7 @@
       }
       .m-badge-wrap { display: block; }
 
-      /* Stock Qty & Unit Input Row */
+      /* Edit Mode Controls on Mobile */
       .inv-table tr td:nth-child(3),
       .inv-table tr td:nth-child(4) {
         display: inline-block;
@@ -534,20 +576,18 @@
         font-weight: 600;
       }
 
-      .inv-table tr td:nth-child(7) { display: none; } /* Badge handled in top row flex */
+      .inv-table tr td:nth-child(7) { display: none; }
       .inv-table tr td:nth-child(8) {
         margin-top: 6px;
         text-align: right;
         font-size: 11px;
       }
-
-      .mobile-bottom-bar { display: flex; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Auth guard -->
+  <!-- Auth guard: Only admin can access -->
   <script>
     if (!sessionStorage.getItem('bb_admin')) {
       window.location.href = '/admin';
@@ -565,7 +605,7 @@
     <a class="topbar-brand" href="/inventory">
       <img src="/images/OurProducts/Logo_new.jpeg" alt="BB" class="topbar-logo" />
       <div>
-        <div class="topbar-title">Inventory</div>
+        <div class="topbar-title">Inventory Dashboard</div>
         <div class="topbar-subtitle">Konaseema Coco Products LLP</div>
       </div>
     </a>
@@ -575,7 +615,7 @@
     </div>
   </div>
 
-  <!-- Main content -->
+  <!-- Main Content -->
   <div class="page">
 
     <!-- Header -->
@@ -584,12 +624,17 @@
         <div class="page-title">📦 Stock Inventory</div>
         <div class="page-subtitle">Live stock levels · Auto-deducted when invoices are saved</div>
       </div>
-      <button class="btn-save-all" id="saveAllBtn" onclick="saveAll()">
-        💾 Save All Changes
-      </button>
+      <div class="header-btns">
+        <button class="btn-mode-toggle" id="modeToggleBtn" onclick="toggleEditMode()">
+          ✏️ Edit Inventory
+        </button>
+        <button class="btn-save-all" id="saveAllBtn" onclick="saveAll()">
+          💾 Save All Changes
+        </button>
+      </div>
     </div>
 
-    <!-- Summary cards -->
+    <!-- Summary Cards -->
     <div class="summary-cards">
       <div class="summary-card total" onclick="setFilterTab('all')">
         <div class="sc-label">Total SKUs</div>
@@ -624,7 +669,10 @@
     <!-- Table Card -->
     <div class="table-card">
       <div class="table-toolbar">
-        <h2>Products List</h2>
+        <h2>
+          Products List
+          <span class="mode-badge view-mode" id="modeBadge">👁️ View Mode</span>
+        </h2>
         <div class="search-wrap">
           <span class="search-icon">🔍</span>
           <input class="search-box" id="searchInput" type="search" placeholder="Search products..." oninput="handleSearch(this.value)" />
@@ -632,17 +680,8 @@
       </div>
       <div style="overflow-x:auto;">
         <table class="inv-table" id="invTable">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Product Name</th>
-              <th>Unit</th>
-              <th>Stock on Hand</th>
-              <th>Quick Adjust</th>
-              <th>Low Stock Alert</th>
-              <th>Status</th>
-              <th>Last Updated</th>
-            </tr>
+          <thead id="invTableHeader">
+            <!-- Headers injected based on mode -->
           </thead>
           <tbody id="invTableBody">
             <tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">⏳</div><p>Loading inventory…</p></div></td></tr>
@@ -653,8 +692,8 @@
 
   </div>
 
-  <!-- Mobile Sticky Bottom Action Bar -->
-  <div class="mobile-bottom-bar">
+  <!-- Mobile Sticky Bottom Action Bar (Only visible in Edit Mode on mobile) -->
+  <div class="mobile-bottom-bar" id="mobileBottomBar">
     <div class="m-changes-text" id="mChangesText">No changes</div>
     <button class="m-save-btn" id="mSaveBtn" onclick="saveAll()">
       💾 Save All Changes
@@ -683,6 +722,7 @@
     var pendingChanges = {}; // tracks which rows have unsaved edits
     var currentFilterTab = 'all';
     var currentSearchText = '';
+    var isEditMode = false;  // Default is View-Only mode
 
     /* ── Helpers ── */
     function showToast(msg, type) {
@@ -724,7 +764,33 @@
       document.getElementById('sc-out').textContent   = out;
     }
 
-    /* ── Filter Tabs Handler ── */
+    /* ── Toggle Edit Mode ── */
+    function toggleEditMode() {
+      isEditMode = !isEditMode;
+      var toggleBtn = document.getElementById('modeToggleBtn');
+      var saveBtn   = document.getElementById('saveAllBtn');
+      var badge     = document.getElementById('modeBadge');
+      var mBar      = document.getElementById('mobileBottomBar');
+
+      if (isEditMode) {
+        toggleBtn.innerHTML = '👁️ Done Editing (View Mode)';
+        toggleBtn.style.background = '#334155';
+        saveBtn.style.display = 'inline-flex';
+        badge.className = 'mode-badge edit-mode';
+        badge.textContent = '✏️ Edit Mode';
+        if (window.innerWidth <= 768) mBar.style.display = 'flex';
+      } else {
+        toggleBtn.innerHTML = '✏️ Edit Inventory';
+        toggleBtn.style.background = 'var(--slate-900)';
+        saveBtn.style.display = 'none';
+        badge.className = 'mode-badge view-mode';
+        badge.textContent = '👁️ View Mode';
+        mBar.style.display = 'none';
+      }
+      renderTable();
+    }
+
+    /* ── Filter Tabs & Search ── */
     function setFilterTab(tab) {
       currentFilterTab = tab;
       document.querySelectorAll('.filter-tab').forEach(function(btn) {
@@ -738,21 +804,43 @@
       renderTable();
     }
 
-    /* ── Render Table & Mobile Cards ── */
+    /* ── Render Table (View vs Edit Mode) ── */
     function renderTable() {
+      var thead = document.getElementById('invTableHeader');
       var tbody = document.getElementById('invTableBody');
       var rows  = '';
+
+      // Set headers based on mode
+      if (isEditMode) {
+        thead.innerHTML = '<tr>' +
+          '<th>#</th>' +
+          '<th>Product Name</th>' +
+          '<th>Unit</th>' +
+          '<th>Stock on Hand</th>' +
+          '<th>Quick Adjust</th>' +
+          '<th>Low Stock Alert</th>' +
+          '<th>Status</th>' +
+          '<th>Last Updated</th>' +
+        '</tr>';
+      } else {
+        thead.innerHTML = '<tr>' +
+          '<th>#</th>' +
+          '<th>Product Name</th>' +
+          '<th>Stock Level</th>' +
+          '<th>Low Stock Threshold</th>' +
+          '<th>Status</th>' +
+          '<th>Last Updated</th>' +
+        '</tr>';
+      }
 
       var filtered = productList.filter(function(name) {
         var d      = inventoryData[name] || {};
         var stock  = parseInt(d.stock) || 0;
         var thresh = parseInt(d.lowStockThreshold) || 10;
 
-        // Search match
         var matchesSearch = !currentSearchText || name.toLowerCase().includes(currentSearchText.toLowerCase());
         if (!matchesSearch) return false;
 
-        // Tab match
         if (currentFilterTab === 'instock') return stock > thresh;
         if (currentFilterTab === 'low')     return stock > 0 && stock <= thresh;
         if (currentFilterTab === 'out')     return stock <= 0;
@@ -771,41 +859,60 @@
         var unit   = d.unit || 'pcs';
         var thresh = parseInt(d.lowStockThreshold) || 10;
 
-        rows += '<tr data-name="' + escAttr(name) + '">' +
-          '<td><span class="item-num">#' + (idx + 1) + '</span></td>' +
-          '<td>' +
-            '<span class="prod-name">' + escH(name) + '</span>' +
-            '<div class="m-badge-wrap">' + getBadge(stock, thresh) + '</div>' +
-          '</td>' +
-          '<td>' +
-            '<select class="unit-select" data-name="' + escAttr(name) + '" onchange="markChanged(this)">' +
-              ['pcs','bags','kgs','boxes','sets','rolls'].map(function(u) {
-                return '<option value="' + u + '"' + (unit === u ? ' selected' : '') + '>' + u + '</option>';
-              }).join('') +
-            '</select>' +
-          '</td>' +
-          '<td>' +
-            '<input class="stock-input" type="number" inputmode="numeric" min="0" value="' + stock + '" ' +
-              'data-name="' + escAttr(name) + '" ' +
-              'oninput="markChanged(this); updateRowBadge(this)" />' +
-          '</td>' +
-          '<td>' +
-            '<div class="adj-btns">' +
-              '<button class="adj-btn plus"  onclick="adjustStock(\'' + escAttr(name) + '\', +1)">+1</button>' +
-              '<button class="adj-btn plus"  onclick="adjustStock(\'' + escAttr(name) + '\', +5)">+5</button>' +
-              '<button class="adj-btn plus"  onclick="adjustStock(\'' + escAttr(name) + '\', +10)">+10</button>' +
-              '<button class="adj-btn minus" onclick="adjustStock(\'' + escAttr(name) + '\', -1)">−1</button>' +
-              '<button class="adj-btn minus" onclick="adjustStock(\'' + escAttr(name) + '\', -5)">−5</button>' +
-            '</div>' +
-          '</td>' +
-          '<td>' +
-            '<input class="threshold-input" type="number" inputmode="numeric" min="0" value="' + thresh + '" ' +
-              'data-name="' + escAttr(name) + '" ' +
-              'oninput="markChanged(this); updateRowBadge(this)" />' +
-          '</td>' +
-          '<td class="badge-cell-' + cssId(name) + '">' + getBadge(stock, thresh) + '</td>' +
-          '<td class="last-updated">' + fmtDate(d.lastUpdated) + '</td>' +
-        '</tr>';
+        if (isEditMode) {
+          // ✏️ EDIT MODE ROW
+          rows += '<tr data-name="' + escAttr(name) + '">' +
+            '<td><span class="item-num">#' + (idx + 1) + '</span></td>' +
+            '<td>' +
+              '<span class="prod-name">' + escH(name) + '</span>' +
+              '<div class="m-badge-wrap">' + getBadge(stock, thresh) + '</div>' +
+            '</td>' +
+            '<td>' +
+              '<select class="unit-select" data-name="' + escAttr(name) + '" onchange="markChanged(this)">' +
+                ['pcs','bags','kgs','boxes','sets','rolls'].map(function(u) {
+                  return '<option value="' + u + '"' + (unit === u ? ' selected' : '') + '>' + u + '</option>';
+                }).join('') +
+              '</select>' +
+            '</td>' +
+            '<td>' +
+              '<input class="stock-input" type="number" inputmode="numeric" min="0" value="' + stock + '" ' +
+                'data-name="' + escAttr(name) + '" ' +
+                'oninput="markChanged(this); updateRowBadge(this)" />' +
+            '</td>' +
+            '<td>' +
+              '<div class="adj-btns">' +
+                '<button class="adj-btn plus"  onclick="adjustStock(\'' + escAttr(name) + '\', +1)">+1</button>' +
+                '<button class="adj-btn plus"  onclick="adjustStock(\'' + escAttr(name) + '\', +5)">+5</button>' +
+                '<button class="adj-btn plus"  onclick="adjustStock(\'' + escAttr(name) + '\', +10)">+10</button>' +
+                '<button class="adj-btn minus" onclick="adjustStock(\'' + escAttr(name) + '\', -1)">−1</button>' +
+                '<button class="adj-btn minus" onclick="adjustStock(\'' + escAttr(name) + '\', -5)">−5</button>' +
+              '</div>' +
+            '</td>' +
+            '<td>' +
+              '<input class="threshold-input" type="number" inputmode="numeric" min="0" value="' + thresh + '" ' +
+                'data-name="' + escAttr(name) + '" ' +
+                'oninput="markChanged(this); updateRowBadge(this)" />' +
+            '</td>' +
+            '<td class="badge-cell-' + cssId(name) + '">' + getBadge(stock, thresh) + '</td>' +
+            '<td class="last-updated">' + fmtDate(d.lastUpdated) + '</td>' +
+          '</tr>';
+        } else {
+          // 👁️ VIEW MODE ROW (Clean & Read-only)
+          rows += '<tr data-name="' + escAttr(name) + '">' +
+            '<td><span class="item-num">#' + (idx + 1) + '</span></td>' +
+            '<td>' +
+              '<span class="prod-name">' + escH(name) + '</span>' +
+              '<div class="m-badge-wrap">' + getBadge(stock, thresh) + '</div>' +
+            '</td>' +
+            '<td>' +
+              '<span class="view-stock-val">' + stock.toLocaleString('en-IN') + '</span>' +
+              '<span class="view-unit-val">' + escH(unit) + '</span>' +
+            '</td>' +
+            '<td style="color:var(--slate-600);font-size:13px;">Alert at ≤ ' + thresh + ' ' + escH(unit) + '</td>' +
+            '<td class="badge-cell-' + cssId(name) + '">' + getBadge(stock, thresh) + '</td>' +
+            '<td class="last-updated">' + fmtDate(d.lastUpdated) + '</td>' +
+          '</tr>';
+        }
       });
 
       tbody.innerHTML = rows;
@@ -917,7 +1024,6 @@
           }, { merge: true });
 
           inventoryData[name] = { stock, unit, lowStockThreshold: thresh, lastUpdated: now };
-          stockInput.classList.remove('changed');
           count++;
         });
 
@@ -927,6 +1033,16 @@
         document.getElementById('saveAllBtn').textContent = text;
         document.getElementById('mSaveBtn').textContent = text;
         document.getElementById('mChangesText').textContent = 'No changes';
+        
+        // Switch back to view mode after saving
+        isEditMode = false;
+        document.getElementById('modeToggleBtn').innerHTML = '✏️ Edit Inventory';
+        document.getElementById('modeToggleBtn').style.background = 'var(--slate-900)';
+        document.getElementById('saveAllBtn').style.display = 'none';
+        document.getElementById('modeBadge').className = 'mode-badge view-mode';
+        document.getElementById('modeBadge').textContent = '👁️ View Mode';
+        document.getElementById('mobileBottomBar').style.display = 'none';
+
         renderTable();
         updateSummaryCards();
         showToast('✅ Inventory saved — ' + count + ' products updated', 'ok');
