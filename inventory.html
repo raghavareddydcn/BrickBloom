@@ -827,7 +827,6 @@
           '<th>#</th>' +
           '<th>Product Name</th>' +
           '<th>Stock Level</th>' +
-          '<th>Low Stock Threshold</th>' +
           '<th>Status</th>' +
           '<th>Last Updated</th>' +
         '</tr>';
@@ -908,7 +907,6 @@
               '<span class="view-stock-val">' + stock.toLocaleString('en-IN') + '</span>' +
               '<span class="view-unit-val">' + escH(unit) + '</span>' +
             '</td>' +
-            '<td style="color:var(--slate-600);font-size:13px;">Alert at ≤ ' + thresh + ' ' + escH(unit) + '</td>' +
             '<td class="badge-cell-' + cssId(name) + '">' + getBadge(stock, thresh) + '</td>' +
             '<td class="last-updated">' + fmtDate(d.lastUpdated) + '</td>' +
           '</tr>';
