@@ -432,6 +432,35 @@ app.post('/api/wa/send', async (req, res) => {
 });
 
 // ── Fallback (must stay LAST) ──────────────────────────────────────────────────
+
+// ── Audit Log Endpoint & Logger ──
+const logsDir = path.join(__dirname, 'logs');
+if (!fs.existsSync(logsDir)) {
+  fs.mkdirSync(logsDir, { recursive: true });
+}
+const auditLogFile = path.join(logsDir, 'audit.log');
+
+app.post('/api/audit-log', (req, res) => {
+  const { timestamp, action, performedBy, entityId, summary, details } = req.body || {};
+  const now = timestamp || new Date().toISOString();
+  const line = `[${now}] [${performedBy || 'admin'}] ${action || 'UNKNOWN'} | ID: ${entityId || '-'} | ${summary || ''} | Details: ${JSON.stringify(details || {})}\n`;
+  
+  fs.appendFile(auditLogFile, line, (err) => {
+    if (err) console.error('Failed to write to audit.log:', err);
+  });
+  
+  res.json({ ok: true });
+});
+
+app.get('/api/audit-log', (req, res) => {
+  if (fs.existsSync(auditLogFile)) {
+    const logs = fs.readFileSync(auditLogFile, 'utf8');
+    res.type('text/plain').send(logs);
+  } else {
+    res.send('No audit logs recorded yet.');
+  }
+});
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });

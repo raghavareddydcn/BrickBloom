@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="icon" type="image/jpeg" href="/images/OurProducts/Logo_new.jpeg" />
+  <link rel="apple-touch-icon" href="/images/OurProducts/Logo_new.jpeg" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>BrickBloom – Inventory</title>
@@ -725,6 +727,30 @@
     var isEditMode = false;  // Default is View-Only mode
 
     /* ── Helpers ── */
+    
+    /* ── Audit Logger Helper ── */
+    async function logAuditEvent(action, entityId, summary, details) {
+      try {
+        var logEntry = {
+          timestamp: new Date().toISOString(),
+          action: action,
+          performedBy: 'admin',
+          entityId: String(entityId || ''),
+          summary: summary || '',
+          details: details || {},
+          userAgent: navigator.userAgent
+        };
+        await db.collection('audit_logs').add(logEntry);
+        fetch('/api/audit-log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(logEntry)
+        }).catch(function() {});
+      } catch (e) {
+        console.warn('Audit log failed:', e);
+      }
+    }
+
     function showToast(msg, type) {
       var t = document.getElementById('toast');
       t.textContent = msg;
@@ -1026,7 +1052,15 @@
         });
 
         await batch.commit();
+        var modifiedList = Object.keys(pendingChanges);
         pendingChanges = {};
+        
+        logAuditEvent(
+          'INVENTORY_MANUAL_UPDATE',
+          'Products Inventory',
+          'Admin manually updated stock for ' + count + ' products',
+          { updatedCount: count, products: modifiedList }
+        );
         var text = '💾 Save All Changes';
         document.getElementById('saveAllBtn').textContent = text;
         document.getElementById('mSaveBtn').textContent = text;
