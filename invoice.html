@@ -828,6 +828,20 @@
     }
     .inv-grand-k { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; opacity: 0.9; }
     .inv-grand-v { font-size: 20px; font-weight: 800; font-family: var(--font-mono); }
+    .inv-advance-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 14px; background: rgba(245,158,11,0.1);
+      border: 1px dashed rgba(245,158,11,0.5); border-radius: 8px; margin-top: 6px;
+    }
+    .inv-adv-k { font-size: 11px; font-weight: 700; color: #92400e; letter-spacing: 0.5px; }
+    .inv-adv-v { font-size: 15px; font-weight: 700; color: #92400e; font-family: var(--font-mono); }
+    .inv-balance-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 14px; background: linear-gradient(135deg, #1e3a5f, #1d4ed8);
+      border-radius: 8px; margin-top: 4px;
+    }
+    .inv-bal-k { font-size: 11px; font-weight: 800; color: rgba(255,255,255,0.85); letter-spacing: 1px; text-transform: uppercase; }
+    .inv-bal-v { font-size: 20px; font-weight: 800; color: #93c5fd; font-family: var(--font-mono); }
 
     /* - Terms + Signature -- */
     .inv-footer-row {
@@ -1090,6 +1104,7 @@
       <button class="tbtn tbtn-pdf" onclick="saveAsPdf()">📄 PDF</button>
       <button class="tbtn tbtn-reset" onclick="clearForm()">🔄 Reset</button>
       <button class="tbtn tbtn-logout" onclick="logout()">Logout</button>
+      <a href="/inventory" class="tbtn" style="background:rgba(255,255,255,0.15);color:#fff;text-decoration:none;">📦 Inventory</a>
     </div>
 
     <!-- Mobile hamburger -->
@@ -1231,6 +1246,14 @@
             <div class="total-row grand">
               <label>Grand Total</label>
               <span class="tval" id="st_grand">Rs. 0.00</span>
+            </div>
+            <div class="total-row" style="border-top:2px dashed var(--slate-200);margin-top:6px;padding-top:6px;">
+              <label>Advance Paid (Rs.)</label>
+              <input class="num-input" type="number" id="advancePaid" min="0" placeholder="0.00" oninput="renderPreview()" />
+            </div>
+            <div class="total-row grand" style="background:linear-gradient(135deg,#052e16,#166534);border-radius:8px;padding:8px 12px;margin-top:4px;">
+              <label style="color:rgba(255,255,255,0.85);font-weight:700;">Balance Due</label>
+              <span class="tval" id="st_balance" style="color:#86efac;font-weight:800;">Rs. 0.00</span>
             </div>
           </div>
         </div>
@@ -1482,6 +1505,7 @@
         custGstin:     v('custGstin'),
         items:         JSON.parse(JSON.stringify(items)),
         transport:     parseFloat(v('transport') || 0),
+        advancePaid:   parseFloat(v('advancePaid') || 0),
         taxRate:       parseFloat(v('taxRate') || 0),
         savedAt:       new Date().toISOString()
       };
@@ -1503,6 +1527,22 @@
         }
         await invoicesCol.doc(String(data.id)).set(data);
         showToast(isUpdate ? '✅ Invoice updated: ' + data.refNo : '✅ Invoice saved: ' + data.refNo);
+      // Auto-deduct inventory for each line item
+      if (data.items && data.items.length > 0) {
+        var invBatch = db.batch();
+        data.items.forEach(function(item) {
+          if (!item.name || item.name === 'Packing') return;
+          var qty = parseFloat(item.qty) || 0;
+          if (qty <= 0) return;
+          var invRef = db.collection('inventory').doc(item.name);
+          invBatch.set(invRef, {
+            name: item.name,
+            stock: firebase.firestore.FieldValue.increment(-qty),
+            lastUpdated: new Date().toISOString()
+          }, { merge: true });
+        });
+        invBatch.commit().catch(function(e) { console.warn('Inventory deduct failed:', e); });
+      }
         renderPreview();
         return true;
       } catch (e) {
@@ -2005,7 +2045,10 @@
       });
 
       var tr = parseFloat(v('transport') || 0);
-      return { subtotal: sub, transport: tr, tax: totalTax, taxBreakdown: taxBreakdown, grand: sub + tr + totalTax };
+      var grand = sub + tr + totalTax;
+      var adv = parseFloat(document.getElementById('advancePaid') ? document.getElementById('advancePaid').value || 0 : 0);
+      var balance = Math.max(0, grand - adv);
+      return { subtotal: sub, transport: tr, tax: totalTax, taxBreakdown: taxBreakdown, grand: grand, advancePaid: adv, balance: balance };
     }
 
     /* -- Helpers ---------------------------------------------------------- */
@@ -2042,6 +2085,7 @@
       document.getElementById('st_subtotal').textContent = fmtCur(t.subtotal);
       document.getElementById('st_tax').textContent      = fmtCur(t.tax);
       document.getElementById('st_grand').textContent    = fmtCur(t.grand);
+      if (document.getElementById('st_balance')) document.getElementById('st_balance').textContent = fmtCur(t.balance);
 
       var totalQty = items.reduce(function(s, r) { return s + parseFloat(r.qty||0); }, 0);
 
@@ -2290,7 +2334,7 @@
     /* -- Clear form ------------------------------------------------------- */
     function clearForm() {
       if (items.length && !confirm('Start a new invoice? Unsaved changes will be lost.')) return;
-      ['refNo','custName','custAddr','custPhone','custState','custGstin','transport','payTerms','placeOfSupply'].forEach(function(id) { set(id, ''); });
+      ['refNo','custName','custAddr','custPhone','custState','custGstin','transport','advancePaid','payTerms','placeOfSupply'].forEach(function(id) { set(id, ''); });
       set('issueDate', today());
       set('payTerms', 'Immediate');
       set('placeOfSupply', 'Karnataka (29)');

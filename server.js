@@ -75,6 +75,10 @@ app.get('/invoice', (req, res) => {
   res.sendFile(path.join(__dirname, 'invoice.html'));
 });
 
+app.get('/inventory', (req, res) => {
+  res.sendFile(path.join(__dirname, 'inventory.html'));
+});
+
 app.get('/public', (req, res) => {
   res.redirect('/');
 });

@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>BrickBloom – Inventory</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-950: #052e16;
+      --green-900: #14532d;
+      --green-800: #166534;
+      --green-700: #15803d;
+      --green-600: #16a34a;
+      --green-100: #dcfce7;
+      --amber-500: #f59e0b;
+      --amber-100: #fef3c7;
+      --red-600:   #dc2626;
+      --red-100:   #fee2e2;
+      --slate-50:  #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-400: #94a3b8;
+      --slate-500: #64748b;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+      --cream:     #f0e1c2;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.1);
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-head: 'Space Grotesk', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--slate-100);
+      color: var(--slate-800);
+      min-height: 100vh;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: linear-gradient(135deg, var(--green-950) 0%, var(--green-800) 100%);
+      color: white;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    }
+    .topbar-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
+    .topbar-logo { height: 38px; width: auto; border-radius: 8px; }
+    .topbar-title { font-family: var(--font-head); font-size: 18px; font-weight: 700; }
+    .topbar-subtitle { font-size: 11px; opacity: 0.7; letter-spacing: 0.5px; }
+    .topbar-actions { display: flex; align-items: center; gap: 10px; }
+    .tbtn {
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tbtn-invoice { background: rgba(255,255,255,0.15); color: white; }
+    .tbtn-invoice:hover { background: rgba(255,255,255,0.25); }
+    .tbtn-logout { background: rgba(220,38,38,0.2); color: #fca5a5; }
+    .tbtn-logout:hover { background: rgba(220,38,38,0.35); color: white; }
+
+    /* ── Layout ── */
+    .page { max-width: 1300px; margin: 0 auto; padding: 28px 24px; }
+
+    /* ── Page header ── */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title { font-family: var(--font-head); font-size: 26px; font-weight: 800; color: var(--slate-900); }
+    .page-subtitle { font-size: 13px; color: var(--slate-500); margin-top: 2px; }
+    .btn-save-all {
+      background: var(--green-700);
+      color: white;
+      padding: 10px 20px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.15s;
+      box-shadow: var(--shadow-md);
+    }
+    .btn-save-all:hover { background: var(--green-800); transform: translateY(-1px); }
+    .btn-save-all:disabled { background: var(--slate-400); cursor: not-allowed; transform: none; }
+
+    /* ── Summary Cards ── */
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .summary-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-md);
+      border-left: 4px solid transparent;
+    }
+    .summary-card.total  { border-color: var(--green-600); }
+    .summary-card.low    { border-color: var(--amber-500); }
+    .summary-card.out    { border-color: var(--red-600); }
+    .summary-card.units  { border-color: var(--slate-400); }
+    .sc-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--slate-500); margin-bottom: 6px; }
+    .sc-value { font-family: var(--font-head); font-size: 32px; font-weight: 800; color: var(--slate-900); }
+    .sc-sub   { font-size: 12px; color: var(--slate-400); margin-top: 4px; }
+
+    /* ── Table card ── */
+    .table-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    .table-toolbar {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--slate-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .table-toolbar h2 { font-size: 15px; font-weight: 700; color: var(--slate-800); }
+    .search-box {
+      padding: 8px 14px;
+      border: 1.5px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      width: 220px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-box:focus { border-color: var(--green-600); }
+
+    .inv-table { width: 100%; border-collapse: collapse; }
+    .inv-table th {
+      background: var(--slate-50);
+      padding: 11px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--slate-500);
+      border-bottom: 1px solid var(--slate-200);
+      white-space: nowrap;
+    }
+    .inv-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--slate-100);
+      font-size: 13.5px;
+      vertical-align: middle;
+    }
+    .inv-table tr:last-child td { border-bottom: none; }
+    .inv-table tr:hover td { background: var(--slate-50); }
+
+    .prod-name { font-weight: 600; color: var(--slate-800); }
+
+    /* Stock input */
+    .stock-input {
+      width: 80px;
+      padding: 6px 10px;
+      border: 1.5px solid var(--slate-200);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .stock-input:focus { border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(22,163,74,0.15); }
+    .stock-input.changed { border-color: var(--amber-500); background: var(--amber-100); }
+
+    .unit-select {
+      padding: 6px 10px;
+      border: 1.5px solid var(--slate-200);
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      background: white;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .unit-select:focus { border-color: var(--green-600); }
+
+    .threshold-input {
+      width: 70px;
+      padding: 6px 8px;
+      border: 1.5px solid var(--slate-200);
+      border-radius: 8px;
+      font-size: 13px;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .threshold-input:focus { border-color: var(--green-600); }
+
+    /* Adj buttons */
+    .adj-btns { display: flex; gap: 4px; align-items: center; }
+    .adj-btn {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1.5px solid var(--slate-200);
+      background: white;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--slate-600);
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .adj-btn:hover { background: var(--green-100); border-color: var(--green-600); color: var(--green-800); }
+    .adj-btn.minus:hover { background: var(--red-100); border-color: var(--red-600); color: var(--red-600); }
+
+    /* Status badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .badge-instock  { background: var(--green-100); color: var(--green-800); }
+    .badge-low      { background: var(--amber-100); color: #92400e; }
+    .badge-outstock { background: var(--red-100);   color: var(--red-600); }
+
+    .last-updated { font-size: 11px; color: var(--slate-400); white-space: nowrap; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--slate-900);
+      color: white;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      font-size: 13.5px;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      z-index: 9999;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.ok  { background: var(--green-800); }
+    .toast.err { background: #b91c1c; }
+
+    /* ── Spinner ── */
+    .spinner-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.7);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .spinner-overlay.show { display: flex; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid var(--slate-200);
+      border-top-color: var(--green-600);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--slate-400);
+    }
+    .empty-state-icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    @media (max-width: 768px) {
+      .page { padding: 16px 12px; }
+      .topbar { padding: 0 14px; }
+      .summary-cards { grid-template-columns: repeat(2, 1fr); }
+      .inv-table th:nth-child(5),
+      .inv-table td:nth-child(5),
+      .inv-table th:nth-child(6),
+      .inv-table td:nth-child(6) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Auth guard -->
+  <script>
+    if (!sessionStorage.getItem('bb_admin')) {
+      window.location.href = '/admin';
+    }
+  </script>
+
+  <!-- Spinner -->
+  <div class="spinner-overlay" id="spinnerOverlay">
+    <div class="spinner"></div>
+    <div style="font-size:13px;color:var(--slate-600);font-weight:600;">Saving to cloud…</div>
+  </div>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <a class="topbar-brand" href="/inventory">
+      <img src="/images/OurProducts/Logo_new.jpeg" alt="BB" class="topbar-logo" />
+      <div>
+        <div class="topbar-title">Inventory</div>
+        <div class="topbar-subtitle">Konaseema Coco Products LLP</div>
+      </div>
+    </a>
+    <div class="topbar-actions">
+      <a href="/invoice" class="tbtn tbtn-invoice">📄 Invoice Portal</a>
+      <button class="tbtn tbtn-logout" onclick="logout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="page">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div>
+        <div class="page-title">📦 Stock Inventory</div>
+        <div class="page-subtitle">Live stock levels for all products · Auto-deducted when invoices are saved</div>
+      </div>
+      <button class="btn-save-all" id="saveAllBtn" onclick="saveAll()">
+        💾 Save All Changes
+      </button>
+    </div>
+
+    <!-- Summary cards -->
+    <div class="summary-cards">
+      <div class="summary-card total">
+        <div class="sc-label">Total SKUs</div>
+        <div class="sc-value" id="sc-total">–</div>
+        <div class="sc-sub">products tracked</div>
+      </div>
+      <div class="summary-card units">
+        <div class="sc-label">Total Units</div>
+        <div class="sc-value" id="sc-units">–</div>
+        <div class="sc-sub">on hand</div>
+      </div>
+      <div class="summary-card low">
+        <div class="sc-label">Low Stock</div>
+        <div class="sc-value" id="sc-low">–</div>
+        <div class="sc-sub">need restocking</div>
+      </div>
+      <div class="summary-card out">
+        <div class="sc-label">Out of Stock</div>
+        <div class="sc-value" id="sc-out">–</div>
+        <div class="sc-sub">unavailable</div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+      <div class="table-toolbar">
+        <h2>All Products</h2>
+        <input class="search-box" type="search" placeholder="🔍 Search products…" oninput="filterTable(this.value)" />
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="inv-table" id="invTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product Name</th>
+              <th>Unit</th>
+              <th>Stock on Hand</th>
+              <th>Adjust</th>
+              <th>Low Stock At</th>
+              <th>Status</th>
+              <th>Last Updated</th>
+            </tr>
+          </thead>
+          <tbody id="invTableBody">
+            <tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">⏳</div><p>Loading inventory…</p></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ── Firebase ── */
+    var firebaseConfig = {
+      apiKey: "AIzaSyCE9R7HACDhgVG-WH7KANSRzyEfhXHg8BQ",
+      authDomain: "brickbloom-invoices.firebaseapp.com",
+      projectId: "brickbloom-invoices",
+      storageBucket: "brickbloom-invoices.firebasestorage.app",
+      messagingSenderId: "988743230343",
+      appId: "1:988743230343:web:b2d850dd30c668e92ee922"
+    };
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.firestore();
+
+    /* ── State ── */
+    var inventoryData = {};  // { productName: { stock, unit, lowStockThreshold, lastUpdated } }
+    var productList   = [];  // ordered list of product names from 'products' collection
+    var pendingChanges = {}; // tracks which rows have unsaved edits
+
+    /* ── Helpers ── */
+    function showToast(msg, type) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show ' + (type || 'ok');
+      clearTimeout(t._timer);
+      t._timer = setTimeout(function() { t.className = 'toast'; }, 3500);
+    }
+
+    function fmtDate(iso) {
+      if (!iso) return '–';
+      var d = new Date(iso);
+      return d.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'2-digit', hour:'2-digit', minute:'2-digit' });
+    }
+
+    function getBadge(stock, threshold) {
+      stock = parseInt(stock) || 0;
+      threshold = parseInt(threshold) || 10;
+      if (stock <= 0)            return '<span class="status-badge badge-outstock">🔴 Out of Stock</span>';
+      if (stock <= threshold)    return '<span class="status-badge badge-low">🟡 Low Stock</span>';
+      return                            '<span class="status-badge badge-instock">🟢 In Stock</span>';
+    }
+
+    function updateSummaryCards() {
+      var total = productList.length;
+      var units = 0, low = 0, out = 0;
+      productList.forEach(function(name) {
+        var d = inventoryData[name] || {};
+        var s = parseInt(d.stock) || 0;
+        var t = parseInt(d.lowStockThreshold) || 10;
+        units += s;
+        if (s <= 0)    out++;
+        else if (s <= t) low++;
+      });
+      document.getElementById('sc-total').textContent = total;
+      document.getElementById('sc-units').textContent = units.toLocaleString('en-IN');
+      document.getElementById('sc-low').textContent   = low;
+      document.getElementById('sc-out').textContent   = out;
+    }
+
+    /* ── Render table ── */
+    function renderTable(filter) {
+      var tbody = document.getElementById('invTableBody');
+      var rows  = '';
+      var filtered = productList.filter(function(name) {
+        return !filter || name.toLowerCase().includes(filter.toLowerCase());
+      });
+
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">🔍</div><p>No products found</p></div></td></tr>';
+        return;
+      }
+
+      filtered.forEach(function(name, idx) {
+        var d      = inventoryData[name] || { stock: 0, unit: 'pcs', lowStockThreshold: 10, lastUpdated: null };
+        var stock  = parseInt(d.stock) || 0;
+        var unit   = d.unit || 'pcs';
+        var thresh = parseInt(d.lowStockThreshold) || 10;
+        rows += '<tr data-name="' + escAttr(name) + '">' +
+          '<td style="color:var(--slate-400);font-size:12px">' + (idx + 1) + '</td>' +
+          '<td><span class="prod-name">' + escH(name) + '</span></td>' +
+          '<td>' +
+            '<select class="unit-select" data-name="' + escAttr(name) + '" onchange="markChanged(this)">' +
+              ['pcs','bags','kgs','boxes','sets','rolls'].map(function(u) {
+                return '<option value="' + u + '"' + (unit === u ? ' selected' : '') + '>' + u + '</option>';
+              }).join('') +
+            '</select>' +
+          '</td>' +
+          '<td>' +
+            '<input class="stock-input" type="number" min="0" value="' + stock + '" ' +
+              'data-name="' + escAttr(name) + '" ' +
+              'data-original="' + stock + '" ' +
+              'oninput="markChanged(this); updateRowBadge(this)" />' +
+          '</td>' +
+          '<td>' +
+            '<div class="adj-btns">' +
+              '<button class="adj-btn plus"  onclick="adjustStock(\'' + escAttr(name) + '\', +1)">+1</button>' +
+              '<button class="adj-btn plus"  onclick="adjustStock(\'' + escAttr(name) + '\', +5)">+5</button>' +
+              '<button class="adj-btn plus"  onclick="adjustStock(\'' + escAttr(name) + '\', +10)">+10</button>' +
+              '<button class="adj-btn minus" onclick="adjustStock(\'' + escAttr(name) + '\', -1)">−1</button>' +
+              '<button class="adj-btn minus" onclick="adjustStock(\'' + escAttr(name) + '\', -5)">−5</button>' +
+            '</div>' +
+          '</td>' +
+          '<td>' +
+            '<input class="threshold-input" type="number" min="0" value="' + thresh + '" ' +
+              'data-name="' + escAttr(name) + '" ' +
+              'oninput="markChanged(this); updateRowBadge(this)" />' +
+          '</td>' +
+          '<td class="badge-cell-' + cssId(name) + '">' + getBadge(stock, thresh) + '</td>' +
+          '<td class="last-updated">' + fmtDate(d.lastUpdated) + '</td>' +
+        '</tr>';
+      });
+
+      tbody.innerHTML = rows;
+    }
+
+    function cssId(name) { return name.replace(/[^a-z0-9]/gi, '_'); }
+    function escH(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function escAttr(s) { return String(s).replace(/'/g,'&#39;').replace(/"/g,'&quot;'); }
+
+    function markChanged(el) {
+      el.classList.add('changed');
+      pendingChanges[el.dataset.name] = true;
+      document.getElementById('saveAllBtn').textContent = '💾 Save All Changes (' + Object.keys(pendingChanges).length + ')';
+    }
+
+    function updateRowBadge(el) {
+      var name = el.dataset.name;
+      var row = document.querySelector('[data-name="' + name + '"]');
+      if (!row) return;
+      var stockInput = row.querySelector('.stock-input');
+      var threshInput = row.querySelector('.threshold-input');
+      var badgeCell   = row.querySelector('td:nth-child(7)');
+      if (badgeCell) {
+        badgeCell.innerHTML = getBadge(
+          parseInt(stockInput ? stockInput.value : 0),
+          parseInt(threshInput ? threshInput.value : 10)
+        );
+      }
+      updateSummaryCards();
+    }
+
+    function adjustStock(name, delta) {
+      var rows = document.querySelectorAll('[data-name="' + name + '"]');
+      rows.forEach(function(row) {
+        var input = row.querySelector('.stock-input');
+        if (input) {
+          var newVal = Math.max(0, parseInt(input.value || 0) + delta);
+          input.value = newVal;
+          markChanged(input);
+          updateRowBadge(input);
+        }
+      });
+    }
+
+    function filterTable(val) {
+      renderTable(val);
+    }
+
+    /* ── Load data ── */
+    async function loadInventory() {
+      try {
+        // Load products list
+        var prodSnap = await db.collection('products').get();
+        productList = [];
+        prodSnap.forEach(function(doc) { productList.push(doc.data().name || doc.id); });
+        productList.sort();
+
+        // Load inventory
+        var invSnap = await db.collection('inventory').get();
+        inventoryData = {};
+        invSnap.forEach(function(doc) {
+          inventoryData[doc.id] = doc.data();
+        });
+
+        // Init any missing products with stock = 0
+        productList.forEach(function(name) {
+          if (!inventoryData[name]) {
+            inventoryData[name] = { stock: 0, unit: 'pcs', lowStockThreshold: 10, lastUpdated: null };
+          }
+        });
+
+        renderTable();
+        updateSummaryCards();
+      } catch(e) {
+        console.error(e);
+        document.getElementById('invTableBody').innerHTML =
+          '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Failed to load. Check your connection.</p></div></td></tr>';
+        showToast('❌ Failed to load inventory', 'err');
+      }
+    }
+
+    /* ── Save all changes ── */
+    async function saveAll() {
+      var rows = document.querySelectorAll('#invTableBody tr[data-name]');
+      var batch = db.batch();
+      var count = 0;
+
+      document.getElementById('spinnerOverlay').classList.add('show');
+
+      try {
+        rows.forEach(function(row) {
+          var name        = row.getAttribute('data-name');
+          var stockInput  = row.querySelector('.stock-input');
+          var unitSelect  = row.querySelector('.unit-select');
+          var threshInput = row.querySelector('.threshold-input');
+          if (!name || !stockInput) return;
+
+          var stock  = Math.max(0, parseInt(stockInput.value) || 0);
+          var unit   = unitSelect ? unitSelect.value : 'pcs';
+          var thresh = Math.max(0, parseInt(threshInput ? threshInput.value : 10) || 10);
+          var now    = new Date().toISOString();
+
+          batch.set(db.collection('inventory').doc(name), {
+            name:               name,
+            stock:              stock,
+            unit:               unit,
+            lowStockThreshold:  thresh,
+            lastUpdated:        now
+          });
+
+          // Update local cache
+          inventoryData[name] = { stock, unit, lowStockThreshold: thresh, lastUpdated: now };
+
+          // Reset changed state
+          stockInput.classList.remove('changed');
+          count++;
+        });
+
+        await batch.commit();
+        pendingChanges = {};
+        document.getElementById('saveAllBtn').textContent = '💾 Save All Changes';
+        updateSummaryCards();
+        showToast('✅ Inventory saved — ' + count + ' products updated', 'ok');
+      } catch(e) {
+        console.error(e);
+        showToast('❌ Save failed — ' + e.message, 'err');
+      } finally {
+        document.getElementById('spinnerOverlay').classList.remove('show');
+      }
+    }
+
+    /* ── Logout ── */
+    function logout() {
+      sessionStorage.removeItem('bb_admin');
+      window.location.href = '/admin';
+    }
+
+    /* ── Init ── */
+    loadInventory();
+
+    // Warn before leaving with unsaved changes
+    window.addEventListener('beforeunload', function(e) {
+      if (Object.keys(pendingChanges).length > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    });
+  </script>
+
+</body>
+</html>
