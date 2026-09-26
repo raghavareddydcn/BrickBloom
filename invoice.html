@@ -526,7 +526,7 @@
       font-size: 12.5px;
       color: var(--slate-800);
       line-height: 1.45;
-      flex-shrink: 0;         /* don't compress � let preview-col scroll */
+      flex-shrink: 0;         /* don't compress — let preview-col scroll */
     }
 
     /* - Accent top stripe -- */
@@ -710,7 +710,7 @@
       font-size: 12.5px;
       table-layout: fixed;
     }
-    /* Percentage-based column widths (sum to 100%) � renders reliably in
+    /* Percentage-based column widths (sum to 100%) — renders reliably in
        both the browser and the html2canvas PDF/PNG export, unlike a mix of
        fixed px widths + one "auto" column which html2canvas fails to
        stretch to the full table width. */
@@ -1077,9 +1077,9 @@
     <div class="drawer-head">
       <div>
         <div class="drawer-head-title">📂 Saved Invoices</div>
-        <div class="drawer-head-sub">Synced to the cloud � same list on every device</div>
+        <div class="drawer-head-sub">Synced to the cloud — same list on every device</div>
       </div>
-      <button class="drawer-close-btn" onclick="closeDrawer()">�</button>
+      <button class="drawer-close-btn" onclick="closeDrawer()">✕</button>
     </div>
     <div class="drawer-body" id="invoicesList"></div>
   </div>
@@ -1579,7 +1579,7 @@
       updateEditingBadge();
       closeDrawer();
       showToast('✅ Loaded ' + inv.refNo + ' for editing');
-      // Scroll the right-side preview panel to the top � preview-col is its own
+      // Scroll the right-side preview panel to the top — preview-col is its own
       // scrollable container so only resetting its scrollTop works reliably.
       var previewCol = document.querySelector('.preview-col');
       if (previewCol) previewCol.scrollTop = 0;
@@ -1617,7 +1617,7 @@
       updateEditingBadge();
       closeDrawer();
       showToast('✅ Pre-filled from ' + inv.refNo + ' as new invoice');
-      // Scroll preview panel to top � same rationale as editInvoice.
+      // Scroll preview panel to top — same rationale as editInvoice.
       var previewCol2 = document.querySelector('.preview-col');
       if (previewCol2) previewCol2.scrollTop = 0;
     }
@@ -1671,7 +1671,7 @@
     }
 
     /* Highest number already used by an actual saved invoice for a given FY
-       prefix � used as a floor so suggestions/claims always continue from
+       prefix — used as a floor so suggestions/claims always continue from
        the real last invoice, even if the counters/{fy} doc drifted behind. */
     function maxUsedInvoiceNumber(pre) {
       var maxUsed = 0;
@@ -1684,7 +1684,7 @@
       return maxUsed;
     }
 
-    /* Read-only "next invoice number" preview � does NOT write to Firestore.
+    /* Read-only "next invoice number" preview — does NOT write to Firestore.
        Used on page load and by the "Auto #" button so simply opening/
        refreshing the page (or clicking Auto # without saving) never
        reserves/burns a number. The number is only actually claimed and
@@ -1710,7 +1710,7 @@
       }
     }
 
-    /* Atomically claims/confirms an invoice number at actual save time �
+    /* Atomically claims/confirms an invoice number at actual save time —
        this is the ONLY place the counters/{fy} doc is written, so numbers
        are only ever consumed when an invoice is genuinely saved. If the
        ref no already typed/suggested is still free it's kept as-is; if
@@ -1719,7 +1719,7 @@
     async function claimInvoiceNumber(refNo) {
       var fy = invoiceFyPrefix();
       var m  = new RegExp('^' + fy.pre.replace(/\//g, '\\/') + '(\\d+)$').exec(refNo || '');
-      if (!m) return refNo; // custom/non-standard ref no � leave untouched, don't touch counter
+      if (!m) return refNo; // custom/non-standard ref no — leave untouched, don't touch counter
       var requested = parseInt(m[1], 10);
       var maxUsed   = maxUsedInvoiceNumber(fy.pre);
       var ref       = countersCol.doc(fy.fyKey);
@@ -1761,7 +1761,7 @@
         var grand = t.subtotal + t.transport + t.tax;
         return '<div class="inv-saved-card">' +
           '<div class="isc-head">' +
-            '<span class="isc-refno">' + escH(inv.refNo || '�') + '</span>' +
+            '<span class="isc-refno">' + escH(inv.refNo || '-') + '</span>' +
             '<span class="isc-date">' + fmtDate(inv.issueDate) + '</span>' +
           '</div>' +
           '<div class="isc-cust">👤 ' + escH(inv.custName || '(no name)') + '</div>' +
@@ -2101,7 +2101,7 @@
             return '<tr>' +
               '<td>' + (idx+1) + '</td>' +
               '<td>' +
-                '<div class="inv-item-name">' + escH(r.name || '�') + '</div>' +
+                '<div class="inv-item-name">' + escH(r.name || '-') + '</div>' +
               '</td>' +
               '<td>' + fmtN(qty) + '</td>' +
               '<td>' + fmtN(rate) + '</td>' +
@@ -2124,7 +2124,7 @@
         '<td><strong>₹ ' + fmtN(t.subtotal + t.tax) + '</strong></td>' +
       '</tr>';
 
-      var refNo         = escH(v('refNo')         || 'BB/26-27/�');
+      var refNo         = escH(v('refNo')         || 'BB/26-27/-');
       var issueDate     = escH(fmtDate(v('issueDate')));
       var payTerms      = escH(v('payTerms')       || 'Immediate');
       var placeOfSupply = escH(v('placeOfSupply')  || 'Karnataka (29)');
@@ -2160,7 +2160,7 @@
             '<div class="inv-company-addr">' +
               'No 12, Ground Floor, AVP Complex, Sy No 97,<br>' +
               'Dommasandra Village, Virgo Nagar Post,<br>' +
-              'Bangalore, Karnataka � 560049<br>' +
+              'Bangalore, Karnataka - 560049<br>' +
               '<strong>GSTIN: 29ABGFK2654K1ZX</strong>' +
             '</div>' +
             '<div class="inv-contact-row">' +
@@ -2179,7 +2179,7 @@
             '<div class="inv-doc-original">Original for Recipient</div>' +
             '<div class="inv-header-kv">' +
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Invoice No:</span><span class="inv-hkv-v inv-refno">' + refNo + '</span></div>' +
-              '<div class="inv-hkv-row"><span class="inv-hkv-k">Date:</span><span class="inv-hkv-v">' + (issueDate || '�') + '</span></div>' +
+              '<div class="inv-hkv-row"><span class="inv-hkv-k">Date:</span><span class="inv-hkv-v">' + (issueDate || '-') + '</span></div>' +
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Payment Mode:</span><span class="inv-hkv-v">' + payTerms + '</span></div>' +
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Place of Supply:</span><span class="inv-hkv-v">' + placeOfSupply + '</span></div>' +
             '</div>' +
@@ -2192,7 +2192,7 @@
             '<div class="inv-party-label">Bill To</div>' +
             '<div class="inv-buyer-name">' + (custName || 'Customer Name') + '</div>' +
             '<div class="inv-buyer-info">' +
-              (custAddr || '�') + '<br>' +
+              (custAddr || '-') + '<br>' +
               (custState ? '<strong>State:</strong> ' + custState + '&nbsp;&nbsp;' : '') +
               (custPhone ? '<strong>Phone:</strong> ' + custPhone + '<br>' : '') +
               (custGstin ? '<strong>GSTIN:</strong> ' + custGstin : '') +
