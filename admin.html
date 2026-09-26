@@ -365,14 +365,17 @@
 
   <!-- Topbar -->
   <div class="topbar">
-    <a class="topbar-brand" href="/admin.html">
+    <a class="topbar-brand" href="/">
       <img src="/images/OurProducts/Logo_new.jpeg" alt="BB" class="topbar-logo" />
       <div>
         <div class="topbar-title">Admin Portal</div>
         <div class="topbar-subtitle">Konaseema Coco Products LLP</div>
       </div>
     </a>
-    <button class="btn-logout" id="logoutBtn" style="display:none;" onclick="logout()">🚪 Logout</button>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a href="/" style="background:rgba(255,255,255,0.15);color:white;text-decoration:none;padding:8px 14px;border-radius:10px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;">🌐 Home Page</a>
+      <button class="btn-logout" id="logoutBtn" style="display:none;" onclick="logout()">🚪 Logout</button>
+    </div>
   </div>
 
   <div class="container">
