@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/jpeg" href="/images/OurProducts/Logo_new.jpeg" />
-  <link rel="apple-touch-icon" href="/images/OurProducts/Logo_new.jpeg" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>BrickBloom – Inventory</title>
+  <link rel="icon" type="image/jpeg" href="/images/OurProducts/Logo_new.jpeg" />
+  <link rel="apple-touch-icon" href="/images/OurProducts/Logo_new.jpeg" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -135,7 +135,7 @@
       cursor: pointer;
       font-size: 14px;
       font-weight: 700;
-      display: none; /* Shown in Edit Mode */
+      display: none;
       align-items: center;
       gap: 8px;
       transition: all 0.2s;
@@ -242,7 +242,7 @@
     .search-box:focus { border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(22,163,74,0.15); }
     .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.5; font-size: 14px; pointer-events: none; }
 
-    /* ── Table View ── */
+    /* ── Desktop Table View ── */
     .inv-table { width: 100%; border-collapse: collapse; }
     .inv-table th {
       background: #f5e9d5;
@@ -363,7 +363,7 @@
 
     /* ── Sticky Mobile Bottom Bar ── */
     .mobile-bottom-bar {
-      display: none; /* Controlled by Edit mode + screen width */
+      display: none;
       position: fixed;
       bottom: 0;
       left: 0;
@@ -448,31 +448,33 @@
     }
     .empty-state-icon { font-size: 42px; margin-bottom: 10px; }
 
-    /* ── 📱 MOBILE STYLING (@media <= 768px) ── */
+    /* ── 📱 CLEAN NATIVE MOBILE APP STYLING (@media <= 768px) ── */
     @media (max-width: 768px) {
       body { padding-bottom: 90px; }
-      .page { padding: 14px 12px; }
+      .page { padding: 12px 10px; }
 
-      .topbar { padding: 0 14px; height: 58px; }
+      .topbar { padding: 0 12px; height: 56px; }
       .topbar-logo { height: 32px; }
-      .topbar-title { font-size: 16px; }
+      .topbar-title { font-size: 15px; }
       .topbar-subtitle { display: none; }
-      .tbtn { padding: 7px 11px; font-size: 12px; }
+      .tbtn { padding: 6px 10px; font-size: 12px; }
 
-      .page-header { margin-bottom: 14px; }
-      .page-title { font-size: 22px; }
+      .page-header { margin-bottom: 12px; }
+      .page-title { font-size: 20px; }
       .page-subtitle { font-size: 12px; }
       .page-header .btn-save-all { display: none; }
+      
+      .btn-mode-toggle { padding: 8px 14px; font-size: 12.5px; }
 
       .summary-cards {
         grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        margin-bottom: 16px;
+        gap: 8px;
+        margin-bottom: 14px;
       }
-      .summary-card { padding: 12px 14px; }
+      .summary-card { padding: 12px; border-radius: 12px; }
       .sc-label { font-size: 10px; }
-      .sc-value { font-size: 24px; }
-      .sc-sub { font-size: 10.5px; }
+      .sc-value { font-size: 22px; }
+      .sc-sub { font-size: 10px; }
 
       .table-card {
         background: transparent;
@@ -483,78 +485,93 @@
       .table-toolbar {
         background: var(--card-bg);
         border-radius: 14px;
-        padding: 12px;
-        margin-bottom: 12px;
+        padding: 10px 12px;
+        margin-bottom: 10px;
         border: 1px solid #e8d5b5;
       }
       .search-wrap { max-width: 100%; }
 
-      /* Mobile App Cards */
+      /* Mobile Layout Engine */
       .inv-table, .inv-table tbody { display: block; width: 100%; }
       .inv-table thead { display: none; }
 
-      .inv-table tr {
-        display: block;
-        background: var(--card-bg);
-        border-radius: 16px;
-        padding: 16px;
-        margin-bottom: 14px;
-        border: 1.5px solid #e5d2b0;
-        box-shadow: var(--shadow-sm);
-        position: relative;
-      }
-
-      .inv-table tr td {
-        display: block;
-        padding: 0;
-        border: none;
-      }
-
-      /* Card Header: Product Name + Badge */
-      .inv-table tr td:nth-child(1) { display: none; }
-      
-      .inv-table tr td:nth-child(2) {
+      /* ── 👁️ MOBILE VIEW MODE ROW (Super Clean Card) ── */
+      .inv-table.mode-view tr {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        background: var(--card-bg);
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 10px;
+        border: 1.5px solid #e5d2b0;
+        box-shadow: var(--shadow-sm);
+        gap: 10px;
+      }
+      .inv-table.mode-view tr td { border: none; padding: 0; }
+      .inv-table.mode-view tr td.td-num { display: none; }
+      .inv-table.mode-view tr td.td-name { flex: 1.2; }
+      .inv-table.mode-view tr td.td-stock { text-align: right; flex: 0.8; }
+      .inv-table.mode-view tr td.td-badge { flex: 0 0 auto; }
+      .inv-table.mode-view tr td.td-date { display: none; }
+
+      /* ── ✏️ MOBILE EDIT MODE ROW (Full Interactive Card) ── */
+      .inv-table.mode-edit tr {
+        display: block;
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 14px;
         margin-bottom: 12px;
-        padding-bottom: 10px;
+        border: 1.5px solid #e5d2b0;
+        box-shadow: var(--shadow-sm);
+      }
+      .inv-table.mode-edit tr td { display: block; padding: 0; border: none; }
+      
+      .inv-table.mode-edit tr td.td-num { display: none; }
+
+      /* Card Top: Name + Badge */
+      .inv-table.mode-edit tr td.td-name {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
         border-bottom: 1px dashed #e2d0af;
       }
-      .m-badge-wrap { display: block; }
+      .inv-table.mode-edit tr td.td-name .m-badge-wrap { display: block; }
+      .inv-table.mode-edit tr td.td-badge { display: none; } /* Hide duplicate desktop badge cell */
 
-      /* Edit Mode Controls on Mobile */
-      .inv-table tr td:nth-child(3),
-      .inv-table tr td:nth-child(4) {
+      /* Stock Qty & Unit Input Row */
+      .inv-table.mode-edit tr td.td-stock,
+      .inv-table.mode-edit tr td.td-unit {
         display: inline-block;
       }
-
-      .inv-table tr td:nth-child(4) .stock-input {
+      .inv-table.mode-edit tr td.td-stock .stock-input {
         width: 100px;
-        height: 44px;
-        font-size: 18px;
+        height: 42px;
+        font-size: 17px;
         border-radius: 10px;
       }
-      .inv-table tr td:nth-child(3) .unit-select {
-        height: 44px;
-        font-size: 14px;
+      .inv-table.mode-edit tr td.td-unit .unit-select {
+        height: 42px;
+        font-size: 13.5px;
         border-radius: 10px;
         margin-left: 6px;
       }
 
       /* Quick Adjust Buttons Row */
-      .inv-table tr td:nth-child(5) {
+      .inv-table.mode-edit tr td.td-adj {
         display: block;
-        margin: 12px 0;
+        margin: 10px 0;
       }
       .adj-btns {
         display: flex;
-        gap: 6px;
+        gap: 5px;
         width: 100%;
       }
       .adj-btn {
         flex: 1;
-        height: 40px;
+        height: 38px;
         font-size: 13px;
         display: flex;
         align-items: center;
@@ -563,23 +580,22 @@
         background: white;
       }
 
-      /* Card Footer: Low Stock Threshold + Last Updated */
-      .inv-table tr td:nth-child(6) {
+      /* Threshold & Last Updated Row */
+      .inv-table.mode-edit tr td.td-thresh {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding-top: 10px;
+        padding-top: 8px;
         border-top: 1px solid #ebdcb5;
         font-size: 12px;
         color: var(--slate-600);
       }
-      .inv-table tr td:nth-child(6)::before {
-        content: "Low stock alert at:";
+      .inv-table.mode-edit tr td.td-thresh::before {
+        content: "Alert when stock ≤:";
         font-weight: 600;
       }
 
-      .inv-table tr td:nth-child(7) { display: none; }
-      .inv-table tr td:nth-child(8) {
+      .inv-table.mode-edit tr td.td-date {
         margin-top: 6px;
         text-align: right;
         font-size: 11px;
@@ -589,7 +605,7 @@
 </head>
 <body>
 
-  <!-- Auth guard: Only admin can access -->
+  <!-- Auth Guard -->
   <script>
     if (!sessionStorage.getItem('bb_admin')) {
       window.location.href = '/admin';
@@ -668,7 +684,7 @@
       <button class="filter-tab" data-tab="out" onclick="setFilterTab('out')">🔴 Out of Stock</button>
     </div>
 
-    <!-- Table Card -->
+    <!-- Table Card Container -->
     <div class="table-card">
       <div class="table-toolbar">
         <h2>
@@ -681,9 +697,9 @@
         </div>
       </div>
       <div style="overflow-x:auto;">
-        <table class="inv-table" id="invTable">
+        <table class="inv-table mode-view" id="invTable">
           <thead id="invTableHeader">
-            <!-- Headers injected based on mode -->
+            <!-- Injected by renderTable -->
           </thead>
           <tbody id="invTableBody">
             <tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">⏳</div><p>Loading inventory…</p></div></td></tr>
@@ -694,7 +710,7 @@
 
   </div>
 
-  <!-- Mobile Sticky Bottom Action Bar (Only visible in Edit Mode on mobile) -->
+  <!-- Mobile Sticky Bottom Action Bar -->
   <div class="mobile-bottom-bar" id="mobileBottomBar">
     <div class="m-changes-text" id="mChangesText">No changes</div>
     <button class="m-save-btn" id="mSaveBtn" onclick="saveAll()">
@@ -718,16 +734,6 @@
     firebase.initializeApp(firebaseConfig);
     var db = firebase.firestore();
 
-    /* ── State ── */
-    var inventoryData = {};  // { productName: { stock, unit, lowStockThreshold, lastUpdated } }
-    var productList   = [];  // ordered list of product names from 'products' collection
-    var pendingChanges = {}; // tracks which rows have unsaved edits
-    var currentFilterTab = 'all';
-    var currentSearchText = '';
-    var isEditMode = false;  // Default is View-Only mode
-
-    /* ── Helpers ── */
-    
     /* ── Audit Logger Helper ── */
     async function logAuditEvent(action, entityId, summary, details) {
       try {
@@ -751,6 +757,15 @@
       }
     }
 
+    /* ── State ── */
+    var inventoryData = {};  // { productName: { stock, unit, lowStockThreshold, lastUpdated } }
+    var productList   = [];  // ordered list of product names from 'products' collection
+    var pendingChanges = {}; // tracks which rows have unsaved edits
+    var currentFilterTab = 'all';
+    var currentSearchText = '';
+    var isEditMode = false;  // Default is View-Only mode
+
+    /* ── Helpers ── */
     function showToast(msg, type) {
       var t = document.getElementById('toast');
       t.textContent = msg;
@@ -797,6 +812,7 @@
       var saveBtn   = document.getElementById('saveAllBtn');
       var badge     = document.getElementById('modeBadge');
       var mBar      = document.getElementById('mobileBottomBar');
+      var tableEl   = document.getElementById('invTable');
 
       if (isEditMode) {
         toggleBtn.innerHTML = '👁️ Done Editing (View Mode)';
@@ -804,6 +820,7 @@
         saveBtn.style.display = 'inline-flex';
         badge.className = 'mode-badge edit-mode';
         badge.textContent = '✏️ Edit Mode';
+        tableEl.className = 'inv-table mode-edit';
         if (window.innerWidth <= 768) mBar.style.display = 'flex';
       } else {
         toggleBtn.innerHTML = '✏️ Edit Inventory';
@@ -811,6 +828,7 @@
         saveBtn.style.display = 'none';
         badge.className = 'mode-badge view-mode';
         badge.textContent = '👁️ View Mode';
+        tableEl.className = 'inv-table mode-view';
         mBar.style.display = 'none';
       }
       renderTable();
@@ -836,7 +854,6 @@
       var tbody = document.getElementById('invTableBody');
       var rows  = '';
 
-      // Set headers based on mode
       if (isEditMode) {
         thead.innerHTML = '<tr>' +
           '<th>#</th>' +
@@ -885,26 +902,26 @@
         var thresh = parseInt(d.lowStockThreshold) || 10;
 
         if (isEditMode) {
-          // ✏️ EDIT MODE ROW
+          // ✏️ EDIT MODE ROW (Explicit CSS classes)
           rows += '<tr data-name="' + escAttr(name) + '">' +
-            '<td><span class="item-num">#' + (idx + 1) + '</span></td>' +
-            '<td>' +
+            '<td class="td-num"><span class="item-num">#' + (idx + 1) + '</span></td>' +
+            '<td class="td-name">' +
               '<span class="prod-name">' + escH(name) + '</span>' +
               '<div class="m-badge-wrap">' + getBadge(stock, thresh) + '</div>' +
             '</td>' +
-            '<td>' +
+            '<td class="td-unit">' +
               '<select class="unit-select" data-name="' + escAttr(name) + '" onchange="markChanged(this)">' +
                 ['pcs','bags','kgs','boxes','sets','rolls'].map(function(u) {
                   return '<option value="' + u + '"' + (unit === u ? ' selected' : '') + '>' + u + '</option>';
                 }).join('') +
               '</select>' +
             '</td>' +
-            '<td>' +
+            '<td class="td-stock">' +
               '<input class="stock-input" type="number" inputmode="numeric" min="0" value="' + stock + '" ' +
                 'data-name="' + escAttr(name) + '" ' +
                 'oninput="markChanged(this); updateRowBadge(this)" />' +
             '</td>' +
-            '<td>' +
+            '<td class="td-adj">' +
               '<div class="adj-btns">' +
                 '<button class="adj-btn plus"  onclick="adjustStock(\'' + escAttr(name) + '\', +1)">+1</button>' +
                 '<button class="adj-btn plus"  onclick="adjustStock(\'' + escAttr(name) + '\', +5)">+5</button>' +
@@ -913,28 +930,25 @@
                 '<button class="adj-btn minus" onclick="adjustStock(\'' + escAttr(name) + '\', -5)">−5</button>' +
               '</div>' +
             '</td>' +
-            '<td>' +
+            '<td class="td-thresh">' +
               '<input class="threshold-input" type="number" inputmode="numeric" min="0" value="' + thresh + '" ' +
                 'data-name="' + escAttr(name) + '" ' +
                 'oninput="markChanged(this); updateRowBadge(this)" />' +
             '</td>' +
-            '<td class="badge-cell-' + cssId(name) + '">' + getBadge(stock, thresh) + '</td>' +
-            '<td class="last-updated">' + fmtDate(d.lastUpdated) + '</td>' +
+            '<td class="td-badge badge-cell-' + cssId(name) + '">' + getBadge(stock, thresh) + '</td>' +
+            '<td class="td-date last-updated">' + fmtDate(d.lastUpdated) + '</td>' +
           '</tr>';
         } else {
-          // 👁️ VIEW MODE ROW (Clean & Read-only)
+          // 👁️ VIEW MODE ROW (Clean & Simple)
           rows += '<tr data-name="' + escAttr(name) + '">' +
-            '<td><span class="item-num">#' + (idx + 1) + '</span></td>' +
-            '<td>' +
-              '<span class="prod-name">' + escH(name) + '</span>' +
-              '<div class="m-badge-wrap">' + getBadge(stock, thresh) + '</div>' +
-            '</td>' +
-            '<td>' +
+            '<td class="td-num"><span class="item-num">#' + (idx + 1) + '</span></td>' +
+            '<td class="td-name"><span class="prod-name">' + escH(name) + '</span></td>' +
+            '<td class="td-stock">' +
               '<span class="view-stock-val">' + stock.toLocaleString('en-IN') + '</span>' +
               '<span class="view-unit-val">' + escH(unit) + '</span>' +
             '</td>' +
-            '<td class="badge-cell-' + cssId(name) + '">' + getBadge(stock, thresh) + '</td>' +
-            '<td class="last-updated">' + fmtDate(d.lastUpdated) + '</td>' +
+            '<td class="td-badge badge-cell-' + cssId(name) + '">' + getBadge(stock, thresh) + '</td>' +
+            '<td class="td-date last-updated">' + fmtDate(d.lastUpdated) + '</td>' +
           '</tr>';
         }
       });
@@ -962,7 +976,7 @@
       if (!row) return;
       var stockInput = row.querySelector('.stock-input');
       var threshInput = row.querySelector('.threshold-input');
-      var badgeCell   = row.querySelector('td:nth-child(7)');
+      var badgeCell   = row.querySelector('.td-badge');
       var mBadgeCell  = row.querySelector('.m-badge-wrap');
 
       var badgeHtml = getBadge(
@@ -1054,25 +1068,26 @@
         await batch.commit();
         var modifiedList = Object.keys(pendingChanges);
         pendingChanges = {};
-        
+
         logAuditEvent(
           'INVENTORY_MANUAL_UPDATE',
           'Products Inventory',
           'Admin manually updated stock for ' + count + ' products',
           { updatedCount: count, products: modifiedList }
         );
+
         var text = '💾 Save All Changes';
         document.getElementById('saveAllBtn').textContent = text;
         document.getElementById('mSaveBtn').textContent = text;
         document.getElementById('mChangesText').textContent = 'No changes';
         
-        // Switch back to view mode after saving
         isEditMode = false;
         document.getElementById('modeToggleBtn').innerHTML = '✏️ Edit Inventory';
         document.getElementById('modeToggleBtn').style.background = 'var(--slate-900)';
         document.getElementById('saveAllBtn').style.display = 'none';
         document.getElementById('modeBadge').className = 'mode-badge view-mode';
         document.getElementById('modeBadge').textContent = '👁️ View Mode';
+        document.getElementById('invTable').className = 'inv-table mode-view';
         document.getElementById('mobileBottomBar').style.display = 'none';
 
         renderTable();
