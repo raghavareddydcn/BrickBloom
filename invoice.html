@@ -826,8 +826,8 @@
       justify-content: space-between;
       align-items: center;
     }
-    .inv-grand-k { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; opacity: 0.9; }
-    .inv-grand-v { font-size: 20px; font-weight: 800; font-family: var(--font-mono); }
+    .inv-grand-k { font-size: 13px; font-weight: 700; letter-spacing: 0.3px; opacity: 0.9; }
+    .inv-grand-v { font-size: 18px; font-weight: 800; font-family: var(--font-mono); letter-spacing: 0.5px; }
     .inv-advance-row {
       display: flex; justify-content: space-between; align-items: center;
       padding: 6px 14px; background: rgba(245,158,11,0.1);
@@ -2256,6 +2256,16 @@
               '<span class="inv-grand-k">Total Payable</span>' +
               '<span class="inv-grand-v">Rs. ' + fmtN(t.grand) + '</span>' +
             '</div>' +
+            (t.advancePaid > 0 ?
+              '<div class="inv-advance-row">' +
+                '<span class="inv-adv-k">Advance Paid</span>' +
+                '<span class="inv-adv-v">(−) Rs. ' + fmtN(t.advancePaid) + '</span>' +
+              '</div>' +
+              '<div class="inv-balance-row">' +
+                '<span class="inv-bal-k">Balance Due</span>' +
+                '<span class="inv-bal-v">Rs. ' + fmtN(t.balance) + '</span>' +
+              '</div>'
+            : '') +
           '</div>' +
         '</div>' +
 
