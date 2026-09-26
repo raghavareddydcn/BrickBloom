@@ -1,404 +1,455 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>BrickBloom – Admin Hub</title>
   <link rel="icon" type="image/jpeg" href="/images/OurProducts/Logo_new.jpeg" />
   <link rel="apple-touch-icon" href="/images/OurProducts/Logo_new.jpeg" />
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BrickBloom Admin Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --green-dark: #1a5c2e;
-      --green-mid:  #2a8c47;
-      --green-light:#3ec467;
-      --accent:     #f5a623;
-      --glass-bg:   rgba(255, 255, 255, 0.92);
-      --glass-border:rgba(212, 192, 160, 0.4);
-      --text-light: #1a2332;
-      --text-muted: #5a6a7a;
-      --error:      #e53935;
+      --green-950: #052e16;
+      --green-900: #14532d;
+      --green-800: #166534;
+      --green-700: #15803d;
+      --green-600: #16a34a;
+      --green-500: #22c55e;
+      --green-100: #dcfce7;
+      --amber-500: #f59e0b;
+      --amber-100: #fef3c7;
+      --slate-50:  #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-400: #94a3b8;
+      --slate-500: #64748b;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+      --cream:     #f0e1c2;
+      --card-bg:   #fdf6ec;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 6px 20px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.15);
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-head: 'Space Grotesk', system-ui, sans-serif;
     }
 
-    /* ── Background (Matches Logo Warm Cream Color) ── */
     body {
+      font-family: var(--font-sans);
+      background: var(--cream);
+      color: var(--slate-800);
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: linear-gradient(135deg, var(--green-950) 0%, var(--green-800) 100%);
+      color: white;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    }
+    .topbar-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
+    .topbar-logo { height: 38px; width: auto; border-radius: 8px; }
+    .topbar-title { font-family: var(--font-head); font-size: 18px; font-weight: 700; }
+    .topbar-subtitle { font-size: 11px; opacity: 0.7; letter-spacing: 0.5px; }
+
+    .btn-logout {
+      background: rgba(220,38,38,0.2);
+      color: #fca5a5;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(220,38,38,0.3);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-logout:hover { background: rgba(220,38,38,0.35); color: white; }
+
+    /* ── Main Container ── */
+    .container {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 36px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* ── 🔒 LOGIN FORM SCREEN ── */
+    .login-wrapper {
+      max-width: 420px;
+      margin: 40px auto;
+      width: 100%;
+    }
+    .login-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-xl);
+      padding: 36px 32px;
+      box-shadow: var(--shadow-lg);
+      border: 1.5px solid #e8d5b5;
+      text-align: center;
+    }
+    .login-logo {
+      height: 64px;
+      width: auto;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+    .login-title { font-family: var(--font-head); font-size: 24px; font-weight: 800; color: var(--slate-900); }
+    .login-sub { font-size: 13px; color: var(--slate-600); margin-top: 4px; margin-bottom: 24px; }
+
+    .form-group { text-align: left; margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--slate-600); margin-bottom: 6px; }
+    .input-wrap { position: relative; }
+    .input-box {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #d8c4a0;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      background: white;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .input-box:focus { border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(22,163,74,0.15); }
+
+    .btn-login {
+      width: 100%;
+      background: linear-gradient(135deg, var(--green-800), var(--green-950));
+      color: white;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+      box-shadow: 0 4px 14px rgba(5,46,22,0.3);
+    }
+    .btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(5,46,22,0.4); }
+    .error-msg {
+      background: var(--red-100);
+      color: var(--red-600);
+      border: 1px solid rgba(220,38,38,0.3);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    /* ── 🚀 DASHBOARD HUB (3 TOOL CARDS) ── */
+    .dash-wrapper { display: none; } /* Shown when logged in */
+    
+    .dash-header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .dash-title { font-family: var(--font-head); font-size: 32px; font-weight: 800; color: var(--slate-900); }
+    .dash-sub { font-size: 15px; color: var(--slate-600); margin-top: 6px; }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 36px;
+    }
+
+    .tool-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-xl);
+      padding: 32px 28px;
+      box-shadow: var(--shadow-md);
+      border: 1.5px solid #e8d5b5;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s, border-color 0.25s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .tool-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--green-600);
+    }
+
+    .tool-card-accent {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+    }
+    .tool-card.invoice .tool-card-accent   { background: linear-gradient(90deg, #166534, #22c55e); }
+    .tool-card.inventory .tool-card-accent { background: linear-gradient(90deg, #d97706, #f59e0b); }
+    .tool-card.whatsapp .tool-card-accent  { background: linear-gradient(90deg, #25d366, #128c7e); }
+
+    .tool-icon-wrap {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #f5ebd9 0%, #ede0c4 40%, #f6eee0 75%, #ede0c4 100%);
-      background-size: 400% 400%;
-      animation: gradientShift 8s ease infinite;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      overflow: hidden;
-    }
-
-    @keyframes gradientShift {
-      0%  { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100%{ background-position: 0% 50%; }
-    }
-
-    /* ── Floating particles ── */
-    .particles { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
-    .particle {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(26,92,46,0.08);
-      animation: floatUp linear infinite;
-    }
-    @keyframes floatUp {
-      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
-      10%  { opacity: 1; }
-      90%  { opacity: 0.6; }
-      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
-    }
-
-    /* ── Card ── */
-    .card {
-      position: relative;
-      z-index: 1;
-      width: min(420px, 92vw);
-      padding: 48px 40px 40px;
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      box-shadow: 0 12px 48px rgba(90,70,40,0.15), 0 2px 0 rgba(255,255,255,0.8) inset;
-      animation: cardIn 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
-    }
-
-    @keyframes cardIn {
-      from { transform: translateY(40px) scale(0.92); opacity: 0; }
-      to   { transform: translateY(0)    scale(1);    opacity: 1; }
-    }
-
-    /* ── Logo section ── */
-    .logo-wrap {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-    .brand-logo-img {
-      width: 260px;
-      height: auto;
-      border-radius: 14px;
-      object-fit: contain;
-      background-color: #f5ebd9;
-      padding: 6px;
-      margin-bottom: 10px;
-      animation: logoPulse 3s ease-in-out infinite;
-      filter: drop-shadow(0 4px 16px rgba(0,0,0,0.12));
-    }
-    @keyframes logoPulse {
-      0%,100% { filter: drop-shadow(0 4px 16px rgba(0,0,0,0.12)); transform: scale(1); }
-      50%      { filter: drop-shadow(0 6px 24px rgba(26,92,46,0.25)); transform: scale(1.02); }
-    }
-
-    .brand-name {
       font-size: 28px;
-      font-weight: 700;
-      color: var(--text-light);
-      letter-spacing: 1.5px;
-    }
-    .brand-tagline {
-      font-size: 12px;
-      color: var(--text-muted);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-top: 4px;
-      font-weight: 600;
-    }
-
-    /* ── Divider ── */
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 28px;
-    }
-    .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(0,0,0,0.12);
-    }
-    .divider span {
-      font-size: 11px;
-      color: var(--text-muted);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-
-    /* ── Form ── */
-    .form-group { margin-bottom: 20px; position: relative; }
-
-    label {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-      transition: color 0.2s;
-    }
-
-    .input-wrap {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-    .input-icon {
-      position: absolute;
-      left: 14px;
-      color: var(--text-muted);
-      font-size: 16px;
-      transition: color 0.3s;
-      pointer-events: none;
-    }
-    input[type="text"], input[type="password"] {
-      width: 100%;
-      padding: 14px 14px 14px 44px;
-      background: #f8fafc;
-      border: 1.5px solid rgba(0,0,0,0.12);
-      border-radius: 12px;
-      color: var(--text-light);
-      font-size: 15px;
-      outline: none;
-      transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
-      caret-color: var(--green-dark);
-    }
-    input::placeholder { color: rgba(0,0,0,0.35); }
-    input:focus {
-      border-color: var(--green-mid);
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(42,140,71,0.18);
-    }
-    input:focus ~ .input-icon,
-    .input-wrap:focus-within .input-icon { color: var(--green-mid); }
-
-    /* Password toggle */
-    .toggle-pw {
-      position: absolute;
-      right: 14px;
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 16px;
-      padding: 0;
-      transition: color 0.2s;
-      line-height: 1;
-    }
-    .toggle-pw:hover { color: var(--text-light); }
-
-    /* ── Error message ── */
-    .error-msg {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      background: rgba(229,57,53,0.1);
-      border: 1px solid rgba(229,57,53,0.3);
-      border-radius: 10px;
-      color: var(--error);
-      font-size: 13px;
       margin-bottom: 20px;
-      animation: shake 0.4s cubic-bezier(0.36,0.07,0.19,0.97);
+      box-shadow: var(--shadow-sm);
     }
-    .error-msg.visible { display: flex; }
-    @keyframes shake {
-      10%,90% { transform: translateX(-2px); }
-      20%,80% { transform: translateX(4px); }
-      30%,50%,70% { transform: translateX(-4px); }
-      40%,60% { transform: translateX(4px); }
-    }
+    .tool-card.invoice .tool-icon-wrap   { background: #dcfce7; color: #15803d; }
+    .tool-card.inventory .tool-icon-wrap { background: #fef3c7; color: #b45309; }
+    .tool-card.whatsapp .tool-icon-wrap  { background: #d1fae5; color: #047857; }
 
-    /* ── Submit button ── */
-    .btn-login {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
-      border: none;
-      border-radius: 12px;
-      color: white;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
-      box-shadow: 0 4px 20px rgba(26,92,46,0.35);
-      position: relative;
-      overflow: hidden;
-    }
-    .btn-login::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(rgba(255,255,255,0.15), transparent);
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(26,92,46,0.45); filter: brightness(1.05); }
-    .btn-login:hover::after { opacity: 1; }
-    .btn-login:active { transform: translateY(0); }
-    .btn-login.loading { pointer-events: none; filter: brightness(0.8); }
-    .btn-login .btn-text { transition: opacity 0.2s; }
-    .btn-login .spinner {
-      display: none;
-      width: 18px; height: 18px;
-      border: 2.5px solid rgba(255,255,255,0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      margin: 0 auto;
-    }
-    .btn-login.loading .btn-text { display: none; }
-    .btn-login.loading .spinner { display: block; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .tool-name { font-family: var(--font-head); font-size: 22px; font-weight: 800; color: var(--slate-900); margin-bottom: 8px; }
+    .tool-desc { font-size: 13.5px; color: var(--slate-600); line-height: 1.6; margin-bottom: 24px; flex: 1; }
 
-    /* ── Footer note ── */
-    .footer-note {
-      text-align: center;
-      margin-top: 24px;
+    .tool-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       font-size: 11px;
-      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+      align-self: flex-start;
     }
+    .tool-card.invoice .tool-badge   { background: rgba(22,163,74,0.12); color: #166534; }
+    .tool-card.inventory .tool-badge { background: rgba(245,158,11,0.12); color: #92400e; }
+    .tool-card.whatsapp .tool-badge  { background: rgba(37,211,102,0.12); color: #047857; }
 
-    /* ── Glow ring around card ── */
-    .card::before {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: 25px;
-      background: linear-gradient(135deg, rgba(26,92,46,0.25), transparent 60%);
-      z-index: -1;
-      opacity: 0.6;
+    .tool-action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+      transition: background 0.2s;
+    }
+    .tool-card.invoice .tool-action-btn   { background: var(--green-800); }
+    .tool-card.inventory .tool-action-btn { background: #92400e; }
+    .tool-card.whatsapp .tool-action-btn  { background: #047857; }
+
+    .tool-card:hover .tool-action-btn { filter: brightness(1.1); }
+
+    /* ── Audit Logs Link Bar ── */
+    .audit-link-bar {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 16px 24px;
+      border: 1.5px solid #e8d5b5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .audit-title { font-weight: 700; font-size: 14px; color: var(--slate-800); display: flex; align-items: center; gap: 8px; }
+    .audit-sub   { font-size: 12px; color: var(--slate-500); margin-top: 2px; }
+    .btn-audit {
+      background: var(--slate-900);
+      color: white;
+      padding: 9px 18px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .btn-audit:hover { background: var(--slate-800); }
+
+    /* ── Mobile Polish ── */
+    @media (max-width: 768px) {
+      .container { padding: 20px 14px; }
+      .dash-title { font-size: 24px; }
+      .dash-sub { font-size: 13px; }
+      .tools-grid { grid-template-columns: 1fr; gap: 16px; }
+      .tool-card { padding: 24px 20px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Floating particles -->
-  <div class="particles" id="particles"></div>
+  <!-- Topbar -->
+  <div class="topbar">
+    <a class="topbar-brand" href="/admin">
+      <img src="/images/OurProducts/Logo_new.jpeg" alt="BB" class="topbar-logo" />
+      <div>
+        <div class="topbar-title">Admin Portal</div>
+        <div class="topbar-subtitle">Konaseema Coco Products LLP</div>
+      </div>
+    </a>
+    <button class="btn-logout" id="logoutBtn" style="display:none;" onclick="logout()">🚪 Logout</button>
+  </div>
 
-  <div class="card">
+  <div class="container">
 
-    <!-- Logo -->
-    <div class="logo-wrap">
-      <img src="/images/OurProducts/Logo_new.jpeg" alt="BrickBloom" class="brand-logo-img" />
-      <div class="brand-tagline">Admin Portal</div>
+    <!-- 🔒 1. LOGIN SCREEN -->
+    <div class="login-wrapper" id="loginScreen">
+      <div class="login-card">
+        <img src="/images/OurProducts/Logo_new.jpeg" alt="BrickBloom" class="login-logo" />
+        <div class="login-title">Admin Sign In</div>
+        <div class="login-sub">Enter credentials to access tools</div>
+
+        <div class="error-msg" id="errorMsg">Invalid username or password</div>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <div class="input-wrap">
+              <input class="input-box" type="text" id="username" placeholder="Enter username" required autofocus />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-wrap">
+              <input class="input-box" type="password" id="password" placeholder="Enter password" required />
+            </div>
+          </div>
+          <button type="submit" class="btn-login">Sign In →</button>
+        </form>
+      </div>
     </div>
 
-    <div class="divider"><span>Sign in</span></div>
+    <!-- 🚀 2. DASHBOARD HUB (Shown when logged in) -->
+    <div class="dash-wrapper" id="dashScreen">
 
-    <!-- Error -->
-    <div class="error-msg" id="errorMsg">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-        <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 3.5a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3A.75.75 0 0 1 8 4.5zm0 6a.875.875 0 1 1 0-1.75.875.875 0 0 1 0 1.75z"/>
-      </svg>
-      <span id="errorText">Invalid username or password</span>
+      <div class="dash-header">
+        <div class="dash-title">Admin Tool Hub</div>
+        <div class="dash-sub">Select an application below to start managing BrickBloom operations</div>
+      </div>
+
+      <div class="tools-grid">
+
+        <!-- Tool 1: Invoice Portal -->
+        <a href="/invoice" class="tool-card invoice">
+          <div class="tool-card-accent"></div>
+          <div class="tool-icon-wrap">📄</div>
+          <div class="tool-badge">Invoice & Billing</div>
+          <div class="tool-name">Tax Invoice Portal</div>
+          <div class="tool-desc">Create, save, print, and export GST-compliant tax invoices with automated inventory deductions.</div>
+          <div class="tool-action-btn">
+            <span>Launch Invoice Portal</span>
+            <span>→</span>
+          </div>
+        </a>
+
+        <!-- Tool 2: Inventory Dashboard -->
+        <a href="/inventory" class="tool-card inventory">
+          <div class="tool-card-accent"></div>
+          <div class="tool-icon-wrap">📦</div>
+          <div class="tool-badge">Stock & Catalog</div>
+          <div class="tool-name">Inventory Dashboard</div>
+          <div class="tool-desc">Track live stock levels across products, set low-stock threshold alerts, and edit stock counts in real-time.</div>
+          <div class="tool-action-btn">
+            <span>Launch Inventory</span>
+            <span>→</span>
+          </div>
+        </a>
+
+        <!-- Tool 3: WhatsApp Tool -->
+        <a href="/whatsapp" class="tool-card whatsapp">
+          <div class="tool-card-accent"></div>
+          <div class="tool-icon-wrap">💬</div>
+          <div class="tool-badge">Marketing & Broadcast</div>
+          <div class="tool-name">WhatsApp Marketing</div>
+          <div class="tool-desc">Send instant customer broadcasts, catalog notifications, and automated messages directly via WhatsApp.</div>
+          <div class="tool-action-btn">
+            <span>Launch WhatsApp Tool</span>
+            <span>→</span>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- Audit Log Quick Bar -->
+      <div class="audit-link-bar">
+        <div>
+          <div class="audit-title">📜 System Audit Logs</div>
+          <div class="audit-sub">View real-time history of invoice operations and inventory updates.</div>
+        </div>
+        <a href="/api/audit-log" target="_blank" class="btn-audit">View Raw Audit Log ↗</a>
+      </div>
+
     </div>
 
-    <!-- Form -->
-    <form id="loginForm" novalidate>
-
-      <div class="form-group">
-        <label for="username">Username</label>
-        <div class="input-wrap">
-          <svg class="input-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2 1H6a4 4 0 0 0-4 4v.5a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5V13a4 4 0 0 0-4-4z"/>
-          </svg>
-          <input type="text" id="username" name="username" placeholder="Enter username" autocomplete="username" autofocus />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="password">Password</label>
-        <div class="input-wrap">
-          <svg class="input-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 1a4 4 0 0 0-4 4v2H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-1V5a4 4 0 0 0-4-4zm-2 6V5a2 2 0 1 1 4 0v2H6zm2 3.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-          </svg>
-          <input type="password" id="password" name="password" placeholder="Enter password" autocomplete="current-password" />
-          <button type="button" class="toggle-pw" id="togglePw" aria-label="Toggle password visibility">
-            <svg id="eyeIcon" width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
-              <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <button type="submit" class="btn-login" id="loginBtn">
-        <span class="btn-text">Sign In</span>
-        <div class="spinner"></div>
-      </button>
-
-    </form>
-
-    <div class="footer-note">BrickBloom &copy; 2026 &nbsp;&bull;&nbsp; Secure Admin Access</div>
   </div>
 
   <script>
-    // ── Particles ─────────────────────────────────────────────────────────────
-    (function () {
-      const container = document.getElementById('particles');
-      const sizes = [40, 60, 80, 100, 120, 150, 200];
-      for (let i = 0; i < 18; i++) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        const s = sizes[Math.floor(Math.random() * sizes.length)];
-        p.style.cssText = `
-          width:${s}px; height:${s}px;
-          left:${Math.random() * 100}%;
-          animation-duration:${8 + Math.random() * 12}s;
-          animation-delay:${-Math.random() * 15}s;
-          opacity:${0.04 + Math.random() * 0.08};
-        `;
-        container.appendChild(p);
-      }
-    })();
+    // Check login state on load
+    function checkAuth() {
+      var isLoggedIn = sessionStorage.getItem('bb_admin') === '1';
+      var loginScreen = document.getElementById('loginScreen');
+      var dashScreen  = document.getElementById('dashScreen');
+      var logoutBtn   = document.getElementById('logoutBtn');
 
-    // ── Password toggle ────────────────────────────────────────────────────────
-    document.getElementById('togglePw').addEventListener('click', function () {
-      const pw = document.getElementById('password');
-      const icon = document.getElementById('eyeIcon');
-      if (pw.type === 'password') {
-        pw.type = 'text';
-        icon.innerHTML = '<path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.512.486l.703.704z"/><path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299l.822.823a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.828z"/><path d="M3.35 5.47c-.18.16-.353.322-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709z"/><path fill-rule="evenodd" d="M13.646 14.354l-12-12 .708-.708 12 12-.708.708z"/>';
+      if (isLoggedIn) {
+        loginScreen.style.display = 'none';
+        dashScreen.style.display  = 'block';
+        logoutBtn.style.display   = 'inline-flex';
       } else {
-        pw.type = 'password';
-        icon.innerHTML = '<path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/><path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>';
+        loginScreen.style.display = 'block';
+        dashScreen.style.display  = 'none';
+        logoutBtn.style.display   = 'none';
+      }
+    }
+
+    // Login Form Submission
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var u = document.getElementById('username').value.trim();
+      var p = document.getElementById('password').value;
+      var err = document.getElementById('errorMsg');
+
+      if (u === 'admin' && p === 'bloomfrompeat') {
+        sessionStorage.setItem('bb_admin', '1');
+        checkAuth();
+      } else {
+        err.style.display = 'block';
+        document.getElementById('password').value = '';
       }
     });
 
-    // ── Login logic ────────────────────────────────────────────────────────────
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value;
-      const errorMsg = document.getElementById('errorMsg');
-      const btn      = document.getElementById('loginBtn');
+    function logout() {
+      sessionStorage.removeItem('bb_admin');
+      checkAuth();
+    }
 
-      errorMsg.classList.remove('visible');
-      btn.classList.add('loading');
-
-      setTimeout(function () {
-        btn.classList.remove('loading');
-        if (username === 'admin' && password === 'bloomfrompeat') {
-          // Store session flag and redirect to invoice page
-          sessionStorage.setItem('bb_admin', '1');
-          window.location.href = '/invoice';
-        } else {
-          errorMsg.classList.add('visible');
-          document.getElementById('password').value = '';
-          document.getElementById('password').focus();
-        }
-      }, 800);
-    });
+    // Run auth check
+    checkAuth();
   </script>
+
 </body>
 </html>
