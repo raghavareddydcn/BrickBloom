@@ -1383,6 +1383,33 @@
     }
 
     /* -- Toast ------------------------------------------------------------ */
+    
+    /* ── Audit Logger Helper ── */
+    async function logAuditEvent(action, entityId, summary, details) {
+      try {
+        var logEntry = {
+          timestamp: new Date().toISOString(),
+          action: action,
+          performedBy: 'admin',
+          entityId: String(entityId || ''),
+          summary: summary || '',
+          details: details || {},
+          userAgent: navigator.userAgent
+        };
+        // 1. Write to Firestore audit_logs collection
+        await db.collection('audit_logs').add(logEntry);
+
+        // 2. Post to server log endpoint
+        fetch('/api/audit-log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(logEntry)
+        }).catch(function() {});
+      } catch (e) {
+        console.warn('Audit log failed:', e);
+      }
+    }
+
     function showToast(msg, type) {
       var t = document.getElementById('toast');
       t.textContent = msg;
@@ -1555,6 +1582,14 @@
         // Save invoice document to Firestore
         await invoicesCol.doc(String(data.id)).set(data);
         showToast(isUpdate ? '✅ Invoice updated: ' + data.refNo : '✅ Invoice saved: ' + data.refNo);
+        
+        // Log Invoice Audit Event
+        logAuditEvent(
+          isUpdate ? 'INVOICE_UPDATE' : 'INVOICE_CREATE',
+          data.refNo,
+          (isUpdate ? 'Updated invoice ' : 'Created invoice ') + data.refNo + ' (' + (data.custName || 'Customer') + ')',
+          { refNo: data.refNo, grandTotal: data.grand, itemsCount: (data.items || []).length }
+        );
 
         // Adjust inventory based on delta (newQty - oldQty)
         var affectedProducts = {};
@@ -1580,7 +1615,14 @@
         });
 
         if (hasDeductions) {
-          invBatch.commit().catch(function(e) { console.warn('Inventory deduct failed:', e); });
+          invBatch.commit().then(function() {
+            logAuditEvent(
+              'INVENTORY_AUTO_DEDUCT',
+              data.refNo,
+              'Auto-adjusted inventory stock for invoice ' + data.refNo,
+              { affectedProducts: Object.keys(affectedProducts) }
+            );
+          }).catch(function(e) { console.warn('Inventory deduct failed:', e); });
         }
 
         renderPreview();
@@ -1676,6 +1718,7 @@
       if (editingId === id) { editingId = null; updateEditingBadge(); }
       try {
         await invoicesCol.doc(String(id)).delete();
+        logAuditEvent('INVOICE_DELETE', inv.refNo || id, 'Deleted invoice ' + (inv.refNo || id), { invoiceId: id });
 
         // Refund stock when an invoice is deleted
         if (inv.items && inv.items.length > 0) {
