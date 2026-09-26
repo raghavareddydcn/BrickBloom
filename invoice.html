@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>BrickBloom — Tax Invoice</title>
+  <title>BrickBloom – Tax Invoice</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -11,11 +11,11 @@
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
   <style>
-    /* ── Reset ─────────────────────────────────────────────────────────── */
+    /* -- Reset ----------------------------------------------------------- */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
-    /* ── Design Tokens ──────────────────────────────────────────────────── */
+    /* -- Design Tokens ---------------------------------------------------- */
     :root {
       --green-950: #052e16;
       --green-900: #14532d;
@@ -57,7 +57,7 @@
       --shadow-xl: 0 20px 48px rgba(0,0,0,0.14), 0 8px 16px rgba(0,0,0,0.07);
     }
 
-    /* ── Body / Page ────────────────────────────────────────────────────── */
+    /* -- Body / Page ------------------------------------------------------ */
     body {
       font-family: var(--font-body);
       background: linear-gradient(145deg, #041d0e 0%, #0a2f18 40%, #113d22 80%, #082413 100%);
@@ -67,9 +67,9 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ══════════════════════════════════════════════════════════════════════
+    /* ----------------------------------------------------------------------
        TOP BAR
-    ══════════════════════════════════════════════════════════════════════ */
+    ---------------------------------------------------------------------- */
     .topbar {
       position: sticky;
       top: 0;
@@ -184,9 +184,9 @@
     .mobile-actions.open { display: flex; }
     .mobile-actions .tbtn { width: 100%; justify-content: center; padding: 10px; font-size: 13px; }
 
-    /* ══════════════════════════════════════════════════════════════════════
+    /* ----------------------------------------------------------------------
        DRAWER (Saved Invoices)
-    ══════════════════════════════════════════════════════════════════════ */
+    ---------------------------------------------------------------------- */
     .drawer-overlay {
       display: none;
       position: fixed;
@@ -268,9 +268,9 @@
     .drawer-empty { text-align: center; padding: 48px 20px; color: var(--slate-400); }
     .drawer-empty-icon { font-size: 40px; margin-bottom: 10px; }
 
-    /* ══════════════════════════════════════════════════════════════════════
+    /* ----------------------------------------------------------------------
        MAIN WORKSPACE
-    ══════════════════════════════════════════════════════════════════════ */
+    ---------------------------------------------------------------------- */
     .workspace {
       display: grid;
       grid-template-columns: 360px 1fr;
@@ -280,7 +280,7 @@
       margin: 0 auto;
     }
 
-    /* ── Left Column: Form ──────────────────────────────────────────────── */
+    /* -- Left Column: Form ------------------------------------------------ */
     .form-col { display: flex; flex-direction: column; gap: 14px; }
 
     /* Editing badge */
@@ -472,7 +472,7 @@
     }
     .tax-select:focus { border-color: var(--green-700); box-shadow: 0 0 0 2px rgba(21,128,61,0.12); }
 
-    /* ── Right Column: Invoice Preview ──────────────────────────────────── */
+    /* -- Right Column: Invoice Preview ------------------------------------ */
     .preview-col {
       position: sticky;
       top: 76px;
@@ -514,10 +514,10 @@
     .export-img { background: linear-gradient(135deg, #d97706, #b45309); }
     .export-pdf { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
 
-    /* ══════════════════════════════════════════════════════════════════════
+    /* ----------------------------------------------------------------------
        THE INVOICE DOCUMENT
        Industry-standard: Compact, no column gaps, clear data hierarchy
-    ══════════════════════════════════════════════════════════════════════ */
+    ---------------------------------------------------------------------- */
     #invoiceDoc {
       background: #f0e1c2;
       border-radius: var(--radius-xl);
@@ -529,13 +529,13 @@
       flex-shrink: 0;         /* don't compress — let preview-col scroll */
     }
 
-    /* ─ Accent top stripe ── */
+    /* - Accent top stripe -- */
     .inv-stripe {
       height: 5px;
       background: linear-gradient(90deg, #052e16 0%, #166534 35%, #16a34a 65%, #f59e0b 100%);
     }
 
-    /* ─ Header (Logo + Company info + Invoice Title) ── */
+    /* - Header (Logo + Company info + Invoice Title) -- */
     .inv-header {
       padding: 20px 24px 16px;
       display: grid;
@@ -646,7 +646,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* ─ Bill To + Invoice Meta band ── */
+    /* - Bill To + Invoice Meta band -- */
     .inv-parties {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -692,7 +692,7 @@
     .inv-meta-k { color: var(--slate-500); font-weight: 600; white-space: nowrap; min-width: 118px; }
     .inv-meta-v { color: var(--slate-900); font-weight: 700; text-align: left; }
 
-    /* ─ Line Items Table ── */
+    /* - Line Items Table -- */
     .inv-items-section { padding: 0 24px; }
     .inv-items-heading {
       font-size: 9.5px;
@@ -767,7 +767,7 @@
     }
     .inv-tbl .subtotal-row td:nth-child(2) { text-align: left; }
 
-    /* ─ Financial Summary Rows ── */
+    /* - Financial Summary Rows -- */
     .inv-financials {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -826,10 +826,24 @@
       justify-content: space-between;
       align-items: center;
     }
-    .inv-grand-k { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; opacity: 0.9; }
-    .inv-grand-v { font-size: 20px; font-weight: 800; font-family: var(--font-mono); }
+    .inv-grand-k { font-size: 13px; font-weight: 700; letter-spacing: 0.3px; opacity: 0.9; }
+    .inv-grand-v { font-size: 18px; font-weight: 800; font-family: var(--font-mono); letter-spacing: 0.5px; }
+    .inv-advance-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 14px; background: rgba(245,158,11,0.1);
+      border: 1px dashed rgba(245,158,11,0.5); border-radius: 8px; margin-top: 6px;
+    }
+    .inv-adv-k { font-size: 11px; font-weight: 700; color: #92400e; letter-spacing: 0.5px; }
+    .inv-adv-v { font-size: 15px; font-weight: 700; color: #92400e; font-family: var(--font-mono); }
+    .inv-balance-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 14px; background: linear-gradient(135deg, #1e3a5f, #1d4ed8);
+      border-radius: 8px; margin-top: 4px;
+    }
+    .inv-bal-k { font-size: 11px; font-weight: 800; color: rgba(255,255,255,0.85); letter-spacing: 1px; text-transform: uppercase; }
+    .inv-bal-v { font-size: 20px; font-weight: 800; color: #93c5fd; font-family: var(--font-mono); }
 
-    /* ─ Terms + Signature ── */
+    /* - Terms + Signature -- */
     .inv-footer-row {
       display: flex;
       justify-content: space-between;
@@ -853,7 +867,7 @@
       font-size: 12px;
       font-weight: 800;
       color: var(--green-900);
-      margin-bottom: 34px;
+      margin-bottom: 5px;
     }
     .inv-sign-line {
       font-size: 10px;
@@ -864,8 +878,22 @@
       display: inline-block;
       text-align: center;
     }
+    .inv-seal-container {
+      text-align: right;
+      padding-right: 25px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+    .inv-seal-img {
+      height: 75px;
+      width: auto;
+      mix-blend-mode: multiply;
+      opacity: 0.95;
+      filter: contrast(1.4) saturate(1.3) brightness(0.9);
+      transform: rotate(-2deg);
+    }
 
-    /* ─ Tagline ── */
+    /* - Tagline -- */
     .inv-tagline {
       background: #e6d4b2;
       border-top: 1px solid #d4c29e;
@@ -877,7 +905,7 @@
       letter-spacing: 0.3px;
     }
 
-    /* ── Toast ──────────────────────────────────────────────────────────── */
+    /* -- Toast ------------------------------------------------------------ */
     .toast {
       position: fixed;
       bottom: 24px;
@@ -902,9 +930,9 @@
     .toast.ok  { background: var(--green-700); }
     .toast.err { background: var(--red-600); }
 
-    /* ══════════════════════════════════════════════════════════════════════
+    /* ----------------------------------------------------------------------
        PRINT STYLES
-    ══════════════════════════════════════════════════════════════════════ */
+    ---------------------------------------------------------------------- */
     @media print {
       @page { size: A4 portrait; margin: 4mm; }
       body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -928,9 +956,6 @@
         border: 1px solid var(--slate-300) !important;
         font-size: 11.5px !important;
         line-height: 1.4 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        min-height: 286mm !important; /* Forces A4 height utilization */
       }
       /* Professional spacing for beautiful print fit */
       .inv-header { padding: 14px 18px 10px !important; gap: 12px !important; }
@@ -938,19 +963,19 @@
       .inv-company-name { font-size: 20px !important; }
       .inv-party { padding: 12px 18px !important; }
       .inv-items-heading { padding: 10px 0 6px !important; font-size: 10.5px !important; }
-      .inv-tbl th, .inv-tbl td { padding: 7px 8px !important; font-size: 11px !important; }
+      .inv-tbl th, .inv-tbl td { padding: 12px 10px !important; font-size: 11px !important; }
       .inv-tbl .subtotal-row td { padding: 8px 8px !important; }
       .inv-fin-left, .inv-fin-right { padding: 12px 18px !important; }
       .inv-summary-rows { margin-bottom: 8px !important; gap: 4px !important; }
       .inv-grand-row { padding: 8px 12px !important; }
-      .inv-footer-row { margin-top: auto !important; padding: 12px 18px 14px !important; gap: 14px !important; }
-      .inv-sign-co { margin-bottom: 24px !important; }
+      .inv-footer-row { margin-top: 20px !important; padding: 12px 18px 14px !important; gap: 14px !important; }
+      .inv-sign-co { margin-bottom: 5px !important; }
       .inv-tagline { padding: 6px 18px !important; font-size: 10px !important; }
     }
 
-    /* ══════════════════════════════════════════════════════════════════════
-       MOBILE RESPONSIVE (≤768px)
-    ══════════════════════════════════════════════════════════════════════ */
+    /* ----------------------------------------------------------------------
+       MOBILE RESPONSIVE (=768px)
+    ---------------------------------------------------------------------- */
     @media screen and (max-width: 768px) {
       /* Hide desktop topbar action buttons, show hamburger */
       .topbar-actions { display: none; }
@@ -1051,10 +1076,10 @@
   <div class="drawer" id="drawer">
     <div class="drawer-head">
       <div>
-        <div class="drawer-head-title">📋 Saved Invoices</div>
+        <div class="drawer-head-title">📂 Saved Invoices</div>
         <div class="drawer-head-sub">Synced to the cloud — same list on every device</div>
       </div>
-      <button class="drawer-close-btn" onclick="closeDrawer()">×</button>
+      <button class="drawer-close-btn" onclick="closeDrawer()">✕</button>
     </div>
     <div class="drawer-body" id="invoicesList"></div>
   </div>
@@ -1071,14 +1096,15 @@
 
     <!-- Desktop actions -->
     <div class="topbar-actions">
-      <a href="/whatsapp" class="tbtn" style="background:#16a34a; color:#fff; text-decoration:none;">📱 WhatsApp</a>
+      <a href="/whatsapp" class="tbtn" style="background:#16a34a; color:#fff; text-decoration:none;">💬 WhatsApp</a>
       <button class="tbtn tbtn-auto" onclick="autoFillInvoiceNumber()">✨ Auto #</button>
       <button class="tbtn tbtn-save" onclick="saveInvoice()">💾 Save</button>
-      <button class="tbtn tbtn-list" onclick="openDrawer()">📋 Saved (<span id="savedCount">0</span>)</button>
-      <button class="tbtn tbtn-img" onclick="saveAsImage()">📷 Image</button>
+      <button class="tbtn tbtn-list" onclick="openDrawer()">📂 Saved (<span id="savedCount">0</span>)</button>
+      <button class="tbtn tbtn-img" onclick="saveAsImage()">🖼️ Image</button>
       <button class="tbtn tbtn-pdf" onclick="saveAsPdf()">📄 PDF</button>
-      <button class="tbtn tbtn-reset" onclick="clearForm()">🗑 Reset</button>
+      <button class="tbtn tbtn-reset" onclick="clearForm()">🔄 Reset</button>
       <button class="tbtn tbtn-logout" onclick="logout()">Logout</button>
+      <a href="/inventory" class="tbtn" style="background:rgba(255,255,255,0.15);color:#fff;text-decoration:none;">📦 Inventory</a>
     </div>
 
     <!-- Mobile hamburger -->
@@ -1089,13 +1115,13 @@
 
   <!-- Mobile action menu (hidden by default) -->
   <div class="mobile-actions" id="mobileMenu">
-    <a href="/whatsapp" class="tbtn" style="background:#16a34a; color:#fff; text-decoration:none;">📱 WhatsApp Bulk Sender</a>
+    <a href="/whatsapp" class="tbtn" style="background:#16a34a; color:#fff; text-decoration:none;">💬 WhatsApp Bulk Sender</a>
     <button class="tbtn tbtn-auto" onclick="autoFillInvoiceNumber();toggleMobileMenu()">✨ Auto Invoice #</button>
     <button class="tbtn tbtn-save" onclick="saveInvoice();toggleMobileMenu()">💾 Save Invoice</button>
-    <button class="tbtn tbtn-list" onclick="openDrawer();toggleMobileMenu()">📋 Saved Invoices (<span id="savedCountMobile">0</span>)</button>
-    <button class="tbtn tbtn-img" onclick="saveAsImage();toggleMobileMenu()">📷 Save as Image</button>
-    <button class="tbtn tbtn-pdf" onclick="saveAsPdf();toggleMobileMenu()">📄 Print / PDF</button>
-    <button class="tbtn tbtn-reset" onclick="clearForm();toggleMobileMenu()">🗑 Reset Form</button>
+    <button class="tbtn tbtn-list" onclick="openDrawer();toggleMobileMenu()">📂 Saved Invoices (<span id="savedCountMobile">0</span>)</button>
+    <button class="tbtn tbtn-img" onclick="saveAsImage();toggleMobileMenu()">🖼️ Save as Image</button>
+    <button class="tbtn tbtn-pdf" onclick="saveAsPdf();toggleMobileMenu()">🖨️ Print / PDF</button>
+    <button class="tbtn tbtn-reset" onclick="clearForm();toggleMobileMenu()">🔄 Reset Form</button>
     <button class="tbtn tbtn-logout" onclick="logout()">Logout</button>
   </div>
 
@@ -1110,13 +1136,13 @@
         <span>✏️ Editing: <strong id="editingRef"></strong></span>
         <div class="editing-badge-btns">
           <button class="eb-btn eb-new" onclick="duplicateCurrentAsNew()">📋 Save as New</button>
-          <button class="eb-btn eb-blank" onclick="clearForm()">✨ Blank</button>
+          <button class="eb-btn eb-blank" onclick="clearForm()">➕ Blank</button>
         </div>
       </div>
 
       <!-- Panel 1: Invoice Details -->
       <div class="panel">
-        <div class="panel-head">📋 Invoice Details</div>
+        <div class="panel-head">📝 Invoice Details</div>
         <div class="panel-body">
           <div class="field-grid cols-2">
             <div class="field">
@@ -1187,7 +1213,7 @@
                   <th style="width:26px;text-align:center">#</th>
                   <th>Description</th>
                   <th style="width:54px;text-align:right">Qty</th>
-                  <th style="width:68px;text-align:right">Price ₹</th>
+                  <th style="width:68px;text-align:right">Price (Rs.)</th>
                   <th style="width:64px;text-align:center">GST %</th>
                   <th style="width:72px;text-align:right">Amount</th>
                   <th style="width:26px"></th>
@@ -1202,24 +1228,32 @@
 
       <!-- Panel 4: Charges & Tax -->
       <div class="panel">
-        <div class="panel-head">🧾 Charges &amp; GST</div>
+        <div class="panel-head">💰 Charges &amp; GST</div>
         <div class="panel-body">
           <div class="totals-grid">
             <div class="total-row">
               <label>Items Subtotal</label>
-              <span class="tval" id="st_subtotal">₹ 0.00</span>
+              <span class="tval" id="st_subtotal">Rs. 0.00</span>
             </div>
             <div class="total-row">
-              <label>Transport / Delivery (₹)</label>
+              <label>Transport / Delivery (Rs.)</label>
               <input class="num-input" type="number" id="transport" min="0" placeholder="0.00" oninput="renderPreview()" />
             </div>
             <div class="total-row">
               <label>GST Amount</label>
-              <span class="tval" id="st_tax">₹ 0.00</span>
+              <span class="tval" id="st_tax">Rs. 0.00</span>
             </div>
             <div class="total-row grand">
               <label>Grand Total</label>
-              <span class="tval" id="st_grand">₹ 0.00</span>
+              <span class="tval" id="st_grand">Rs. 0.00</span>
+            </div>
+            <div class="total-row" style="border-top:2px dashed var(--slate-200);margin-top:6px;padding-top:6px;">
+              <label>Advance Paid (Rs.)</label>
+              <input class="num-input" type="number" id="advancePaid" min="0" placeholder="0.00" oninput="renderPreview()" />
+            </div>
+            <div class="total-row grand" style="background:linear-gradient(135deg,#052e16,#166534);border-radius:8px;padding:8px 12px;margin-top:4px;">
+              <label style="color:rgba(255,255,255,0.85);font-weight:700;">Balance Due</label>
+              <span class="tval" id="st_balance" style="color:#86efac;font-weight:800;letter-spacing:0.5px;">Rs. 0.00</span>
             </div>
           </div>
         </div>
@@ -1248,12 +1282,12 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    /* ── State ──────────────────────────────────────────────────────────── */
+    /* -- State ------------------------------------------------------------ */
     var items = [];
     var rowCounter = 0;
     var editingId = null;
 
-    /* ── Product Catalog & Tiered Pricing Matrix ────────────────────────── */
+    /* -- Product Catalog & Tiered Pricing Matrix -------------------------- */
     var DEFAULT_PRODUCT_CATALOG = [
       { name: '2 Inch Pot',                price1: 25, price50: 22, price100: 20, gstRate: 5 },
       { name: '3 inch Pot',                price1: 40, price50: 30, price100: 25, gstRate: 5 },
@@ -1346,7 +1380,7 @@
       return null;
     }
 
-    /* ── Toast ──────────────────────────────────────────────────────────── */
+    /* -- Toast ------------------------------------------------------------ */
     function showToast(msg, type) {
       var t = document.getElementById('toast');
       t.textContent = msg;
@@ -1355,16 +1389,16 @@
       t._timer = setTimeout(function() { t.className = 'toast'; }, 3200);
     }
 
-    /* ── Mobile menu toggle ─────────────────────────────────────────────── */
+    /* -- Mobile menu toggle ----------------------------------------------- */
     function toggleMobileMenu() {
       document.getElementById('mobileMenu').classList.toggle('open');
     }
 
-    /* ── Firebase (cross-device cloud persistence) ───────────────────────
+    /* -- Firebase (cross-device cloud persistence) -----------------------
        GitHub Pages serves this file as a static asset with no backend, so
        localStorage alone would silently diverge per browser/device. Firestore
        is the single source of truth; localStorage is kept only as an
-       instant-paint / offline cache. ─────────────────────────────────── */
+       instant-paint / offline cache. ----------------------------------- */
     var firebaseConfig = {
       apiKey: "AIzaSyCE9R7HACDhgVG-WH7KANSRzyEfhXHg8BQ",
       authDomain: "brickbloom-invoices.firebaseapp.com",
@@ -1456,7 +1490,7 @@
     }
     migrateLocalToFirestore();
 
-    /* ── Get current form data ──────────────────────────────────────────── */
+    /* -- Get current form data -------------------------------------------- */
     function getFormData() {
       return {
         id:            editingId || ('INV-' + Date.now()),
@@ -1471,6 +1505,7 @@
         custGstin:     v('custGstin'),
         items:         JSON.parse(JSON.stringify(items)),
         transport:     parseFloat(v('transport') || 0),
+        advancePaid:   parseFloat(v('advancePaid') || 0),
         taxRate:       parseFloat(v('taxRate') || 0),
         savedAt:       new Date().toISOString()
       };
@@ -1478,10 +1513,10 @@
 
     function v(id) { return (document.getElementById(id) || {}).value || ''; }
 
-    /* ── Save invoice ───────────────────────────────────────────────────── */
+    /* -- Save invoice ----------------------------------------------------- */
     async function saveInvoice() {
       var data = getFormData();
-      if (!data.refNo) { showToast('❌ Enter a Ref No first', 'err'); return false; }
+      if (!data.refNo) { showToast('⚠️ Enter a Ref No first', 'err'); return false; }
       var isUpdate = loadInvoices().some(function(i) { return i.id === data.id; });
       if (!isUpdate) { editingId = data.id; }
       updateEditingBadge();
@@ -1492,6 +1527,22 @@
         }
         await invoicesCol.doc(String(data.id)).set(data);
         showToast(isUpdate ? '✅ Invoice updated: ' + data.refNo : '✅ Invoice saved: ' + data.refNo);
+      // Auto-deduct inventory for each line item
+      if (data.items && data.items.length > 0) {
+        var invBatch = db.batch();
+        data.items.forEach(function(item) {
+          if (!item.name || item.name === 'Packing') return;
+          var qty = parseFloat(item.qty) || 0;
+          if (qty <= 0) return;
+          var invRef = db.collection('products').doc(item.name);
+          invBatch.set(invRef, {
+            name: item.name,
+            stock: firebase.firestore.FieldValue.increment(-qty),
+            lastUpdated: new Date().toISOString()
+          }, { merge: true });
+        });
+        invBatch.commit().catch(function(e) { console.warn('Inventory deduct failed:', e); });
+      }
         renderPreview();
         return true;
       } catch (e) {
@@ -1501,7 +1552,7 @@
       }
     }
 
-    /* ── Edit invoice ───────────────────────────────────────────────────── */
+    /* -- Edit invoice ----------------------------------------------------- */
     function editInvoice(id) {
       var inv = loadInvoices().find(function(i) { return i.id === id; });
       if (!inv) return;
@@ -1539,7 +1590,7 @@
       if (el) el.value = val || '';
     }
 
-    /* ── Duplicate as new invoice ───────────────────────────────────────── */
+    /* -- Duplicate as new invoice ----------------------------------------- */
     function duplicateInvoice(id) {
       var inv = loadInvoices().find(function(i) { return i.id === id; });
       if (!inv) return;
@@ -1578,21 +1629,21 @@
       showToast('✅ Ready as new invoice: ' + v('refNo'));
     }
 
-    /* ── Delete invoice ─────────────────────────────────────────────────── */
+    /* -- Delete invoice --------------------------------------------------- */
     async function deleteInvoice(id) {
       var inv = loadInvoices().find(function(i) { return i.id === id; });
       if (!inv || !confirm('Delete invoice "' + inv.refNo + '"? This cannot be undone.')) return;
       if (editingId === id) { editingId = null; updateEditingBadge(); }
       try {
         await invoicesCol.doc(String(id)).delete();
-        showToast('✅ Invoice deleted');
+        showToast('🗑️ Invoice deleted');
       } catch (e) {
         console.error('Delete failed:', e);
-        showToast('❌ Delete failed — check your connection', 'err');
+          showToast('❌ Delete failed — check your connection', 'err');
       }
     }
 
-    /* ── Editing badge ──────────────────────────────────────────────────── */
+    /* -- Editing badge ---------------------------------------------------- */
     function updateEditingBadge() {
       var badge = document.getElementById('editingBadge');
       var ref   = document.getElementById('editingRef');
@@ -1604,11 +1655,11 @@
       }
     }
 
-    /* ── Auto invoice number ──────────────────────────────────────────────
+    /* -- Auto invoice number ----------------------------------------------
        Uses an atomic Firestore transaction on a per-financial-year counter
        document, so two devices generating a number at the same moment can
        never collide (unlike scanning existing refNos, which only works if
-       every device already has the full up-to-date list). ──────────────── */
+       every device already has the full up-to-date list). ---------------- */
     /* Computes the FY prefix (e.g. "BB/26-27/") for today. */
     function invoiceFyPrefix() {
       var d     = new Date();
@@ -1684,7 +1735,7 @@
       return fy.pre + String(claimed).padStart(3, '0');
     }
 
-    /* ── Drawer ─────────────────────────────────────────────────────────── */
+    /* -- Drawer ----------------------------------------------------------- */
     function openDrawer()  {
       renderSavedList();
       document.getElementById('drawer').classList.add('open');
@@ -1701,7 +1752,7 @@
       refreshBadges();
 
       if (!all.length) {
-        el.innerHTML = '<div class="drawer-empty"><div class="drawer-empty-icon">📄</div><div style="font-size:13px;font-weight:700">No saved invoices yet</div><div style="font-size:11px;margin-top:4px">Fill the form and click Save.</div></div>';
+        el.innerHTML = '<div class="drawer-empty"><div class="drawer-empty-icon">📭</div><div style="font-size:13px;font-weight:700">No saved invoices yet</div><div style="font-size:11px;margin-top:4px">Fill the form and click Save.</div></div>';
         return;
       }
 
@@ -1710,15 +1761,15 @@
         var grand = t.subtotal + t.transport + t.tax;
         return '<div class="inv-saved-card">' +
           '<div class="isc-head">' +
-            '<span class="isc-refno">' + escH(inv.refNo || '—') + '</span>' +
+            '<span class="isc-refno">' + escH(inv.refNo || '-') + '</span>' +
             '<span class="isc-date">' + fmtDate(inv.issueDate) + '</span>' +
           '</div>' +
           '<div class="isc-cust">👤 ' + escH(inv.custName || '(no name)') + '</div>' +
-          '<div class="isc-total">₹ ' + fmtN(grand) + '</div>' +
+          '<div class="isc-total">Rs. ' + fmtN(grand) + '</div>' +
           '<div class="isc-actions">' +
             '<button class="isc-btn isc-edit" data-id="' + inv.id + '">✏️ Edit</button>' +
             '<button class="isc-btn isc-clone" data-id="' + inv.id + '">📋 New from this</button>' +
-            '<button class="isc-btn isc-del" data-id="' + inv.id + '">🗑 Delete</button>' +
+            '<button class="isc-btn isc-del" data-id="' + inv.id + '">🗑️ Delete</button>' +
           '</div>' +
         '</div>';
       }).join('');
@@ -1750,7 +1801,7 @@
       return { subtotal: sub, transport: tr, tax: tax };
     }
 
-    /* ── Row management ─────────────────────────────────────────────────── */
+    /* -- Row management --------------------------------------------------- */
     function addRow(name, qty, price, gstRate) {
       var id = ++rowCounter;
       var defaultGst = gstRate !== undefined && gstRate !== null ? parseFloat(gstRate) : getProductDefaultGstRate(name);
@@ -1768,7 +1819,7 @@
     function removeRow(id) {
       // Don't allow deleting the Packing row (it's auto-managed)
       var row = items.find(function(r) { return r.id === id; });
-      if (row && row.name === 'Packing') { showToast('⚠️ Packing row is pinned — edit price if needed', 'err'); return; }
+      if (row && row.name === 'Packing') { showToast('📌 Packing row is pinned — edit price if needed', 'err'); return; }
       items = items.filter(function(r) { return r.id !== id; });
       // If no non-Packing rows remain, add an empty one above Packing
       var nonPacking = items.filter(function(r) { return r.name !== 'Packing'; });
@@ -1965,7 +2016,7 @@
         // Delete
         var td6 = document.createElement('td');
         var bd = document.createElement('button');
-        bd.className = 'row-del'; bd.textContent = '✕'; bd.title = 'Remove';
+        bd.className = 'row-del'; bd.textContent = '❌'; bd.title = 'Remove';
         bd.onclick = (function(iid) { return function() { removeRow(iid); }; })(item.id);
         td6.appendChild(bd); tr.appendChild(td6);
 
@@ -1974,7 +2025,7 @@
       renderPreview();
     }
 
-    /* ── Calculations ───────────────────────────────────────────────────── */
+    /* -- Calculations ----------------------------------------------------- */
     function calcTotals() {
       var sub = 0;
       var totalTax = 0;
@@ -1994,12 +2045,15 @@
       });
 
       var tr = parseFloat(v('transport') || 0);
-      return { subtotal: sub, transport: tr, tax: totalTax, taxBreakdown: taxBreakdown, grand: sub + tr + totalTax };
+      var grand = sub + tr + totalTax;
+      var adv = parseFloat(document.getElementById('advancePaid') ? document.getElementById('advancePaid').value || 0 : 0);
+      var balance = Math.max(0, grand - adv);
+      return { subtotal: sub, transport: tr, tax: totalTax, taxBreakdown: taxBreakdown, grand: grand, advancePaid: adv, balance: balance };
     }
 
-    /* ── Helpers ────────────────────────────────────────────────────────── */
+    /* -- Helpers ---------------------------------------------------------- */
     function fmtN(n) { return isNaN(n) ? '0.00' : n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
-    function fmtCur(n) { return isNaN(n) ? '₹ 0.00' : '₹ ' + fmtN(n); }
+    function fmtCur(n) { return isNaN(n) ? '₹ 0.00' : 'Rs. ' + fmtN(n); }
     function escH(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
     function fmtDate(d) {
       if (!d) return '';
@@ -2008,7 +2062,7 @@
     }
     function today() { return new Date().toISOString().slice(0,10); }
 
-    /* ── Number to Indian words ─────────────────────────────────────────── */
+    /* -- Number to Indian words ------------------------------------------- */
     function numToWords(n) {
       n = Math.round(n);
       if (n === 0) return 'Zero Rupees Only';
@@ -2025,12 +2079,13 @@
       return 'Rupees ' + words(n).trim() + ' Only';
     }
 
-    /* ── Render invoice preview ─────────────────────────────────────────── */
+    /* -- Render invoice preview ------------------------------------------- */
     function renderPreview() {
       var t = calcTotals();
       document.getElementById('st_subtotal').textContent = fmtCur(t.subtotal);
       document.getElementById('st_tax').textContent      = fmtCur(t.tax);
       document.getElementById('st_grand').textContent    = fmtCur(t.grand);
+      if (document.getElementById('st_balance')) document.getElementById('st_balance').textContent = fmtCur(t.balance);
 
       var totalQty = items.reduce(function(s, r) { return s + parseFloat(r.qty||0); }, 0);
 
@@ -2046,7 +2101,7 @@
             return '<tr>' +
               '<td>' + (idx+1) + '</td>' +
               '<td>' +
-                '<div class="inv-item-name">' + escH(r.name || '—') + '</div>' +
+                '<div class="inv-item-name">' + escH(r.name || '-') + '</div>' +
               '</td>' +
               '<td>' + fmtN(qty) + '</td>' +
               '<td>' + fmtN(rate) + '</td>' +
@@ -2069,7 +2124,7 @@
         '<td><strong>₹ ' + fmtN(t.subtotal + t.tax) + '</strong></td>' +
       '</tr>';
 
-      var refNo         = escH(v('refNo')         || 'BB/26-27/—');
+      var refNo         = escH(v('refNo')         || 'BB/26-27/-');
       var issueDate     = escH(fmtDate(v('issueDate')));
       var payTerms      = escH(v('payTerms')       || 'Immediate');
       var placeOfSupply = escH(v('placeOfSupply')  || 'Karnataka (29)');
@@ -2090,8 +2145,8 @@
           var taxAmt = t.taxBreakdown[rate];
           var halfRate = rate / 2;
           var halfTax = taxAmt / 2;
-          gstRowsHtml += '<div class="inv-sum-row"><span class="inv-sum-k">CGST @ ' + halfRate + '%</span><span class="inv-sum-v">₹ ' + fmtN(halfTax) + '</span></div>' +
-                         '<div class="inv-sum-row"><span class="inv-sum-k">SGST @ ' + halfRate + '%</span><span class="inv-sum-v">₹ ' + fmtN(halfTax) + '</span></div>';
+          gstRowsHtml += '<div class="inv-sum-row"><span class="inv-sum-k">CGST @ ' + halfRate + '%</span><span class="inv-sum-v">Rs. ' + fmtN(halfTax) + '</span></div>' +
+                         '<div class="inv-sum-row"><span class="inv-sum-k">SGST @ ' + halfRate + '%</span><span class="inv-sum-v">Rs. ' + fmtN(halfTax) + '</span></div>';
         });
       }
 
@@ -2101,11 +2156,11 @@
         /* HEADER */
         '<div class="inv-header">' +
           '<div style="align-self:start">' +
-            '<div class="inv-company-name">Konasema Coco Products LLP</div>' +
+            '<div class="inv-company-name">Konaseema Coco Products LLP</div>' +
             '<div class="inv-company-addr">' +
               'No 12, Ground Floor, AVP Complex, Sy No 97,<br>' +
               'Dommasandra Village, Virgo Nagar Post,<br>' +
-              'Bangalore, Karnataka – 560049<br>' +
+              'Bangalore, Karnataka - 560049<br>' +
               '<strong>GSTIN: 29ABGFK2654K1ZX</strong>' +
             '</div>' +
             '<div class="inv-contact-row">' +
@@ -2124,7 +2179,7 @@
             '<div class="inv-doc-original">Original for Recipient</div>' +
             '<div class="inv-header-kv">' +
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Invoice No:</span><span class="inv-hkv-v inv-refno">' + refNo + '</span></div>' +
-              '<div class="inv-hkv-row"><span class="inv-hkv-k">Date:</span><span class="inv-hkv-v">' + (issueDate || '—') + '</span></div>' +
+              '<div class="inv-hkv-row"><span class="inv-hkv-k">Date:</span><span class="inv-hkv-v">' + (issueDate || '-') + '</span></div>' +
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Payment Mode:</span><span class="inv-hkv-v">' + payTerms + '</span></div>' +
               '<div class="inv-hkv-row"><span class="inv-hkv-k">Place of Supply:</span><span class="inv-hkv-v">' + placeOfSupply + '</span></div>' +
             '</div>' +
@@ -2137,7 +2192,7 @@
             '<div class="inv-party-label">Bill To</div>' +
             '<div class="inv-buyer-name">' + (custName || 'Customer Name') + '</div>' +
             '<div class="inv-buyer-info">' +
-              (custAddr || '—') + '<br>' +
+              (custAddr || '-') + '<br>' +
               (custState ? '<strong>State:</strong> ' + custState + '&nbsp;&nbsp;' : '') +
               (custPhone ? '<strong>Phone:</strong> ' + custPhone + '<br>' : '') +
               (custGstin ? '<strong>GSTIN:</strong> ' + custGstin : '') +
@@ -2147,7 +2202,7 @@
             '<div class="inv-party-label">Dispatch Details</div>' +
             '<div class="inv-meta-rows">' +
               '<div class="inv-meta-row"><span class="inv-meta-k">Dispatched from</span><span class="inv-meta-v">Bangalore, Karnataka</span></div>' +
-              '<div class="inv-meta-row"><span class="inv-meta-k">Transport Charges</span><span class="inv-meta-v">₹ ' + fmtN(t.transport) + '</span></div>' +
+              '<div class="inv-meta-row"><span class="inv-meta-k">Transport Charges</span><span class="inv-meta-v">Rs. ' + fmtN(t.transport) + '</span></div>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -2170,10 +2225,10 @@
                 '<th style="text-align:center">#</th>' +
                 '<th style="text-align:left">Item / Description</th>' +
                 '<th>Qty</th>' +
-                '<th>Rate (₹)</th>' +
+                '<th>Rate (Rs.)</th>' +
                 '<th>Taxable Amt</th>' +
                 '<th>GST Amt</th>' +
-                '<th>Total (₹)</th>' +
+                '<th>Total (Rs.)</th>' +
               '</tr>' +
             '</thead>' +
             '<tbody>' +
@@ -2192,15 +2247,25 @@
 
           '<div class="inv-fin-right">' +
             '<div class="inv-summary-rows">' +
-              '<div class="inv-sum-row"><span class="inv-sum-k">Taxable Value</span><span class="inv-sum-v">₹ ' + fmtN(t.subtotal) + '</span></div>' +
+              '<div class="inv-sum-row"><span class="inv-sum-k">Taxable Value</span><span class="inv-sum-v">Rs. ' + fmtN(t.subtotal) + '</span></div>' +
               gstRowsHtml +
-              '<div class="inv-sum-row"><span class="inv-sum-k">Transport</span><span class="inv-sum-v">₹ ' + fmtN(t.transport) + '</span></div>' +
+              '<div class="inv-sum-row"><span class="inv-sum-k">Transport</span><span class="inv-sum-v">Rs. ' + fmtN(t.transport) + '</span></div>' +
               '<div class="inv-sum-divider"></div>' +
             '</div>' +
             '<div class="inv-grand-row">' +
               '<span class="inv-grand-k">Total Payable</span>' +
-              '<span class="inv-grand-v">₹ ' + fmtN(t.grand) + '</span>' +
+              '<span class="inv-grand-v">Rs. ' + fmtN(t.grand) + '</span>' +
             '</div>' +
+            (t.advancePaid > 0 ?
+              '<div class="inv-advance-row">' +
+                '<span class="inv-adv-k">Advance Paid</span>' +
+                '<span class="inv-adv-v">(−) Rs. ' + fmtN(t.advancePaid) + '</span>' +
+              '</div>' +
+              '<div class="inv-balance-row">' +
+                '<span class="inv-bal-k">Balance Due</span>' +
+                '<span class="inv-bal-v">Rs. ' + fmtN(t.balance) + '</span>' +
+              '</div>'
+            : '') +
           '</div>' +
         '</div>' +
 
@@ -2213,7 +2278,8 @@
             '3. All disputes subject to Bangalore jurisdiction only.' +
           '</div>' +
           '<div class="inv-sign">' +
-            '<div class="inv-sign-co">For Konasema Coco Products LLP</div>' +
+            '<div class="inv-sign-co">For Konaseema Coco Products LLP</div>' +
+            '<div class="inv-seal-container"><img src="/images/konaseema_seal.jpg" class="inv-seal-img" alt="Company Seal" /></div>' +
             '<div class="inv-sign-line">Authorised Signatory</div>' +
           '</div>' +
         '</div>' +
@@ -2221,7 +2287,7 @@
         '<div class="inv-tagline">🌱 Thank you for your business — BrickBloom: Sustainable Cocopeat Growing Media</div>';
     }
 
-    /* ── Export: Image ──────────────────────────────────────────────────── */
+    /* -- Export: Image ---------------------------------------------------- */
     async function saveAsImage() {
       var ok = await saveInvoice();
       if (!ok) return;
@@ -2263,7 +2329,7 @@
       }, 150);
     }
 
-    /* ── Export: PDF ────────────────────────────────────────────────────── */
+    /* -- Export: PDF ------------------------------------------------------ */
     async function saveAsPdf() {
       var ok = await saveInvoice();
       if (!ok) return;
@@ -2275,10 +2341,10 @@
       document.title = originalTitle;
     }
 
-    /* ── Clear form ─────────────────────────────────────────────────────── */
+    /* -- Clear form ------------------------------------------------------- */
     function clearForm() {
       if (items.length && !confirm('Start a new invoice? Unsaved changes will be lost.')) return;
-      ['refNo','custName','custAddr','custPhone','custState','custGstin','transport','payTerms','placeOfSupply'].forEach(function(id) { set(id, ''); });
+      ['refNo','custName','custAddr','custPhone','custState','custGstin','transport','advancePaid','payTerms','placeOfSupply'].forEach(function(id) { set(id, ''); });
       set('issueDate', today());
       set('payTerms', 'Immediate');
       set('placeOfSupply', 'Karnataka (29)');
@@ -2290,13 +2356,13 @@
       autoFillInvoiceNumber();
     }
 
-    /* ── Logout ─────────────────────────────────────────────────────────── */
+    /* -- Logout ----------------------------------------------------------- */
     function logout() {
       sessionStorage.removeItem('bb_admin');
       window.location.href = '/admin';
     }
 
-    /* ── Init ───────────────────────────────────────────────────────────── */
+    /* -- Init ------------------------------------------------------------- */
     document.getElementById('addRowBtn').addEventListener('click', function() { addRow('', '', '', 5); });
 
     set('issueDate', today());
