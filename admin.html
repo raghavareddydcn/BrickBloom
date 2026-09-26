@@ -7,6 +7,8 @@
   <link rel="icon" type="image/jpeg" href="/images/OurProducts/Logo_new.jpeg" />
   <link rel="apple-touch-icon" href="/images/OurProducts/Logo_new.jpeg" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -120,7 +122,6 @@
 
     .form-group { text-align: left; margin-bottom: 18px; }
     .form-group label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--slate-600); margin-bottom: 6px; }
-    .input-wrap { position: relative; }
     .input-box {
       width: 100%;
       padding: 12px 14px;
@@ -149,8 +150,8 @@
     }
     .btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(5,46,22,0.4); }
     .error-msg {
-      background: var(--red-100);
-      color: var(--red-600);
+      background: #fee2e2;
+      color: #dc2626;
       border: 1px solid rgba(220,38,38,0.3);
       padding: 10px;
       border-radius: 8px;
@@ -161,7 +162,7 @@
     }
 
     /* ── 🚀 DASHBOARD HUB (3 TOOL CARDS) ── */
-    .dash-wrapper { display: none; } /* Shown when logged in */
+    .dash-wrapper { display: none; }
     
     .dash-header {
       text-align: center;
@@ -265,7 +266,7 @@
     .audit-link-bar {
       background: var(--card-bg);
       border-radius: var(--radius-lg);
-      padding: 16px 24px;
+      padding: 18px 24px;
       border: 1.5px solid #e8d5b5;
       display: flex;
       align-items: center;
@@ -273,22 +274,82 @@
       gap: 16px;
       flex-wrap: wrap;
     }
-    .audit-title { font-weight: 700; font-size: 14px; color: var(--slate-800); display: flex; align-items: center; gap: 8px; }
-    .audit-sub   { font-size: 12px; color: var(--slate-500); margin-top: 2px; }
+    .audit-title { font-weight: 700; font-size: 15px; color: var(--slate-800); display: flex; align-items: center; gap: 8px; }
+    .audit-sub   { font-size: 12.5px; color: var(--slate-600); margin-top: 2px; }
     .btn-audit {
       background: var(--slate-900);
       color: white;
-      padding: 9px 18px;
+      padding: 10px 20px;
       border-radius: 10px;
-      text-decoration: none;
-      font-size: 13px;
+      border: none;
+      font-size: 13.5px;
       font-weight: 700;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      cursor: pointer;
       transition: background 0.2s;
     }
     .btn-audit:hover { background: var(--slate-800); }
+
+    /* ── Audit Logs Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      max-width: 800px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--slate-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--slate-50);
+    }
+    .modal-title { font-family: var(--font-head); font-size: 18px; font-weight: 800; color: var(--slate-900); }
+    .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--slate-500); }
+    .modal-body { padding: 20px 24px; overflow-y: auto; flex: 1; }
+
+    .audit-item {
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+    .audit-item-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .audit-action-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+    .act-create  { background: #dcfce7; color: #166534; }
+    .act-update  { background: #fef3c7; color: #92400e; }
+    .act-delete  { background: #fee2e2; color: #dc2626; }
+    .act-deduct  { background: #e0f2fe; color: #0369a1; }
+    .audit-time  { font-size: 11px; color: var(--slate-400); }
+    .audit-summary { font-weight: 700; color: var(--slate-800); }
 
     /* ── Mobile Polish ── */
     @media (max-width: 768px) {
@@ -304,7 +365,7 @@
 
   <!-- Topbar -->
   <div class="topbar">
-    <a class="topbar-brand" href="/admin">
+    <a class="topbar-brand" href="/admin.html">
       <img src="/images/OurProducts/Logo_new.jpeg" alt="BB" class="topbar-logo" />
       <div>
         <div class="topbar-title">Admin Portal</div>
@@ -354,7 +415,7 @@
       <div class="tools-grid">
 
         <!-- Tool 1: Invoice Portal -->
-        <a href="/invoice" class="tool-card invoice">
+        <a href="/invoice.html" class="tool-card invoice">
           <div class="tool-card-accent"></div>
           <div class="tool-icon-wrap">📄</div>
           <div class="tool-badge">Invoice & Billing</div>
@@ -367,7 +428,7 @@
         </a>
 
         <!-- Tool 2: Inventory Dashboard -->
-        <a href="/inventory" class="tool-card inventory">
+        <a href="/inventory.html" class="tool-card inventory">
           <div class="tool-card-accent"></div>
           <div class="tool-icon-wrap">📦</div>
           <div class="tool-badge">Stock & Catalog</div>
@@ -380,7 +441,7 @@
         </a>
 
         <!-- Tool 3: WhatsApp Tool -->
-        <a href="/whatsapp" class="tool-card whatsapp">
+        <a href="/whatsapp.html" class="tool-card whatsapp">
           <div class="tool-card-accent"></div>
           <div class="tool-icon-wrap">💬</div>
           <div class="tool-badge">Marketing & Broadcast</div>
@@ -400,15 +461,40 @@
           <div class="audit-title">📜 System Audit Logs</div>
           <div class="audit-sub">View real-time history of invoice operations and inventory updates.</div>
         </div>
-        <a href="/api/audit-log" target="_blank" class="btn-audit">View Raw Audit Log ↗</a>
+        <button class="btn-audit" onclick="openAuditModal()">📜 View Live Audit Logs</button>
       </div>
 
     </div>
 
   </div>
 
+  <!-- 📜 Audit Log Modal -->
+  <div class="modal-overlay" id="auditModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">📜 System Audit Activity Log</div>
+        <button class="modal-close" onclick="closeAuditModal()">✕</button>
+      </div>
+      <div class="modal-body" id="auditModalBody">
+        <div style="text-align:center;padding:30px;color:var(--slate-400);">Loading live audit logs from Firestore…</div>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Check login state on load
+    /* ── Firebase Config ── */
+    var firebaseConfig = {
+      apiKey: "AIzaSyCE9R7HACDhgVG-WH7KANSRzyEfhXHg8BQ",
+      authDomain: "brickbloom-invoices.firebaseapp.com",
+      projectId: "brickbloom-invoices",
+      storageBucket: "brickbloom-invoices.firebasestorage.app",
+      messagingSenderId: "988743230343",
+      appId: "1:988743230343:web:b2d850dd30c668e92ee922"
+    };
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.firestore();
+
+    // Check auth
     function checkAuth() {
       var isLoggedIn = sessionStorage.getItem('bb_admin') === '1';
       var loginScreen = document.getElementById('loginScreen');
@@ -446,6 +532,52 @@
       sessionStorage.removeItem('bb_admin');
       checkAuth();
     }
+
+    /* ── Live Audit Log Modal Viewer ── */
+    async function openAuditModal() {
+      var modal = document.getElementById('auditModal');
+      var body  = document.getElementById('auditModalBody');
+      modal.classList.add('show');
+      body.innerHTML = '<div style="text-align:center;padding:30px;color:var(--slate-500);">⏳ Fetching audit logs...</div>';
+
+      try {
+        var snap = await db.collection('audit_logs').orderBy('timestamp', 'desc').limit(40).get();
+        if (snap.empty) {
+          body.innerHTML = '<div style="text-align:center;padding:30px;color:var(--slate-400);">No audit logs recorded yet.</div>';
+          return;
+        }
+
+        var html = '';
+        snap.forEach(function(doc) {
+          var d = doc.data();
+          var badgeClass = 'act-update';
+          if (d.action && d.action.includes('CREATE')) badgeClass = 'act-create';
+          if (d.action && d.action.includes('DELETE')) badgeClass = 'act-delete';
+          if (d.action && d.action.includes('DEDUCT')) badgeClass = 'act-deduct';
+
+          var timeStr = d.timestamp ? new Date(d.timestamp).toLocaleString('en-IN') : '–';
+
+          html += '<div class="audit-item">' +
+            '<div class="audit-item-top">' +
+              '<span class="audit-action-badge ' + badgeClass + '">' + (d.action || 'LOG') + '</span>' +
+              '<span class="audit-time">' + timeStr + '</span>' +
+            '</div>' +
+            '<div class="audit-summary">' + escH(d.summary || '') + '</div>' +
+          '</div>';
+        });
+
+        body.innerHTML = html;
+      } catch (e) {
+        console.error(e);
+        body.innerHTML = '<div style="text-align:center;padding:30px;color:var(--red-600);">Failed to load audit logs: ' + e.message + '</div>';
+      }
+    }
+
+    function closeAuditModal() {
+      document.getElementById('auditModal').classList.remove('show');
+    }
+
+    function escH(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
     // Run auth check
     checkAuth();
