@@ -1519,32 +1519,70 @@
     async function saveInvoice() {
       var data = getFormData();
       if (!data.refNo) { showToast('⚠️ Enter a Ref No first', 'err'); return false; }
-      var isUpdate = loadInvoices().some(function(i) { return i.id === data.id; });
+
+      var existingInvoices = loadInvoices();
+      var oldInvoice = existingInvoices.find(function(i) { return String(i.id) === String(data.id); });
+      var isUpdate = !!oldInvoice;
+
       if (!isUpdate) { editingId = data.id; }
       updateEditingBadge();
+
       try {
         if (!isUpdate) {
           data.refNo = await claimInvoiceNumber(data.refNo);
           set('refNo', data.refNo);
         }
+
+        // Calculate old vs new product quantities to compute exact stock delta
+        var oldQtyMap = {};
+        if (oldInvoice && oldInvoice.items) {
+          oldInvoice.items.forEach(function(item) {
+            if (item.name && item.name !== 'Packing') {
+              oldQtyMap[item.name] = (oldQtyMap[item.name] || 0) + (parseFloat(item.qty) || 0);
+            }
+          });
+        }
+
+        var newQtyMap = {};
+        if (data.items) {
+          data.items.forEach(function(item) {
+            if (item.name && item.name !== 'Packing') {
+              newQtyMap[item.name] = (newQtyMap[item.name] || 0) + (parseFloat(item.qty) || 0);
+            }
+          });
+        }
+
+        // Save invoice document to Firestore
         await invoicesCol.doc(String(data.id)).set(data);
         showToast(isUpdate ? '✅ Invoice updated: ' + data.refNo : '✅ Invoice saved: ' + data.refNo);
-      // Auto-deduct inventory for each line item
-      if (data.items && data.items.length > 0) {
+
+        // Adjust inventory based on delta (newQty - oldQty)
+        var affectedProducts = {};
+        Object.keys(oldQtyMap).forEach(function(k) { affectedProducts[k] = true; });
+        Object.keys(newQtyMap).forEach(function(k) { affectedProducts[k] = true; });
+
         var invBatch = db.batch();
-        data.items.forEach(function(item) {
-          if (!item.name || item.name === 'Packing') return;
-          var qty = parseFloat(item.qty) || 0;
-          if (qty <= 0) return;
-          var invRef = db.collection('products').doc(item.name);
-          invBatch.set(invRef, {
-            name: item.name,
-            stock: firebase.firestore.FieldValue.increment(-qty),
-            lastUpdated: new Date().toISOString()
-          }, { merge: true });
+        var hasDeductions = false;
+
+        Object.keys(affectedProducts).forEach(function(pName) {
+          var oldQ = oldQtyMap[pName] || 0;
+          var newQ = newQtyMap[pName] || 0;
+          var delta = newQ - oldQ; // Net quantity change
+
+          if (delta !== 0) {
+            var invRef = db.collection('products').doc(pName);
+            invBatch.set(invRef, {
+              stock: firebase.firestore.FieldValue.increment(-delta),
+              lastUpdated: new Date().toISOString()
+            }, { merge: true });
+            hasDeductions = true;
+          }
         });
-        invBatch.commit().catch(function(e) { console.warn('Inventory deduct failed:', e); });
-      }
+
+        if (hasDeductions) {
+          invBatch.commit().catch(function(e) { console.warn('Inventory deduct failed:', e); });
+        }
+
         renderPreview();
         return true;
       } catch (e) {
@@ -1633,15 +1671,36 @@
 
     /* -- Delete invoice --------------------------------------------------- */
     async function deleteInvoice(id) {
-      var inv = loadInvoices().find(function(i) { return i.id === id; });
-      if (!inv || !confirm('Delete invoice "' + inv.refNo + '"? This cannot be undone.')) return;
+      var inv = loadInvoices().find(function(i) { return String(i.id) === String(id); });
+      if (!inv || !confirm('Delete invoice "' + (inv.refNo || id) + '"? This cannot be undone.')) return;
       if (editingId === id) { editingId = null; updateEditingBadge(); }
       try {
         await invoicesCol.doc(String(id)).delete();
+
+        // Refund stock when an invoice is deleted
+        if (inv.items && inv.items.length > 0) {
+          var invBatch = db.batch();
+          var hasRefund = false;
+          inv.items.forEach(function(item) {
+            if (!item.name || item.name === 'Packing') return;
+            var qty = parseFloat(item.qty) || 0;
+            if (qty <= 0) return;
+            var invRef = db.collection('products').doc(item.name);
+            invBatch.set(invRef, {
+              stock: firebase.firestore.FieldValue.increment(+qty),
+              lastUpdated: new Date().toISOString()
+            }, { merge: true });
+            hasRefund = true;
+          });
+          if (hasRefund) {
+            invBatch.commit().catch(function(e) { console.warn('Inventory refund failed:', e); });
+          }
+        }
+
         showToast('🗑️ Invoice deleted');
       } catch (e) {
         console.error('Delete failed:', e);
-          showToast('❌ Delete failed — check your connection', 'err');
+        showToast('❌ Delete failed — check your connection', 'err');
       }
     }
 
