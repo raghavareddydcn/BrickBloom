@@ -417,7 +417,7 @@
             </tr>
           </thead>
           <tbody id="invTableBody">
-            <tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">⏳</div><p>Loading inventory…</p></div></td></tr>
+            <tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">ℹ️</div><p>Loading inventory…</p></div></td></tr>
           </tbody>
         </table>
       </div>
@@ -495,7 +495,7 @@
       });
 
       if (!filtered.length) {
-        tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">🔍</div><p>No products found</p></div></td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">ℹ️</div><p>No products found</p></div></td></tr>';
         return;
       }
 
@@ -610,11 +610,10 @@
       } catch(e) {
         console.error(e);
         document.getElementById('invTableBody').innerHTML =
-          '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Failed to load.</p></div></td></tr>';
+          '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">ℹ️</div><p>Failed to load.</p></div></td></tr>';
         showToast('❌ Failed to load inventory', 'err');
+        }
       }
-    }
-    }
 
     /* ── Save all changes ── */
     async function saveAll() {
