@@ -793,10 +793,11 @@
     /* ── Audit Logger Helper ── */
     async function logAuditEvent(action, entityId, summary, details) {
       try {
+        var currentUser = sessionStorage.getItem('bb_admin_user') || 'admin';
         var logEntry = {
           timestamp: new Date().toISOString(),
           action: action,
-          performedBy: 'admin',
+          performedBy: currentUser,
           entityId: String(entityId || ''),
           summary: summary || '',
           details: details || {},
@@ -1174,7 +1175,7 @@
           logAuditEvent(
             'INVENTORY_MANUAL_UPDATE',
             'Products Inventory',
-            'Updated stock for ' + count + ' product' + (count > 1 ? 's' : '') + ': ' + changeSummaries.join(', '),
+            formatName(sessionStorage.getItem('bb_admin_user') || 'Admin') + ' updated stock for ' + count + ' product' + (count > 1 ? 's' : '') + ': ' + changeSummaries.join(', '),
             { updatedCount: count, changes: auditDetailsList }
           );
         }
