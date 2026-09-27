@@ -610,6 +610,8 @@
     if (!sessionStorage.getItem('bb_admin')) {
       window.location.href = '/admin';
     }
+    var BB_ROLE = sessionStorage.getItem('bb_admin_role') || 'viewer';
+    var BB_USER = sessionStorage.getItem('bb_admin_user') || 'admin';
   </script>
 
   <!-- Spinner -->
@@ -628,6 +630,7 @@
       </div>
     </a>
     <div class="topbar-actions">
+      <span id="inventoryUserPill" style="background:rgba(255,255,255,0.18);color:#fff;padding:4px 14px;border-radius:999px;font-size:13px;font-weight:600;letter-spacing:0.3px;">admin</span>
       <a href="/admin.html" class="tbtn" style="background:rgba(255,255,255,0.15);color:white;text-decoration:none;">🏢 Admin Hub</a>
       <button class="tbtn tbtn-logout" onclick="logout()">🚪 Logout</button>
     </div>
@@ -1136,11 +1139,29 @@
     /* ── Logout ── */
     function logout() {
       sessionStorage.removeItem('bb_admin');
+      sessionStorage.removeItem('bb_admin_user');
+      sessionStorage.removeItem('bb_admin_role');
       window.location.href = '/admin';
     }
 
     /* ── Init ── */
     loadInventory();
+
+    /* ── RBAC: Update user pill ── */
+    var pill = document.getElementById('inventoryUserPill');
+    if (pill) pill.textContent = BB_USER + ' (' + BB_ROLE + ')';
+
+    /* ── RBAC: Hide edit controls for viewers ── */
+    if (BB_ROLE === 'viewer') {
+      var editBtn = document.getElementById('modeToggleBtn');
+      if (editBtn) editBtn.style.display = 'none';
+      var saveBtn = document.getElementById('saveAllBtn');
+      if (saveBtn) saveBtn.style.display = 'none';
+      var mSaveBtn = document.getElementById('mSaveBtn');
+      if (mSaveBtn) mSaveBtn.style.display = 'none';
+      var mBar = document.getElementById('mobileBottomBar');
+      if (mBar) mBar.style.display = 'none';
+    }
 
     window.addEventListener('beforeunload', function(e) {
       if (Object.keys(pendingChanges).length > 0) {

@@ -150,6 +150,12 @@
 <body>
   <script>
     if (!sessionStorage.getItem('bb_admin')) window.location.href = '/admin';
+    var BB_ROLE = sessionStorage.getItem('bb_admin_role') || 'viewer';
+    var BB_USER = sessionStorage.getItem('bb_admin_user') || 'admin';
+    if (BB_ROLE === 'viewer') {
+      alert('Access denied. You need Editor or Admin role to access the WhatsApp Tool.');
+      window.location.href = '/admin.html';
+    }
   </script>
 
   <!-- WhatsApp tool requires local Node.js server — show a banner if accessed on production hosting -->
@@ -664,6 +670,8 @@
 
     function logout() {
       sessionStorage.removeItem('bb_admin');
+      sessionStorage.removeItem('bb_admin_user');
+      sessionStorage.removeItem('bb_admin_role');
       window.location.href = '/admin';
     }
 

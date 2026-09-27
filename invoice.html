@@ -1070,6 +1070,14 @@
       window.location.replace('/admin');
     }
   </script>
+  <script>
+    var BB_ROLE = sessionStorage.getItem('bb_admin_role') || 'viewer';
+    var BB_USER = sessionStorage.getItem('bb_admin_user') || 'admin';
+    if (BB_ROLE === 'viewer') {
+      alert('Access denied. You need Editor or Admin role to access the Invoice Portal.');
+      window.location.href = '/admin.html';
+    }
+  </script>
 
   <!-- Drawer overlay -->
   <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
@@ -2460,6 +2468,8 @@
     /* -- Logout ----------------------------------------------------------- */
     function logout() {
       sessionStorage.removeItem('bb_admin');
+      sessionStorage.removeItem('bb_admin_user');
+      sessionStorage.removeItem('bb_admin_role');
       window.location.href = '/admin';
     }
 
