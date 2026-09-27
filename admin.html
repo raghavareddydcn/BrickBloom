@@ -764,8 +764,14 @@
        CONSTANTS & HELPERS
        ══════════════════════════════════════════════════════════════════════ */
     var ORG_PASSKEY = '3694';
+    var IDLE_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes idle timeout
 
     function escH(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function formatName(s) {
+      if (!s) return '';
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
 
     function showToast(msg, type) {
       var t = document.createElement('div');
@@ -785,6 +791,29 @@
       el.className = 'alert-box';
       el.style.display = 'none';
     }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       IDLE SESSION TIMEOUT (30 MINUTES)
+       ══════════════════════════════════════════════════════════════════════ */
+    function markActivity() {
+      if (sessionStorage.getItem('bb_admin') === '1') {
+        sessionStorage.setItem('bb_last_activity', Date.now().toString());
+      }
+    }
+
+    function checkIdleTimeout() {
+      var isLoggedIn = sessionStorage.getItem('bb_admin') === '1';
+      if (!isLoggedIn) return;
+      var lastAct = parseInt(sessionStorage.getItem('bb_last_activity') || '0', 10);
+      if (lastAct && (Date.now() - lastAct > IDLE_TIMEOUT_MS)) {
+        logout(true);
+      }
+    }
+
+    ['mousedown', 'keydown', 'scroll', 'touchstart', 'click'].forEach(function(evt) {
+      window.addEventListener(evt, markActivity, { passive: true });
+    });
+    setInterval(checkIdleTimeout, 15000); // Check every 15s
 
     /* SHA-256 via Web Crypto API */
     async function hashPassword(password) {
@@ -814,14 +843,17 @@
        AUTH CHECK
        ══════════════════════════════════════════════════════════════════════ */
     function checkAuth() {
+      checkIdleTimeout();
       var isLoggedIn = sessionStorage.getItem('bb_admin') === '1';
       var username = sessionStorage.getItem('bb_admin_user') || '';
       var role = sessionStorage.getItem('bb_admin_role') || 'viewer';
 
       if (isLoggedIn && username) {
+        markActivity();
+        var displayName = formatName(username);
         // Update topbar identity
-        document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
-        document.getElementById('userNameDisplay').textContent = username;
+        document.getElementById('userAvatar').textContent = displayName.charAt(0);
+        document.getElementById('userNameDisplay').textContent = displayName;
 
         var roleTag = document.getElementById('userRoleTag');
         roleTag.textContent = role.toUpperCase();
@@ -944,6 +976,7 @@
         sessionStorage.setItem('bb_admin', '1');
         sessionStorage.setItem('bb_admin_user', userData.username || username);
         sessionStorage.setItem('bb_admin_role', userData.role || 'viewer');
+        sessionStorage.setItem('bb_last_activity', Date.now().toString());
 
         // Update last login
         db.collection('admin_users').doc(username).update({
@@ -951,7 +984,7 @@
         }).catch(function() {});
 
         checkAuth();
-        showToast('Welcome back, ' + username + '!', 'success');
+        showToast('Welcome back, ' + formatName(userData.username || username) + '!', 'success');
 
       } catch (err) {
         console.error('[Auth] Login error:', err);
@@ -1055,12 +1088,17 @@
     /* ══════════════════════════════════════════════════════════════════════════
        LOGOUT
        ══════════════════════════════════════════════════════════════════════ */
-    function logout() {
+    function logout(isIdle) {
       sessionStorage.removeItem('bb_admin');
       sessionStorage.removeItem('bb_admin_user');
       sessionStorage.removeItem('bb_admin_role');
+      sessionStorage.removeItem('bb_last_activity');
       showScreen('login');
-      showToast('Signed out successfully.', 'info');
+      if (isIdle) {
+        showAlert('loginError', 'Your session expired after 30 minutes of inactivity. Please sign in again.', 'error');
+      } else {
+        showToast('Signed out successfully.', 'info');
+      }
     }
 
     /* ══════════════════════════════════════════════════════════════════════════
@@ -1093,7 +1131,7 @@
           var lastLogin = u.lastLogin ? new Date(u.lastLogin).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Never';
 
           html += '<tr>' +
-            '<td><strong>' + escH(uname) + '</strong>' + (isSelf ? ' <span style="color:var(--green-600);font-size:11px;">(you)</span>' : '') + '</td>' +
+            '<td><strong>' + escH(formatName(uname)) + '</strong>' + (isSelf ? ' <span style="color:var(--green-600);font-size:11px;">(you)</span>' : '') + '</td>' +
             '<td>' + escH(u.phone || '-') + '</td>' +
             '<td>' +
               '<select class="role-select" onchange="updateUserRole(\'' + escH(uname) + '\', this.value)" ' + (isSelf ? 'disabled' : '') + '>' +

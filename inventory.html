@@ -605,13 +605,46 @@
 </head>
 <body>
 
-  <!-- Auth Guard -->
+  <!-- Auth Guard & Idle Session Timeout -->
   <script>
-    if (!sessionStorage.getItem('bb_admin')) {
-      window.location.href = '/admin';
-    }
+    (function() {
+      var IDLE_TIMEOUT_MS = 30 * 60 * 1000;
+      var lastAct = parseInt(sessionStorage.getItem('bb_last_activity') || '0', 10);
+      var isExpired = lastAct && (Date.now() - lastAct > IDLE_TIMEOUT_MS);
+
+      if (sessionStorage.getItem('bb_admin') !== '1' || isExpired) {
+        sessionStorage.removeItem('bb_admin');
+        sessionStorage.removeItem('bb_admin_user');
+        sessionStorage.removeItem('bb_admin_role');
+        sessionStorage.removeItem('bb_last_activity');
+        if (isExpired) {
+          alert('Your session has expired due to 30 minutes of inactivity. Please sign in again.');
+        }
+        window.location.replace('/admin.html');
+      }
+    })();
     var BB_ROLE = sessionStorage.getItem('bb_admin_role') || 'viewer';
     var BB_USER = sessionStorage.getItem('bb_admin_user') || 'admin';
+
+    function formatName(s) {
+      if (!s) return '';
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    function markActivity() {
+      if (sessionStorage.getItem('bb_admin') === '1') {
+        sessionStorage.setItem('bb_last_activity', Date.now().toString());
+      }
+    }
+    ['mousedown', 'keydown', 'scroll', 'touchstart', 'click'].forEach(function(evt) {
+      window.addEventListener(evt, markActivity, { passive: true });
+    });
+    setInterval(function() {
+      var lastAct = parseInt(sessionStorage.getItem('bb_last_activity') || '0', 10);
+      if (lastAct && (Date.now() - lastAct > 30 * 60 * 1000)) {
+        logout(true);
+      }
+    }, 15000);
   </script>
 
   <!-- Spinner -->
@@ -1137,11 +1170,15 @@
     }
 
     /* ── Logout ── */
-    function logout() {
+    function logout(isIdle) {
       sessionStorage.removeItem('bb_admin');
       sessionStorage.removeItem('bb_admin_user');
       sessionStorage.removeItem('bb_admin_role');
-      window.location.href = '/admin';
+      sessionStorage.removeItem('bb_last_activity');
+      if (isIdle) {
+        alert('Your session has expired due to 30 minutes of inactivity. Please sign in again.');
+      }
+      window.location.replace('/admin.html');
     }
 
     /* ── Init ── */
@@ -1149,7 +1186,7 @@
 
     /* ── RBAC: Update user pill ── */
     var pill = document.getElementById('inventoryUserPill');
-    if (pill) pill.textContent = BB_USER + ' (' + BB_ROLE + ')';
+    if (pill) pill.textContent = formatName(BB_USER) + ' (' + BB_ROLE.toUpperCase() + ')';
 
     /* ── RBAC: Hide edit controls for viewers ── */
     if (BB_ROLE === 'viewer') {
