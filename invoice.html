@@ -1459,10 +1459,11 @@
     /* ── Audit Logger Helper ── */
     async function logAuditEvent(action, entityId, summary, details) {
       try {
+        var currentUser = sessionStorage.getItem('bb_admin_user') || 'admin';
         var logEntry = {
           timestamp: new Date().toISOString(),
           action: action,
-          performedBy: 'admin',
+          performedBy: currentUser,
           entityId: String(entityId || ''),
           summary: summary || '',
           details: details || {},
@@ -1659,7 +1660,7 @@
         logAuditEvent(
           isUpdate ? 'INVOICE_UPDATE' : 'INVOICE_CREATE',
           data.refNo,
-          (isUpdate ? 'Updated invoice ' : 'Created invoice ') + data.refNo + ' (' + (data.custName || 'Customer') + ')',
+          formatName(sessionStorage.getItem('bb_admin_user') || 'Admin') + (isUpdate ? ' updated invoice ' : ' created invoice ') + data.refNo + ' (' + (data.custName || 'Customer') + ')',
           { refNo: data.refNo, grandTotal: data.grand, itemsCount: (data.items || []).length }
         );
 
@@ -1811,6 +1812,14 @@
             invBatch.commit().catch(function(e) { console.warn('Inventory refund failed:', e); });
           }
         }
+
+        var currentUser = sessionStorage.getItem('bb_admin_user') || 'admin';
+        logAuditEvent(
+          'INVOICE_DELETE',
+          inv.refNo || inv.id,
+          formatName(currentUser) + ' deleted invoice ' + (inv.refNo || inv.id) + ' (' + (inv.custName || 'Customer') + ')',
+          { refNo: inv.refNo || inv.id, grandTotal: inv.grand }
+        );
 
         showToast('🗑️ Invoice deleted');
       } catch (e) {
