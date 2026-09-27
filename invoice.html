@@ -1064,11 +1064,70 @@
 </head>
 <body>
 
-  <!-- Auth guard -->
+    <!-- Strict Auth Guard & 30-Minute Idle Session Timeout -->
   <script>
-    if (!sessionStorage.getItem('bb_admin')) {
-      window.location.replace('/admin');
+    (function() {
+      var IDLE_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+      function getLastActivity() {
+        var s = parseInt(sessionStorage.getItem('bb_last_activity') || '0', 10);
+        var l = parseInt(localStorage.getItem('bb_last_activity') || '0', 10);
+        return Math.max(s, l);
+      }
+      var lastAct = getLastActivity();
+      var isExpired = lastAct && (Date.now() - lastAct > IDLE_TIMEOUT_MS);
+
+      if (sessionStorage.getItem('bb_admin') !== '1' || isExpired) {
+        sessionStorage.removeItem('bb_admin');
+        sessionStorage.removeItem('bb_admin_user');
+        sessionStorage.removeItem('bb_admin_role');
+        sessionStorage.removeItem('bb_last_activity');
+        try { localStorage.removeItem('bb_last_activity'); } catch(_) {}
+        if (isExpired) {
+          alert('Your session has expired due to 30 minutes of inactivity. Please sign in again.');
+        }
+        window.location.replace('/admin.html');
+      }
+    })();
+    var BB_ROLE = sessionStorage.getItem('bb_admin_role') || 'viewer';
+    var BB_USER = sessionStorage.getItem('bb_admin_user') || 'admin';
+    if (BB_ROLE === 'viewer') {
+      alert('Access denied. You need Editor or Admin role to access the Invoice Portal.');
+      window.location.replace('/admin.html');
     }
+
+    function formatName(s) {
+      if (!s) return '';
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    var _lastRecorded = 0;
+    function markActivity() {
+      var now = Date.now();
+      if (now - _lastRecorded > 3000 && sessionStorage.getItem('bb_admin') === '1') {
+        _lastRecorded = now;
+        sessionStorage.setItem('bb_last_activity', now.toString());
+        try { localStorage.setItem('bb_last_activity', now.toString()); } catch(_) {}
+      }
+    }
+
+    function checkIdleTimeout() {
+      if (sessionStorage.getItem('bb_admin') !== '1') return;
+      var s = parseInt(sessionStorage.getItem('bb_last_activity') || '0', 10);
+      var l = parseInt(localStorage.getItem('bb_last_activity') || '0', 10);
+      var lastAct = Math.max(s, l);
+      if (lastAct && (Date.now() - lastAct > 30 * 60 * 1000)) {
+        logout(true);
+      }
+    }
+
+    ['mousedown', 'keydown', 'scroll', 'touchstart', 'click'].forEach(function(evt) {
+      window.addEventListener(evt, markActivity, { passive: true });
+    });
+    window.addEventListener('focus', checkIdleTimeout);
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) checkIdleTimeout();
+    });
+    setInterval(checkIdleTimeout, 10000);
   </script>
 
   <!-- Drawer overlay -->
@@ -1098,6 +1157,7 @@
 
     <!-- Desktop actions -->
     <div class="topbar-actions">
+        <span id="invoiceUserPill" style="background:rgba(255,255,255,0.18);color:#fff;padding:4px 14px;border-radius:999px;font-size:13px;font-weight:600;letter-spacing:0.3px;">Admin</span>
         <a href="/whatsapp.html" class="tbtn" style="background:#16a34a; color:#fff; text-decoration:none;">💬 WhatsApp</a>
         <button class="tbtn tbtn-auto" onclick="autoFillInvoiceNumber()">🔢 Auto #</button>
         <button class="tbtn tbtn-save" onclick="saveInvoice()">💾 Save</button>
@@ -2458,9 +2518,15 @@
     }
 
     /* -- Logout ----------------------------------------------------------- */
-    function logout() {
+    function logout(isIdle) {
       sessionStorage.removeItem('bb_admin');
-      window.location.href = '/admin';
+      sessionStorage.removeItem('bb_admin_user');
+      sessionStorage.removeItem('bb_admin_role');
+      sessionStorage.removeItem('bb_last_activity');
+      if (isIdle) {
+        alert('Your session has expired due to 30 minutes of inactivity. Please sign in again.');
+      }
+      window.location.replace('/admin.html');
     }
 
     /* -- Init ------------------------------------------------------------- */
