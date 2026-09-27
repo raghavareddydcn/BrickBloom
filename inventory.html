@@ -822,6 +822,21 @@
     var isEditMode = false;  // Default is View-Only mode
 
     /* ── Helpers ── */
+    function isNonInventoryItem(name) {
+      if (!name) return true;
+      var s = String(name).trim().toLowerCase();
+      if (/^packing(\b|\s|&|\+|-|_)/i.test(s) || s === 'packing') return true;
+      if (/packing\s*(box|charges|charge|&|\+|and)?/i.test(s)) return true;
+      if (/handling\s*(charges|charge)?/i.test(s)) return true;
+      if (/transport(ation)?\s*(charges|charge)?/i.test(s)) return true;
+      if (/shipping\s*(charges|charge)?/i.test(s)) return true;
+      if (/delivery\s*(charges|charge)?/i.test(s)) return true;
+      if (/freight\s*(charges|charge)?/i.test(s)) return true;
+      if (/courier\s*(charges|charge)?/i.test(s)) return true;
+      if (s.includes('packing & handling') || s.includes('packing and handling') || s.includes('packing box') || s.includes('handling charges')) return true;
+      return false;
+    }
+
     function showToast(msg, type) {
       var t = document.getElementById('toast');
       t.textContent = msg;
@@ -1068,7 +1083,8 @@
 
         prodSnap.forEach(function(doc) {
           var d = doc.data();
-          var name = d.name || doc.id;
+          var name = (d.name || doc.id || '').trim();
+          if (!name || isNonInventoryItem(name)) return;
           productList.push(name);
           inventoryData[name] = {
             stock:             d.stock !== undefined ? d.stock : 0,

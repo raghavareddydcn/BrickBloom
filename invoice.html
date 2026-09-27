@@ -1347,6 +1347,21 @@
     var editingId = null;
 
     /* -- Product Catalog & Tiered Pricing Matrix -------------------------- */
+    function isNonInventoryItem(name) {
+      if (!name) return true;
+      var s = String(name).trim().toLowerCase();
+      if (/^packing(\b|\s|&|\+|-|_)/i.test(s) || s === 'packing') return true;
+      if (/packing\s*(box|charges|charge|&|\+|and)?/i.test(s)) return true;
+      if (/handling\s*(charges|charge)?/i.test(s)) return true;
+      if (/transport(ation)?\s*(charges|charge)?/i.test(s)) return true;
+      if (/shipping\s*(charges|charge)?/i.test(s)) return true;
+      if (/delivery\s*(charges|charge)?/i.test(s)) return true;
+      if (/freight\s*(charges|charge)?/i.test(s)) return true;
+      if (/courier\s*(charges|charge)?/i.test(s)) return true;
+      if (s.includes('packing & handling') || s.includes('packing and handling') || s.includes('packing box') || s.includes('handling charges')) return true;
+      return false;
+    }
+
     var DEFAULT_PRODUCT_CATALOG = [
       { name: '2 Inch Pot',                price1: 25, price50: 22, price100: 20, gstRate: 5 },
       { name: '3 inch Pot',                price1: 40, price50: 30, price100: 25, gstRate: 5 },
@@ -1621,7 +1636,7 @@
         var oldQtyMap = {};
         if (oldInvoice && oldInvoice.items) {
           oldInvoice.items.forEach(function(item) {
-            if (item.name && item.name !== 'Packing') {
+            if (item.name && !isNonInventoryItem(item.name)) {
               oldQtyMap[item.name] = (oldQtyMap[item.name] || 0) + (parseFloat(item.qty) || 0);
             }
           });
@@ -1630,7 +1645,7 @@
         var newQtyMap = {};
         if (data.items) {
           data.items.forEach(function(item) {
-            if (item.name && item.name !== 'Packing') {
+            if (item.name && !isNonInventoryItem(item.name)) {
               newQtyMap[item.name] = (newQtyMap[item.name] || 0) + (parseFloat(item.qty) || 0);
             }
           });
@@ -1782,7 +1797,7 @@
           var invBatch = db.batch();
           var hasRefund = false;
           inv.items.forEach(function(item) {
-            if (!item.name || item.name === 'Packing') return;
+            if (!item.name || isNonInventoryItem(item.name)) return;
             var qty = parseFloat(item.qty) || 0;
             if (qty <= 0) return;
             var invRef = db.collection('products').doc(item.name);
