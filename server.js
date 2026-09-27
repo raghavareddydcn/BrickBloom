@@ -1,65 +1,66 @@
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
+import express from 'express';
+import path from 'path';
+import cors from 'cors';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Serve built React assets from dist/ if available, otherwise public/
+const distDir = path.join(__dirname, 'dist');
+const publicDir = path.join(__dirname, 'public');
+
+if (fs.existsSync(distDir)) {
+  app.use(express.static(distDir));
+}
+app.use(express.static(publicDir));
 
 const marketIntelligence = {
   overview: 'Premium BrickBloom sourcing for hydroponics, nurseries, and commercial growers.',
   formats: [
     {
-      name: 'Coco Tabs',
-      benefit: 'Eco-friendly propagation tablets for seed starting and cuttings.',
-      path: '/tabs.html',
-      image: '/images/coco-tabs.svg'
+      name: 'Ready Pot',
+      benefit: 'A ready-to-gift 4" eco-coir pot with coco peat and premium seeds in an eco-friendly gift box.',
+      path: '/products/ready-pot',
+      image: '/images/actual-products/Ready-Pot.JPG'
     },
     {
-      name: 'Coco Grow Cubes',
-      benefit: 'Preformed grow cubes for uniform rooting and clean handling.',
-      path: '/coco-grow-cubes.html',
-      image: '/images/coco-grow-cubes.svg'
+      name: 'Starter Kit',
+      benefit: 'A compact 2-pot DIY coir kit with coco peat and premium seed balls for easy at-home growing.',
+      path: '/products/starter-kit',
+      image: '/images/actual-products/Strater-kit.JPG'
     },
     {
-      name: 'Coco Bricks',
-      benefit: 'Compressed cocopeat bricks for potting mixes and seedling beds.',
-      path: '/coco-bricks.html',
-      image: '/images/coco-bricks.png'
+      name: 'Medium Kit',
+      benefit: 'A complete 2-pot medium DIY coir kit with larger 6" pots, coco peat, and premium seed balls.',
+      path: '/products/medium-kit',
+      image: '/images/actual-products/Medium-Kit.JPG'
     },
     {
-      name: 'Coco Blocks',
-      benefit: 'Bulk cocopeat blocks for growers and export-ready packs.',
-      path: '/blocks.html',
-      image: '/images/coco-blocks-branded.svg'
+      name: 'Premium Kit',
+      benefit: 'Our top-tier kit with 6 eco-coir pots, a hanging coir basket, and a coco support pole in a luxury box.',
+      path: '/products/premium-kit',
+      image: '/images/actual-products/premium.png'
     },
     {
-      name: 'Coco GrowSlabs',
-      benefit: 'Ready-to-use slabs with controlled peat, fiber, and chip ratios.',
-      path: '/coco-growslabs.html',
-      image: '/images/coco-growslabs.png'
+      name: 'Coco Grow Disk',
+      benefit: 'Uniform coco grow disks for clean propagation, quick rooting, and tidy nursery handling.',
+      path: '/products/coco-grow-disk',
+      image: '/images/actual-products/disk.png'
     },
     {
-      name: 'Coco Growbags',
-      benefit: 'Standard coco growbags for transplanting and greenhouse crops.',
-      path: '/growbags.html',
-      image: '/images/coco-growbags-branded.svg'
-    },
-    {
-      name: 'Open Top Growbags',
-      benefit: 'Open top growbags for premium planting and easy crop access.',
-      path: '/open-top-growbags.html',
-      image: '/images/open-top-growbags-branded.svg'
-    },
-    {
-      name: 'Coco Loose Substrates',
-      benefit: 'Loose cocopeat substrate for bulk potting and media mixing.',
-      path: '/loose.html',
-      image: '/images/coco-loose.svg'
+      name: 'Premium Cocopeat',
+      benefit: 'Premium cocopeat media formulated for strong root growth and reliable moisture retention.',
+      path: '/products/premium-cocopeat',
+      image: '/images/actual-products/Brick.JPG'
     }
   ],
   sourcingHubs: [
@@ -78,6 +79,7 @@ app.get('/api/market-intelligence', (req, res) => {
   res.json(marketIntelligence);
 });
 
+// Contact / Leads Endpoint
 app.post('/api/leads', (req, res) => {
   const { name, email, company, message } = req.body;
 
@@ -85,18 +87,17 @@ app.post('/api/leads', (req, res) => {
     return res.status(400).json({ message: 'Please complete every field so we can prepare your quote.' });
   }
 
-  if (req.headers.accept && req.headers.accept.includes('text/html')) {
-    const safeName = String(name).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-    return res.send(`<!doctype html><html><head><meta charset="utf-8"><title>Inquiry received</title></head><body><h1>Thank you, ${safeName}</h1><p>Our sourcing desk will contact you shortly.</p><p><a href="/">Back to home</a></p></body></html>`);
-  }
-
   res.json({ message: `Thank you, ${name}. Our sourcing desk will contact you shortly.` });
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// SPA Catch-all Route
+app.get('/{*path}', (req, res) => {
+  const indexPath = fs.existsSync(path.join(distDir, 'index.html'))
+    ? path.join(distDir, 'index.html')
+    : path.join(publicDir, 'index.html');
+  res.sendFile(indexPath);
 });
 
 app.listen(PORT, () => {
-  console.log(`BrickBloom site running on http://localhost:${PORT}`);
+  console.log(`BrickBloom modern React application running on http://localhost:${PORT}`);
 });
