@@ -13,6 +13,9 @@ const LEGACY_MAP: Record<string, string> = {
   '/loose.html': 'medium-kit',
   '/coco-grow-cubes.html': 'coco-grow-disk',
   '/open-top-growbags.html': 'ready-pot',
+  '/coco-bricks.html': 'coco-bricks',
+  '/coco-growslabs.html': 'coco-growslabs',
+  '/coir-chips.html': 'coir-chips',
 };
 
 export default function ProductDetail() {

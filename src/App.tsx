@@ -20,6 +20,9 @@ export default function App() {
           <Route path="/loose.html" element={<ProductDetail />} />
           <Route path="/coco-grow-cubes.html" element={<ProductDetail />} />
           <Route path="/open-top-growbags.html" element={<ProductDetail />} />
+          <Route path="/coco-bricks.html" element={<ProductDetail />} />
+          <Route path="/coco-growslabs.html" element={<ProductDetail />} />
+          <Route path="/coir-chips.html" element={<ProductDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

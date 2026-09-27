@@ -1,4 +1,4 @@
-// BrickBloom product data — migrated from app.js staticData
+// BrickBloom product data — comprehensive catalog containing all 9 product formats
 // Each product maps to a /products/:slug route in React Router
 
 export interface PricingRow {
@@ -200,6 +200,81 @@ export const products: Product[] = [
     ctaSubtitle: 'Send your order volume, destination port, and preferred block sizes. We\'ll reply with availability and freight options.',
     metaTitle: 'BrickBloom Premium Cocopeat | Bulk Cocopeat Media',
     metaDesc:  'Premium bulk cocopeat from BrickBloom — triple-washed, low EC, export-ready for commercial growers.',
+  },
+  {
+    slug: 'coco-bricks',
+    name: 'Coco Bricks',
+    eyebrow: 'Compressed Substrates',
+    tagline: 'High-expansion compressed bricks.',
+    benefit: 'Compressed cocopeat bricks for potting mixes, seedling beds, and retail garden packs.',
+    image: '/images/Brick5KG.jpeg',
+    inclusions: [
+      'Compact format minimizes storage space and container freight costs',
+      'Fast water absorption and high volume expansion',
+      'Suitable for automated mixing and retail distribution',
+    ],
+    pricing: undefined,
+    pricingNote: 'Available in 650g and 5kg bricks. Request wholesale volume pricing.',
+    badges: ['🧱 High Compression Ratio', '💧 Fast Hydration', '🌱 100% Organic Substrate', '📦 Global Export Ready'],
+    applications: [
+      { title: 'Mixing lines',      description: 'Easy hydration into consistent media blends for batches or custom mixes.' },
+      { title: 'Retail packaging',  description: 'Neat bricks for garden center retail and grower convenience.' },
+      { title: 'Propagation beds',  description: 'Reliable foundation media for shrubs, vegetables, and ornamentals.' },
+    ],
+    ctaTitle: 'Request a quote for Coco Bricks',
+    ctaSubtitle: 'Share your required brick count, format (650g or 5kg), and destination. We\'ll reply with freight and pricing.',
+    metaTitle: 'BrickBloom Coco Bricks | Compressed Cocopeat Bricks',
+    metaDesc:  'High-compression cocopeat bricks that expand into a rich, airy medium for seedling beds and potting mixes.',
+  },
+  {
+    slug: 'coco-growslabs',
+    name: 'Coco GrowSlabs',
+    eyebrow: 'Greenhouse Hydroponics',
+    tagline: 'Precision greenhouse growing slabs.',
+    benefit: 'Ready-to-use slabs crafted for hydroponic channels, balanced drainage, and crop steering.',
+    image: '/images/ALL products.png',
+    inclusions: [
+      'Uniform slab shape supports quick bench and gutter setup',
+      'Engineered fiber-to-pith ratio for root-zone oxygenation',
+      'UV-treated poly sleeve options with pre-cut planting & drainage slits',
+    ],
+    pricing: undefined,
+    pricingNote: 'Custom dimensions and fiber-to-pith ratios available on contract orders.',
+    badges: ['🍅 Hydroponic Ready', '📐 Precision Dimensions', '🌿 High Air Porosity', '💧 Even Water Distribution'],
+    applications: [
+      { title: 'Vegetable greenhouses', description: 'Engineered for vine crops: tomatoes, bell peppers, and cucumbers.' },
+      { title: 'Berry production',      description: 'Optimized aeration and root health for strawberry and berry gutters.' },
+      { title: 'Custom blends',         description: 'Tailored slab density and chip ratio for specific crop watering regimes.' },
+    ],
+    ctaTitle: 'Request a quote for Coco GrowSlabs',
+    ctaSubtitle: 'Share your desired slab dimensions, volume, and destination. We\'ll prepare custom container pricing.',
+    metaTitle: 'BrickBloom Coco GrowSlabs | Ready-to-use Growing Slabs',
+    metaDesc:  'Ready-to-use cocopeat slabs crafted for clean crop placement, balanced root-zone conditions, and greenhouse yields.',
+  },
+  {
+    slug: 'coir-chips',
+    name: 'Coir Chips',
+    eyebrow: 'Aeration & Drainage',
+    tagline: 'Enhanced aeration and drainage media.',
+    benefit: 'Open-structure coir chips for superior drainage, root aeration, and soil blending.',
+    image: '/images/coir-chips.svg',
+    inclusions: [
+      'Uniform chip sizing for consistent root aeration',
+      'Naturally resilient husk chunks resistant to decomposition',
+      'Low dust and washed to maintain optimal EC stability',
+    ],
+    pricing: undefined,
+    pricingNote: 'Available in bulk compressed bales or custom blend bags.',
+    badges: ['💨 Maximum Aeration', '🚿 Superior Drainage', '🌸 Ideal for Orchids', '⏳ Long Substrate Life'],
+    applications: [
+      { title: 'Orchid mixes',      description: 'Airy, fast-draining substrate for epiphytes and premium ornamentals.' },
+      { title: 'Soil blending',     description: 'Add structure and porosity to container substrates without losing moisture balance.' },
+      { title: 'Propagation beds', description: 'Improve aeration for cuttings and seedling trays with steady water movement.' },
+    ],
+    ctaTitle: 'Request a quote for BrickBloom Coir Chips',
+    ctaSubtitle: 'Send your order volume, destination, and desired chip size. We\'ll respond with product options.',
+    metaTitle: 'BrickBloom Coir Chips | Drainage and Soil Blend Media',
+    metaDesc:  'Open-structure coir chips for enhanced drainage, aeration, and soil blending in nursery media.',
   },
 ];
 

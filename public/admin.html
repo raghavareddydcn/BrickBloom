@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>BrickBloom – Admin Enterprise Hub</title>
+  <link rel="icon" type="image/jpeg" href="/images/OurProducts/Logo_new.jpeg" />
+  <link rel="apple-touch-icon" href="/images/OurProducts/Logo_new.jpeg" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-950: #031c0e;
+      --green-900: #093318;
+      --green-800: #124d27;
+      --green-700: #15803d;
+      --green-600: #16a34a;
+      --green-500: #22c55e;
+      --green-100: #dcfce7;
+      --amber-500: #f59e0b;
+      --amber-400: #fbbf24;
+      --amber-100: #fef3c7;
+      --red-500: #ef4444;
+      --red-100: #fee2e2;
+      --blue-500: #3b82f6;
+      --blue-100: #dbeafe;
+      --purple-500: #8b5cf6;
+      --purple-100: #ede9fe;
+      --slate-50:  #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-400: #94a3b8;
+      --slate-500: #64748b;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+      --cream:     #f4ebda;
+      --card-bg:   #fcf7ee;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+      --shadow-lg: 0 20px 40px -15px rgba(0,0,0,0.12);
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-head: 'Space Grotesk', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: linear-gradient(180deg, #f0e4cf 0%, #f7f1e5 100%);
+      color: var(--slate-800);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── ULTRA-PREMIUM GLASS TOPBAR ── */
+    .topbar {
+      background: rgba(3, 28, 14, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: white;
+      padding: 0 28px;
+      height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }
+    .topbar-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
+    .topbar-logo { height: 40px; width: auto; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    .topbar-title { font-family: var(--font-head); font-size: 19px; font-weight: 800; letter-spacing: -0.3px; }
+    .topbar-subtitle { font-size: 10px; opacity: 0.65; letter-spacing: 1.2px; text-transform: uppercase; font-weight: 700; }
+
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+    /* User identity pill */
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+    .user-pill-avatar {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-600), var(--green-800));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: white;
+    }
+    .role-tag {
+      font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px;
+      padding: 2px 7px; border-radius: 4px; margin-left: 4px;
+    }
+    .role-tag.admin  { background: rgba(139,92,246,0.3); color: #c4b5fd; }
+    .role-tag.editor { background: rgba(59,130,246,0.3); color: #93c5fd; }
+    .role-tag.viewer { background: rgba(148,163,184,0.3); color: #cbd5e1; }
+
+    /* Icon-only logout button */
+    .btn-logout-icon {
+      background: rgba(220, 38, 38, 0.15);
+      color: #fca5a5;
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(220, 38, 38, 0.3);
+      cursor: pointer;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .btn-logout-icon:hover { background: rgba(220, 38, 38, 0.35); color: white; transform: scale(1.05); }
+
+    /* ── Main Container ── */
+    .container {
+      flex: 1;
+      max-width: 1240px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 40px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* ── AUTH SCREENS (Login + Register) ── */
+    .auth-wrapper {
+      max-width: 440px;
+      margin: 20px auto;
+      width: 100%;
+    }
+    .auth-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-xl);
+      padding: 40px 36px;
+      box-shadow: var(--shadow-lg);
+      border: 1.5px solid #e5d4b7;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--green-700), var(--green-500), var(--amber-400));
+    }
+    .auth-logo {
+      height: 70px; width: auto;
+      border-radius: 14px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-md);
+    }
+    .auth-title { font-family: var(--font-head); font-size: 26px; font-weight: 800; color: var(--slate-900); }
+    .auth-sub { font-size: 13px; color: var(--slate-600); margin-top: 4px; margin-bottom: 28px; }
+
+    .form-group { text-align: left; margin-bottom: 18px; }
+    .form-group label {
+      display: block; font-size: 11px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--slate-600); margin-bottom: 6px;
+    }
+    .input-box {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid #d8c4a0;
+      border-radius: 12px;
+      font-size: 14.5px;
+      outline: none;
+      background: white;
+      font-family: var(--font-sans);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .input-box:focus { border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(22,163,74,0.15); }
+    .input-box.error { border-color: var(--red-500); box-shadow: 0 0 0 3px rgba(239,68,68,0.12); }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(135deg, var(--green-800), var(--green-950));
+      color: white;
+      padding: 15px;
+      border-radius: 14px;
+      border: none;
+      font-size: 15px;
+      font-weight: 800;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+      box-shadow: 0 6px 20px rgba(3,28,14,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(3,28,14,0.4); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .alert-box {
+      padding: 11px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 18px;
+      display: none;
+      text-align: left;
+    }
+    .alert-box.error { background: #fee2e2; color: #dc2626; border: 1px solid rgba(220,38,38,0.3); }
+    .alert-box.success { background: #dcfce7; color: #166534; border: 1px solid rgba(22,101,52,0.3); }
+    .alert-box.show { display: block; }
+
+    .auth-switch {
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--slate-500);
+    }
+    .auth-switch a {
+      color: var(--green-700);
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .auth-switch a:hover { text-decoration: underline; }
+
+    .passkey-hint {
+      background: var(--amber-100);
+      border: 1px solid rgba(245,158,11,0.3);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #92400e;
+      text-align: left;
+      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* ── DASHBOARD HUB ── */
+    .dash-wrapper { display: none; }
+
+    .dash-header { text-align: center; margin-bottom: 40px; }
+    .dash-hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(22, 163, 74, 0.12);
+      color: var(--green-900);
+      border: 1px solid rgba(22, 163, 74, 0.25);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 11.5px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+    .dash-title { font-family: var(--font-head); font-size: 36px; font-weight: 800; color: var(--slate-900); letter-spacing: -0.5px; }
+    .dash-sub { font-size: 15px; color: var(--slate-600); margin-top: 6px; }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .tool-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-xl);
+      padding: 32px 26px;
+      box-shadow: var(--shadow-md);
+      border: 1.5px solid #e8d7ba;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s, border-color 0.25s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .tool-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--green-600);
+    }
+    .tool-card.locked { opacity: 0.55; pointer-events: none; }
+    .tool-card.locked:hover { transform: none; box-shadow: var(--shadow-md); border-color: #e8d7ba; }
+
+    .tool-card-accent {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 5px;
+    }
+    .tool-card.invoice .tool-card-accent   { background: linear-gradient(90deg, #166534, #22c55e); }
+    .tool-card.inventory .tool-card-accent { background: linear-gradient(90deg, #d97706, #fbbf24); }
+    .tool-card.whatsapp .tool-card-accent  { background: linear-gradient(90deg, #25d366, #128c7e); }
+    .tool-card.users .tool-card-accent     { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+
+    .tool-icon-wrap {
+      width: 58px; height: 58px;
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .tool-card.invoice .tool-icon-wrap   { background: #dcfce7; color: #15803d; }
+    .tool-card.inventory .tool-icon-wrap { background: #fef3c7; color: #b45309; }
+    .tool-card.whatsapp .tool-icon-wrap  { background: #d1fae5; color: #047857; }
+    .tool-card.users .tool-icon-wrap     { background: #ede9fe; color: #7c3aed; }
+
+    .tool-name { font-family: var(--font-head); font-size: 22px; font-weight: 800; color: var(--slate-900); margin-bottom: 6px; }
+    .tool-desc { font-size: 13.5px; color: var(--slate-600); line-height: 1.6; margin-bottom: 22px; flex: 1; }
+
+    .tool-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 10.5px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      padding: 3px 10px; border-radius: 999px;
+      margin-bottom: 14px; align-self: flex-start;
+    }
+    .tool-card.invoice .tool-badge   { background: rgba(22,163,74,0.12); color: #166534; }
+    .tool-card.inventory .tool-badge { background: rgba(245,158,11,0.12); color: #92400e; }
+    .tool-card.whatsapp .tool-badge  { background: rgba(37,211,102,0.12); color: #047857; }
+    .tool-card.users .tool-badge     { background: rgba(139,92,246,0.12); color: #6d28d9; }
+
+    .tool-action-btn {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 14px; font-weight: 800;
+      color: white;
+      transition: all 0.2s;
+    }
+    .tool-card.invoice .tool-action-btn   { background: linear-gradient(135deg, var(--green-800), var(--green-950)); }
+    .tool-card.inventory .tool-action-btn { background: linear-gradient(135deg, #92400e, #b45309); }
+    .tool-card.whatsapp .tool-action-btn  { background: linear-gradient(135deg, #047857, #065f46); }
+    .tool-card.users .tool-action-btn     { background: linear-gradient(135deg, #6d28d9, #7c3aed); }
+    .tool-card:hover .tool-action-btn { filter: brightness(1.1); }
+
+    .lock-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--slate-200); color: var(--slate-600);
+      padding: 12px 18px; border-radius: 12px;
+      font-size: 13px; font-weight: 700;
+    }
+
+    /* ── Audit + Bottom Bars ── */
+    .bottom-bars { display: flex; gap: 16px; flex-wrap: wrap; }
+    .bar-card {
+      flex: 1; min-width: 280px;
+      background: var(--card-bg);
+      border-radius: var(--radius-xl);
+      padding: 18px 24px;
+      border: 1.5px solid #e8d7ba;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 14px; flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+    }
+    .bar-title { font-weight: 800; font-size: 15px; color: var(--slate-900); display: flex; align-items: center; gap: 8px; }
+    .bar-sub   { font-size: 12.5px; color: var(--slate-600); margin-top: 2px; }
+
+    .btn-bar {
+      padding: 10px 20px;
+      border-radius: 12px;
+      border: none;
+      font-size: 13px; font-weight: 800;
+      font-family: var(--font-sans);
+      display: inline-flex; align-items: center; gap: 7px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+    }
+    .btn-bar:hover { transform: translateY(-1px); }
+    .btn-bar.dark { background: var(--slate-900); color: white; }
+    .btn-bar.purple { background: #6d28d9; color: white; }
+
+    /* ── MODALS ── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(3, 28, 14, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      max-width: 900px;
+      width: 100%;
+      max-height: 88vh;
+      display: flex; flex-direction: column;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--slate-200);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--slate-50);
+    }
+    .modal-title { font-family: var(--font-head); font-size: 18px; font-weight: 800; color: var(--slate-900); }
+    .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--slate-500); }
+    .modal-close:hover { color: var(--slate-800); }
+    .modal-body { padding: 20px 24px; overflow-y: auto; flex: 1; }
+
+    /* Audit items */
+    .audit-item {
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+    .audit-item-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .audit-action-badge {
+      font-size: 10px; font-weight: 800;
+      padding: 3px 9px; border-radius: 999px;
+      text-transform: uppercase;
+    }
+    .act-create  { background: #dcfce7; color: #166534; }
+    .act-update  { background: #fef3c7; color: #92400e; }
+    .act-delete  { background: #fee2e2; color: #dc2626; }
+    .act-deduct  { background: #e0f2fe; color: #0369a1; }
+    .audit-time  { font-size: 11px; color: var(--slate-500); }
+    .audit-summary { font-weight: 700; color: var(--slate-900); }
+
+    /* ── USER MANAGEMENT TABLE ── */
+    .users-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13px;
+    }
+    .users-table thead th {
+      background: var(--slate-100);
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--slate-600);
+      border-bottom: 2px solid var(--slate-200);
+    }
+    .users-table thead th:first-child { border-radius: 10px 0 0 0; }
+    .users-table thead th:last-child { border-radius: 0 10px 0 0; }
+    .users-table tbody td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--slate-100);
+      vertical-align: middle;
+    }
+    .users-table tbody tr:hover { background: var(--slate-50); }
+
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .status-dot.active { background: var(--green-500); box-shadow: 0 0 6px rgba(34,197,94,0.5); }
+    .status-dot.disabled { background: var(--red-500); box-shadow: 0 0 6px rgba(239,68,68,0.3); }
+
+    .role-select {
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1.5px solid var(--slate-300);
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--font-sans);
+      background: white;
+      cursor: pointer;
+      color: var(--slate-800);
+    }
+    .role-select:focus { border-color: var(--green-600); outline: none; }
+
+    .btn-sm {
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 11px; font-weight: 800;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-sm.toggle { background: var(--amber-100); color: #92400e; }
+    .btn-sm.toggle:hover { background: #fde68a; }
+    .btn-sm.danger { background: var(--red-100); color: #dc2626; }
+    .btn-sm.danger:hover { background: #fecaca; }
+
+    .user-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--slate-400); }
+
+    /* ── Toast ── */
+    .toast-container {
+      position: fixed; bottom: 24px; right: 24px; z-index: 5000;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .toast {
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 13px; font-weight: 700;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      animation: toastIn 0.3s ease;
+      max-width: 380px;
+    }
+    .toast.success { background: #166534; color: white; }
+    .toast.error   { background: #dc2626; color: white; }
+    .toast.info    { background: var(--slate-800); color: white; }
+    @keyframes toastIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      .topbar { padding: 0 14px; height: 58px; }
+      .topbar-title { font-size: 15px; }
+      .topbar-subtitle { display: none; }
+      .user-pill { padding: 5px 10px; font-size: 11px; }
+      .user-pill-avatar { width: 20px; height: 20px; font-size: 9px; }
+      .role-tag { display: none; }
+      .container { padding: 20px 12px; }
+      .dash-title { font-size: 24px; }
+      .dash-sub { font-size: 13px; }
+      .tools-grid { grid-template-columns: 1fr; gap: 16px; }
+      .tool-card { padding: 24px 20px; }
+      .form-row { grid-template-columns: 1fr; }
+      .auth-card { padding: 30px 22px; }
+      .bottom-bars { flex-direction: column; }
+      .modal-card { max-height: 92vh; }
+      .users-table { font-size: 12px; }
+      .users-table thead th, .users-table tbody td { padding: 8px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <a class="topbar-brand" href="/" title="BrickBloom Home Page">
+      <img src="/images/OurProducts/Logo_new.jpeg" alt="BB" class="topbar-logo" />
+      <div>
+        <div class="topbar-title">BRICKBLOOM</div>
+        <div class="topbar-subtitle">Admin Enterprise Suite</div>
+      </div>
+    </a>
+    <div class="topbar-right" id="topbarRight" style="display:none;">
+      <div class="user-pill" id="userPill">
+        <span class="user-pill-avatar" id="userAvatar">A</span>
+        <span id="userNameDisplay">admin</span>
+        <span class="role-tag admin" id="userRoleTag">ADMIN</span>
+      </div>
+      <button class="btn-logout-icon" onclick="logout()" title="Sign out">&#x1F6AA;</button>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- 1. LOGIN SCREEN -->
+    <div class="auth-wrapper" id="loginScreen">
+      <div class="auth-card">
+        <img src="/images/OurProducts/Logo_new.jpeg" alt="BrickBloom" class="auth-logo" />
+        <div class="auth-title">Enterprise Sign In</div>
+        <div class="auth-sub">Enter credentials to access admin tools</div>
+
+        <div class="alert-box error" id="loginError"></div>
+
+        <form id="loginForm" autocomplete="off">
+          <div class="form-group">
+            <label for="loginUser">Username</label>
+            <input class="input-box" type="text" id="loginUser" placeholder="Enter username" required autofocus />
+          </div>
+          <div class="form-group">
+            <label for="loginPass">Password</label>
+            <input class="input-box" type="password" id="loginPass" placeholder="Enter password" required />
+          </div>
+          <button type="submit" class="btn-primary" id="loginBtn">Sign In &#x2192;</button>
+        </form>
+
+        <div class="auth-switch">
+          New here? <a onclick="showScreen('register')">Create an Account</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. REGISTER SCREEN -->
+    <div class="auth-wrapper" id="registerScreen" style="display:none;">
+      <div class="auth-card">
+        <img src="/images/OurProducts/Logo_new.jpeg" alt="BrickBloom" class="auth-logo" />
+        <div class="auth-title">Create Account</div>
+        <div class="auth-sub">Register for admin portal access</div>
+
+        <div class="alert-box error" id="regError"></div>
+        <div class="alert-box success" id="regSuccess"></div>
+
+        <div class="passkey-hint">
+          &#x1F511; You need an <strong>organization passkey</strong> to register. Contact your admin if you don't have one.
+        </div>
+
+        <form id="registerForm" autocomplete="off">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="regUser">Username</label>
+              <input class="input-box" type="text" id="regUser" placeholder="Choose username" required />
+            </div>
+            <div class="form-group">
+              <label for="regPhone">Phone Number</label>
+              <input class="input-box" type="tel" id="regPhone" placeholder="e.g. 9876543210" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="regPass">Password</label>
+              <input class="input-box" type="password" id="regPass" placeholder="Min 6 characters" required minlength="6" />
+            </div>
+            <div class="form-group">
+              <label for="regPassConfirm">Confirm Password</label>
+              <input class="input-box" type="password" id="regPassConfirm" placeholder="Confirm password" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="regPasskey">Organization Passkey</label>
+            <input class="input-box" type="password" id="regPasskey" placeholder="Enter passkey" required />
+          </div>
+          <button type="submit" class="btn-primary" id="regBtn">Create Account &#x2192;</button>
+        </form>
+
+        <div class="auth-switch">
+          Already have an account? <a onclick="showScreen('login')">Sign In</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. DASHBOARD HUB -->
+    <div class="dash-wrapper" id="dashScreen">
+
+      <div class="dash-header">
+        <div class="dash-hero-badge">&#x26A1; Operations Dashboard</div>
+        <div class="dash-title">Admin Tool Hub</div>
+        <div class="dash-sub">Select an enterprise application below to manage BrickBloom operations</div>
+      </div>
+
+      <div class="tools-grid" id="toolsGrid">
+
+        <!-- Tool 1: Invoice Portal -->
+        <a href="/invoice.html" class="tool-card invoice" id="cardInvoice">
+          <div class="tool-card-accent"></div>
+          <div class="tool-icon-wrap">&#x1F4C4;</div>
+          <div class="tool-badge">Invoice & Billing</div>
+          <div class="tool-name">Tax Invoice Portal</div>
+          <div class="tool-desc">Create, save, print, and export GST-compliant tax invoices with automated inventory stock deductions.</div>
+          <div class="tool-action-btn">
+            <span>Launch Invoice Portal</span>
+            <span>&#x2192;</span>
+          </div>
+        </a>
+
+        <!-- Tool 2: Inventory Dashboard -->
+        <a href="/inventory.html" class="tool-card inventory" id="cardInventory">
+          <div class="tool-card-accent"></div>
+          <div class="tool-icon-wrap">&#x1F4E6;</div>
+          <div class="tool-badge">Stock & Catalog</div>
+          <div class="tool-name">Inventory Dashboard</div>
+          <div class="tool-desc">Track live stock levels across products, set low-stock threshold alerts, and edit stock counts in real-time.</div>
+          <div class="tool-action-btn">
+            <span>Launch Inventory</span>
+            <span>&#x2192;</span>
+          </div>
+        </a>
+
+        <!-- Tool 3: WhatsApp Tool -->
+        <a href="/whatsapp.html" class="tool-card whatsapp" id="cardWhatsapp">
+          <div class="tool-card-accent"></div>
+          <div class="tool-icon-wrap">&#x1F4AC;</div>
+          <div class="tool-badge">Marketing & Broadcast</div>
+          <div class="tool-name">WhatsApp Marketing</div>
+          <div class="tool-desc">Send instant customer broadcasts, catalog notifications, and automated messages directly via WhatsApp.</div>
+          <div class="tool-action-btn">
+            <span>Launch WhatsApp Tool</span>
+            <span>&#x2192;</span>
+          </div>
+        </a>
+
+        <!-- Tool 4: User Management (admin only) -->
+        <div class="tool-card users" id="cardUsers" style="display:none; cursor:pointer;" onclick="openUsersModal()">
+          <div class="tool-card-accent"></div>
+          <div class="tool-icon-wrap">&#x1F465;</div>
+          <div class="tool-badge">Access Control</div>
+          <div class="tool-name">User Management</div>
+          <div class="tool-desc">Manage registered admin users, assign roles, enable or disable accounts, and control RBAC permissions.</div>
+          <div class="tool-action-btn">
+            <span>Manage Users</span>
+            <span>&#x2192;</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bars: Audit Log -->
+      <div class="bottom-bars">
+        <div class="bar-card">
+          <div>
+            <div class="bar-title">&#x1F4DC; System Audit Logs</div>
+            <div class="bar-sub">Real-time history of all invoice and inventory operations</div>
+          </div>
+          <button class="btn-bar dark" onclick="openAuditModal()">&#x1F4DC; View Logs</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- AUDIT LOG MODAL -->
+  <div class="modal-overlay" id="auditModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">&#x1F4DC; System Audit Activity Log</div>
+        <button class="modal-close" onclick="closeModal('auditModal')">&#x2715;</button>
+      </div>
+      <div class="modal-body" id="auditModalBody">
+        <div class="empty-state">Loading audit logs...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USER MANAGEMENT MODAL -->
+  <div class="modal-overlay" id="usersModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">&#x1F465; User Management Console</div>
+        <button class="modal-close" onclick="closeModal('usersModal')">&#x2715;</button>
+      </div>
+      <div class="modal-body" id="usersModalBody">
+        <div class="empty-state">Loading users...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ══════════════════════════════════════════════════════════════════════════
+       FIREBASE CONFIG
+       ══════════════════════════════════════════════════════════════════════ */
+    var firebaseConfig = {
+      apiKey: "AIzaSyCE9R7HACDhgVG-WH7KANSRzyEfhXHg8BQ",
+      authDomain: "brickbloom-invoices.firebaseapp.com",
+      projectId: "brickbloom-invoices",
+      storageBucket: "brickbloom-invoices.firebasestorage.app",
+      messagingSenderId: "988743230343",
+      appId: "1:988743230343:web:b2d850dd30c668e92ee922"
+    };
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.firestore();
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       CONSTANTS & HELPERS
+       ══════════════════════════════════════════════════════════════════════ */
+    var ORG_PASSKEY = '3694';
+    var IDLE_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes idle timeout
+
+    function escH(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function formatName(s) {
+      if (!s) return '';
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    function showToast(msg, type) {
+      var t = document.createElement('div');
+      t.className = 'toast ' + (type || 'info');
+      t.textContent = msg;
+      document.getElementById('toastContainer').appendChild(t);
+      setTimeout(function() { t.remove(); }, 4000);
+    }
+
+    function showAlert(id, msg, type) {
+      var el = document.getElementById(id);
+      el.textContent = msg;
+      el.className = 'alert-box ' + type + ' show';
+    }
+    function hideAlert(id) {
+      var el = document.getElementById(id);
+      el.className = 'alert-box';
+      el.style.display = 'none';
+    }
+
+        /* ══════════════════════════════════════════════════════════════════════════
+       IDLE SESSION TIMEOUT (30 MINUTES)
+       ══════════════════════════════════════════════════════════════════════ */
+    var _lastRecorded = 0;
+    function markActivity() {
+      var now = Date.now();
+      if (now - _lastRecorded > 3000 && sessionStorage.getItem('bb_admin') === '1') {
+        _lastRecorded = now;
+        sessionStorage.setItem('bb_last_activity', now.toString());
+        try { localStorage.setItem('bb_last_activity', now.toString()); } catch(_) {}
+      }
+    }
+
+    function checkIdleTimeout() {
+      var isLoggedIn = sessionStorage.getItem('bb_admin') === '1';
+      if (!isLoggedIn) return;
+      var s = parseInt(sessionStorage.getItem('bb_last_activity') || '0', 10);
+      var l = parseInt(localStorage.getItem('bb_last_activity') || '0', 10);
+      var lastAct = Math.max(s, l);
+      if (lastAct && (Date.now() - lastAct > IDLE_TIMEOUT_MS)) {
+        logout(true);
+      }
+    }
+
+    ['mousedown', 'keydown', 'scroll', 'touchstart', 'click'].forEach(function(evt) {
+      window.addEventListener(evt, markActivity, { passive: true });
+    });
+    window.addEventListener('focus', checkIdleTimeout);
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) checkIdleTimeout();
+    });
+    setInterval(checkIdleTimeout, 10000); // Check every 10s
+
+    /* SHA-256 via Web Crypto API */
+    async function hashPassword(password) {
+      var encoder = new TextEncoder();
+      var data = encoder.encode(password);
+      var hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      var hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       SCREEN MANAGEMENT
+       ══════════════════════════════════════════════════════════════════════ */
+    function showScreen(screen) {
+      document.getElementById('loginScreen').style.display    = screen === 'login'    ? 'block' : 'none';
+      document.getElementById('registerScreen').style.display = screen === 'register' ? 'block' : 'none';
+      document.getElementById('dashScreen').style.display     = screen === 'dashboard'? 'block' : 'none';
+      document.getElementById('topbarRight').style.display    = screen === 'dashboard'? 'flex'  : 'none';
+
+      // Clear alerts when switching
+      hideAlert('loginError');
+      hideAlert('regError');
+      hideAlert('regSuccess');
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       AUTH CHECK
+       ══════════════════════════════════════════════════════════════════════ */
+    function checkAuth() {
+      checkIdleTimeout();
+      var isLoggedIn = sessionStorage.getItem('bb_admin') === '1';
+      var username = sessionStorage.getItem('bb_admin_user') || '';
+      var role = sessionStorage.getItem('bb_admin_role') || 'viewer';
+
+      if (isLoggedIn && username) {
+        markActivity();
+        var displayName = formatName(username);
+        // Update topbar identity
+        document.getElementById('userAvatar').textContent = displayName.charAt(0);
+        document.getElementById('userNameDisplay').textContent = displayName;
+
+        var roleTag = document.getElementById('userRoleTag');
+        roleTag.textContent = role.toUpperCase();
+        roleTag.className = 'role-tag ' + role;
+
+        // RBAC: configure dashboard cards
+        applyRBAC(role);
+
+        showScreen('dashboard');
+      } else {
+        showScreen('login');
+      }
+    }
+
+    function applyRBAC(role) {
+      var cardInvoice  = document.getElementById('cardInvoice');
+      var cardWhatsapp = document.getElementById('cardWhatsapp');
+      var cardUsers    = document.getElementById('cardUsers');
+      var cardInventory = document.getElementById('cardInventory');
+
+      // Reset all
+      cardInvoice.classList.remove('locked');
+      cardWhatsapp.classList.remove('locked');
+      cardInvoice.style.pointerEvents = '';
+      cardWhatsapp.style.pointerEvents = '';
+
+      if (role === 'viewer') {
+        // Viewers: lock invoice and whatsapp
+        cardInvoice.classList.add('locked');
+        cardWhatsapp.classList.add('locked');
+        cardInvoice.removeAttribute('href');
+        cardWhatsapp.removeAttribute('href');
+
+        // Change inventory desc for viewers
+        cardInventory.querySelector('.tool-desc').textContent = 'View live stock levels across products (read-only access).';
+
+        // Replace action buttons with lock badges
+        var invoiceAction = cardInvoice.querySelector('.tool-action-btn');
+        if (invoiceAction) invoiceAction.outerHTML = '<div class="lock-badge">\u{1F512} Editor Access Required</div>';
+
+        var waAction = cardWhatsapp.querySelector('.tool-action-btn');
+        if (waAction) waAction.outerHTML = '<div class="lock-badge">\u{1F512} Editor Access Required</div>';
+      }
+
+      // User management: admin only
+      if (role === 'admin') {
+        cardUsers.style.display = 'flex';
+      } else {
+        cardUsers.style.display = 'none';
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       SEED DEFAULT ADMIN USER
+       ══════════════════════════════════════════════════════════════════════ */
+    async function seedDefaultAdmin() {
+      try {
+        var adminDoc = await db.collection('admin_users').doc('admin').get();
+        if (!adminDoc.exists) {
+          var hash = await hashPassword('bloomfrompeat');
+          await db.collection('admin_users').doc('admin').set({
+            username: 'admin',
+            phone: '0000000000',
+            passwordHash: hash,
+            role: 'admin',
+            status: 'active',
+            createdAt: new Date().toISOString(),
+            lastLogin: null,
+            createdBy: 'system'
+          });
+          console.log('[Auth] Default admin user seeded into Firestore.');
+        }
+      } catch (e) {
+        console.error('[Auth] Error seeding admin:', e);
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       LOGIN
+       ══════════════════════════════════════════════════════════════════════ */
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var btn = document.getElementById('loginBtn');
+      btn.disabled = true;
+      btn.textContent = 'Signing in...';
+      hideAlert('loginError');
+
+      var username = document.getElementById('loginUser').value.trim().toLowerCase();
+      var password = document.getElementById('loginPass').value;
+
+      try {
+        var userDoc = await db.collection('admin_users').doc(username).get();
+        if (!userDoc.exists) {
+          showAlert('loginError', 'Invalid username or password.', 'error');
+          btn.disabled = false;
+          btn.innerHTML = 'Sign In &#x2192;';
+          return;
+        }
+
+        var userData = userDoc.data();
+
+        // Check account status
+        if (userData.status === 'disabled') {
+          showAlert('loginError', 'Your account has been disabled. Contact your administrator.', 'error');
+          btn.disabled = false;
+          btn.innerHTML = 'Sign In &#x2192;';
+          return;
+        }
+
+        // Verify password
+        var inputHash = await hashPassword(password);
+        if (inputHash !== userData.passwordHash) {
+          showAlert('loginError', 'Invalid username or password.', 'error');
+          btn.disabled = false;
+          btn.innerHTML = 'Sign In &#x2192;';
+          return;
+        }
+
+        // Success! Store session
+        sessionStorage.setItem('bb_admin', '1');
+        sessionStorage.setItem('bb_admin_user', userData.username || username);
+        sessionStorage.setItem('bb_admin_role', userData.role || 'viewer');
+        sessionStorage.setItem('bb_last_activity', Date.now().toString());
+        try { localStorage.setItem('bb_last_activity', Date.now().toString()); } catch(_) {}
+
+        // Update last login
+        db.collection('admin_users').doc(username).update({
+          lastLogin: new Date().toISOString()
+        }).catch(function() {});
+
+        checkAuth();
+        showToast('Welcome back, ' + formatName(userData.username || username) + '!', 'success');
+
+      } catch (err) {
+        console.error('[Auth] Login error:', err);
+        showAlert('loginError', 'Authentication failed. Please try again.', 'error');
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = 'Sign In &#x2192;';
+    });
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       REGISTER
+       ══════════════════════════════════════════════════════════════════════ */
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var btn = document.getElementById('regBtn');
+      btn.disabled = true;
+      btn.textContent = 'Creating account...';
+      hideAlert('regError');
+      hideAlert('regSuccess');
+
+      var username    = document.getElementById('regUser').value.trim().toLowerCase();
+      var phone       = document.getElementById('regPhone').value.trim();
+      var password    = document.getElementById('regPass').value;
+      var passConfirm = document.getElementById('regPassConfirm').value;
+      var passkey     = document.getElementById('regPasskey').value.trim();
+
+      // Validations
+      if (username.length < 3) {
+        showAlert('regError', 'Username must be at least 3 characters.', 'error');
+        btn.disabled = false; btn.innerHTML = 'Create Account &#x2192;'; return;
+      }
+      if (!/^[a-z0-9._-]+$/.test(username)) {
+        showAlert('regError', 'Username can only contain lowercase letters, numbers, dots, hyphens.', 'error');
+        btn.disabled = false; btn.innerHTML = 'Create Account &#x2192;'; return;
+      }
+      if (phone.length < 10) {
+        showAlert('regError', 'Enter a valid phone number (min 10 digits).', 'error');
+        btn.disabled = false; btn.innerHTML = 'Create Account &#x2192;'; return;
+      }
+      if (password.length < 6) {
+        showAlert('regError', 'Password must be at least 6 characters.', 'error');
+        btn.disabled = false; btn.innerHTML = 'Create Account &#x2192;'; return;
+      }
+      if (password !== passConfirm) {
+        showAlert('regError', 'Passwords do not match.', 'error');
+        btn.disabled = false; btn.innerHTML = 'Create Account &#x2192;'; return;
+      }
+      if (passkey !== ORG_PASSKEY) {
+        showAlert('regError', 'Invalid organization passkey. Contact your administrator.', 'error');
+        btn.disabled = false; btn.innerHTML = 'Create Account &#x2192;'; return;
+      }
+
+      try {
+        // Check if username exists
+        var existingDoc = await db.collection('admin_users').doc(username).get();
+        if (existingDoc.exists) {
+          showAlert('regError', 'Username "' + username + '" is already taken.', 'error');
+          btn.disabled = false; btn.innerHTML = 'Create Account &#x2192;'; return;
+        }
+
+        // Create user
+        var hash = await hashPassword(password);
+        await db.collection('admin_users').doc(username).set({
+          username: username,
+          phone: phone,
+          passwordHash: hash,
+          role: 'viewer',
+          status: 'active',
+          createdAt: new Date().toISOString(),
+          lastLogin: null,
+          createdBy: 'self-register'
+        });
+
+        // Log audit
+        try {
+          await db.collection('audit_logs').add({
+            timestamp: new Date().toISOString(),
+            action: 'USER_REGISTER',
+            performedBy: username,
+            entityId: username,
+            summary: 'New user "' + username + '" registered with viewer role'
+          });
+        } catch (_) {}
+
+        showAlert('regSuccess', 'Account created successfully! You can now sign in.', 'success');
+        document.getElementById('registerForm').reset();
+
+        // Auto-switch to login after 2s
+        setTimeout(function() { showScreen('login'); }, 2500);
+
+      } catch (err) {
+        console.error('[Auth] Registration error:', err);
+        showAlert('regError', 'Registration failed: ' + err.message, 'error');
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = 'Create Account &#x2192;';
+    });
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       LOGOUT
+       ══════════════════════════════════════════════════════════════════════ */
+    function logout(isIdle) {
+      sessionStorage.removeItem('bb_admin');
+      sessionStorage.removeItem('bb_admin_user');
+      sessionStorage.removeItem('bb_admin_role');
+      sessionStorage.removeItem('bb_last_activity');
+      try { localStorage.removeItem('bb_last_activity'); } catch(_) {}
+      showScreen('login');
+      if (isIdle) {
+        showAlert('loginError', 'Your session expired after 30 minutes of inactivity. Please sign in again.', 'error');
+      } else {
+        showToast('Signed out successfully.', 'info');
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       USER MANAGEMENT (Admin Only)
+       ══════════════════════════════════════════════════════════════════════ */
+    async function openUsersModal() {
+      var modal = document.getElementById('usersModal');
+      var body  = document.getElementById('usersModalBody');
+      modal.classList.add('show');
+      body.innerHTML = '<div class="empty-state">Loading users...</div>';
+
+      try {
+        var snap = await db.collection('admin_users').orderBy('createdAt', 'desc').get();
+        if (snap.empty) {
+          body.innerHTML = '<div class="empty-state">No registered users found.</div>';
+          return;
+        }
+
+        var currentUser = sessionStorage.getItem('bb_admin_user');
+        var html = '<table class="users-table"><thead><tr>' +
+          '<th>User</th><th>Phone</th><th>Role</th><th>Status</th><th>Last Login</th><th>Actions</th>' +
+          '</tr></thead><tbody>';
+
+        snap.forEach(function(doc) {
+          var u = doc.data();
+          var uname = u.username || doc.id;
+          var isSelf = (uname === currentUser);
+          var statusClass = u.status === 'disabled' ? 'disabled' : 'active';
+          var statusLabel = u.status === 'disabled' ? 'Disabled' : 'Active';
+          var lastLogin = u.lastLogin ? new Date(u.lastLogin).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Never';
+
+          html += '<tr>' +
+            '<td><strong>' + escH(formatName(uname)) + '</strong>' + (isSelf ? ' <span style="color:var(--green-600);font-size:11px;">(you)</span>' : '') + '</td>' +
+            '<td>' + escH(u.phone || '-') + '</td>' +
+            '<td>' +
+              '<select class="role-select" onchange="updateUserRole(\'' + escH(uname) + '\', this.value)" ' + (isSelf ? 'disabled' : '') + '>' +
+                '<option value="admin"'  + (u.role === 'admin'  ? ' selected' : '') + '>Admin</option>' +
+                '<option value="editor"' + (u.role === 'editor' ? ' selected' : '') + '>Editor</option>' +
+                '<option value="viewer"' + (u.role === 'viewer' ? ' selected' : '') + '>Viewer</option>' +
+              '</select>' +
+            '</td>' +
+            '<td><span class="status-dot ' + statusClass + '"></span>' + statusLabel + '</td>' +
+            '<td style="font-size:12px;color:var(--slate-500);">' + lastLogin + '</td>' +
+            '<td>' +
+              '<div class="user-actions">' +
+                (isSelf ? '<span style="font-size:11px;color:var(--slate-400);">-</span>' :
+                  '<button class="btn-sm toggle" onclick="toggleUserStatus(\'' + escH(uname) + '\', \'' + u.status + '\')">' + (u.status === 'disabled' ? 'Enable' : 'Disable') + '</button>' +
+                  '<button class="btn-sm danger" onclick="deleteUser(\'' + escH(uname) + '\')">Delete</button>'
+                ) +
+              '</div>' +
+            '</td>' +
+          '</tr>';
+        });
+
+        html += '</tbody></table>';
+        body.innerHTML = html;
+
+      } catch (err) {
+        console.error('[Users] Load error:', err);
+        body.innerHTML = '<div class="empty-state" style="color:var(--red-500);">Failed to load users: ' + escH(err.message) + '</div>';
+      }
+    }
+
+    async function updateUserRole(username, newRole) {
+      try {
+        await db.collection('admin_users').doc(username).update({ role: newRole });
+        showToast('Role updated: ' + username + ' is now ' + newRole.toUpperCase(), 'success');
+
+        // Audit log
+        db.collection('audit_logs').add({
+          timestamp: new Date().toISOString(),
+          action: 'USER_ROLE_UPDATE',
+          performedBy: sessionStorage.getItem('bb_admin_user') || 'admin',
+          entityId: username,
+          summary: 'Role changed to ' + newRole + ' for user "' + username + '"'
+        }).catch(function() {});
+
+      } catch (err) {
+        showToast('Failed to update role: ' + err.message, 'error');
+      }
+    }
+
+    async function toggleUserStatus(username, currentStatus) {
+      var newStatus = currentStatus === 'disabled' ? 'active' : 'disabled';
+      try {
+        await db.collection('admin_users').doc(username).update({ status: newStatus });
+        showToast('User ' + username + ' is now ' + newStatus, 'success');
+        openUsersModal(); // Refresh
+
+        db.collection('audit_logs').add({
+          timestamp: new Date().toISOString(),
+          action: 'USER_STATUS_UPDATE',
+          performedBy: sessionStorage.getItem('bb_admin_user') || 'admin',
+          entityId: username,
+          summary: 'Account status changed to ' + newStatus + ' for user "' + username + '"'
+        }).catch(function() {});
+
+      } catch (err) {
+        showToast('Failed to update status: ' + err.message, 'error');
+      }
+    }
+
+    async function deleteUser(username) {
+      if (!confirm('Are you sure you want to permanently delete user "' + username + '"? This cannot be undone.')) return;
+
+      try {
+        await db.collection('admin_users').doc(username).delete();
+        showToast('User "' + username + '" deleted.', 'success');
+        openUsersModal(); // Refresh
+
+        db.collection('audit_logs').add({
+          timestamp: new Date().toISOString(),
+          action: 'USER_DELETE',
+          performedBy: sessionStorage.getItem('bb_admin_user') || 'admin',
+          entityId: username,
+          summary: 'User "' + username + '" was permanently deleted'
+        }).catch(function() {});
+
+      } catch (err) {
+        showToast('Failed to delete user: ' + err.message, 'error');
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       AUDIT LOG MODAL
+       ══════════════════════════════════════════════════════════════════════ */
+    async function openAuditModal() {
+      var modal = document.getElementById('auditModal');
+      var body  = document.getElementById('auditModalBody');
+      modal.classList.add('show');
+      body.innerHTML = '<div class="empty-state">Fetching audit logs...</div>';
+
+      try {
+        var snap = await db.collection('audit_logs').orderBy('timestamp', 'desc').limit(50).get();
+        if (snap.empty) {
+          body.innerHTML = '<div class="empty-state">No audit logs recorded yet.</div>';
+          return;
+        }
+
+        var html = '';
+        snap.forEach(function(doc) {
+          var d = doc.data();
+          var badgeClass = 'act-update';
+          if (d.action && d.action.includes('CREATE'))   badgeClass = 'act-create';
+          if (d.action && d.action.includes('REGISTER')) badgeClass = 'act-create';
+          if (d.action && d.action.includes('DELETE'))   badgeClass = 'act-delete';
+          if (d.action && d.action.includes('DEDUCT'))   badgeClass = 'act-deduct';
+
+          var timeStr = d.timestamp ? new Date(d.timestamp).toLocaleString('en-IN') : '-';
+
+          var detailsHtml = '';
+          if (d.details && d.details.changes && Array.isArray(d.details.changes)) {
+            detailsHtml += '<div style="margin-top:6px;padding-top:6px;border-top:1px dashed #e2e8f0;font-size:12px;color:#475569;">';
+            d.details.changes.forEach(function(c) {
+              var sign = c.delta > 0 ? '+' : '';
+              detailsHtml += '<div>\u2022 <strong>' + escH(c.product || '') + '</strong>: ' + (c.oldStock !== undefined ? c.oldStock : '-') + ' \u2192 <strong>' + (c.newStock !== undefined ? c.newStock : '-') + ' ' + escH(c.unit || '') + '</strong> (' + sign + c.delta + ')</div>';
+            });
+            detailsHtml += '</div>';
+          }
+
+          html += '<div class="audit-item">' +
+            '<div class="audit-item-top">' +
+              '<span class="audit-action-badge ' + badgeClass + '">' + (d.action || 'LOG') + '</span>' +
+              '<span class="audit-time">' + timeStr + (d.performedBy ? ' \u00B7 ' + escH(d.performedBy) : '') + '</span>' +
+            '</div>' +
+            '<div class="audit-summary">' + escH(d.summary || '') + '</div>' +
+            detailsHtml +
+          '</div>';
+        });
+
+        body.innerHTML = html;
+      } catch (e) {
+        console.error(e);
+        body.innerHTML = '<div class="empty-state" style="color:var(--red-500);">Failed to load: ' + escH(e.message) + '</div>';
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       MODAL HELPERS
+       ══════════════════════════════════════════════════════════════════════ */
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    // Close modal on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) overlay.classList.remove('show');
+      });
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.show').forEach(function(m) { m.classList.remove('show'); });
+      }
+    });
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       INIT
+       ══════════════════════════════════════════════════════════════════════ */
+    seedDefaultAdmin();
+    checkAuth();
+  </script>
+
+</body>
+</html>
