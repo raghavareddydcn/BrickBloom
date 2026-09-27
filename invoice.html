@@ -1064,11 +1064,16 @@
 </head>
 <body>
 
-  <!-- Strict Auth Guard & Idle Session Timeout -->
+    <!-- Strict Auth Guard & 30-Minute Idle Session Timeout -->
   <script>
     (function() {
-      var IDLE_TIMEOUT_MS = 30 * 60 * 1000;
-      var lastAct = parseInt(sessionStorage.getItem('bb_last_activity') || '0', 10);
+      var IDLE_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+      function getLastActivity() {
+        var s = parseInt(sessionStorage.getItem('bb_last_activity') || '0', 10);
+        var l = parseInt(localStorage.getItem('bb_last_activity') || '0', 10);
+        return Math.max(s, l);
+      }
+      var lastAct = getLastActivity();
       var isExpired = lastAct && (Date.now() - lastAct > IDLE_TIMEOUT_MS);
 
       if (sessionStorage.getItem('bb_admin') !== '1' || isExpired) {
@@ -1076,6 +1081,7 @@
         sessionStorage.removeItem('bb_admin_user');
         sessionStorage.removeItem('bb_admin_role');
         sessionStorage.removeItem('bb_last_activity');
+        try { localStorage.removeItem('bb_last_activity'); } catch(_) {}
         if (isExpired) {
           alert('Your session has expired due to 30 minutes of inactivity. Please sign in again.');
         }
@@ -1094,20 +1100,34 @@
       return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
+    var _lastRecorded = 0;
     function markActivity() {
-      if (sessionStorage.getItem('bb_admin') === '1') {
-        sessionStorage.setItem('bb_last_activity', Date.now().toString());
+      var now = Date.now();
+      if (now - _lastRecorded > 3000 && sessionStorage.getItem('bb_admin') === '1') {
+        _lastRecorded = now;
+        sessionStorage.setItem('bb_last_activity', now.toString());
+        try { localStorage.setItem('bb_last_activity', now.toString()); } catch(_) {}
       }
     }
-    ['mousedown', 'keydown', 'scroll', 'touchstart', 'click'].forEach(function(evt) {
-      window.addEventListener(evt, markActivity, { passive: true });
-    });
-    setInterval(function() {
-      var lastAct = parseInt(sessionStorage.getItem('bb_last_activity') || '0', 10);
+
+    function checkIdleTimeout() {
+      if (sessionStorage.getItem('bb_admin') !== '1') return;
+      var s = parseInt(sessionStorage.getItem('bb_last_activity') || '0', 10);
+      var l = parseInt(localStorage.getItem('bb_last_activity') || '0', 10);
+      var lastAct = Math.max(s, l);
       if (lastAct && (Date.now() - lastAct > 30 * 60 * 1000)) {
         logout(true);
       }
-    }, 15000);
+    }
+
+    ['mousedown', 'keydown', 'scroll', 'touchstart', 'click'].forEach(function(evt) {
+      window.addEventListener(evt, markActivity, { passive: true });
+    });
+    window.addEventListener('focus', checkIdleTimeout);
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) checkIdleTimeout();
+    });
+    setInterval(checkIdleTimeout, 10000);
   </script>
 
   <!-- Drawer overlay -->

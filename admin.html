@@ -792,19 +792,25 @@
       el.style.display = 'none';
     }
 
-    /* ══════════════════════════════════════════════════════════════════════════
+        /* ══════════════════════════════════════════════════════════════════════════
        IDLE SESSION TIMEOUT (30 MINUTES)
        ══════════════════════════════════════════════════════════════════════ */
+    var _lastRecorded = 0;
     function markActivity() {
-      if (sessionStorage.getItem('bb_admin') === '1') {
-        sessionStorage.setItem('bb_last_activity', Date.now().toString());
+      var now = Date.now();
+      if (now - _lastRecorded > 3000 && sessionStorage.getItem('bb_admin') === '1') {
+        _lastRecorded = now;
+        sessionStorage.setItem('bb_last_activity', now.toString());
+        try { localStorage.setItem('bb_last_activity', now.toString()); } catch(_) {}
       }
     }
 
     function checkIdleTimeout() {
       var isLoggedIn = sessionStorage.getItem('bb_admin') === '1';
       if (!isLoggedIn) return;
-      var lastAct = parseInt(sessionStorage.getItem('bb_last_activity') || '0', 10);
+      var s = parseInt(sessionStorage.getItem('bb_last_activity') || '0', 10);
+      var l = parseInt(localStorage.getItem('bb_last_activity') || '0', 10);
+      var lastAct = Math.max(s, l);
       if (lastAct && (Date.now() - lastAct > IDLE_TIMEOUT_MS)) {
         logout(true);
       }
@@ -813,7 +819,11 @@
     ['mousedown', 'keydown', 'scroll', 'touchstart', 'click'].forEach(function(evt) {
       window.addEventListener(evt, markActivity, { passive: true });
     });
-    setInterval(checkIdleTimeout, 15000); // Check every 15s
+    window.addEventListener('focus', checkIdleTimeout);
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) checkIdleTimeout();
+    });
+    setInterval(checkIdleTimeout, 10000); // Check every 10s
 
     /* SHA-256 via Web Crypto API */
     async function hashPassword(password) {
@@ -977,6 +987,7 @@
         sessionStorage.setItem('bb_admin_user', userData.username || username);
         sessionStorage.setItem('bb_admin_role', userData.role || 'viewer');
         sessionStorage.setItem('bb_last_activity', Date.now().toString());
+        try { localStorage.setItem('bb_last_activity', Date.now().toString()); } catch(_) {}
 
         // Update last login
         db.collection('admin_users').doc(username).update({
@@ -1093,6 +1104,7 @@
       sessionStorage.removeItem('bb_admin_user');
       sessionStorage.removeItem('bb_admin_role');
       sessionStorage.removeItem('bb_last_activity');
+      try { localStorage.removeItem('bb_last_activity'); } catch(_) {}
       showScreen('login');
       if (isIdle) {
         showAlert('loginError', 'Your session expired after 30 minutes of inactivity. Please sign in again.', 'error');
