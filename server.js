@@ -227,7 +227,7 @@ async function destroyClient(client) {
 }
 
 // ── Internal: reset state and broadcast ───────────────────────────────────────
-async function resetWA(reason) {
+async function clearWASession(reason) {
   clearTimeout(waInitTimeout);
   const prev = waClient;
   waClient = null;
@@ -235,7 +235,30 @@ async function resetWA(reason) {
   waQrData = null;
   waError  = reason || null;
   broadcast('state', { status: 'disconnected', error: waError });
-  await destroyClient(prev);
+
+  if (prev) {
+    try {
+      await Promise.race([
+        prev.destroy(),
+        new Promise(r => setTimeout(r, 4000))
+      ]);
+    } catch (_) {}
+  }
+
+  // Force delete .wwebjs_auth session directory to clean Chromium locks
+  const authDir = path.join(__dirname, '.wwebjs_auth');
+  if (fs.existsSync(authDir)) {
+    try {
+      fs.rmSync(authDir, { recursive: true, force: true });
+      console.log('[WA] Cleared session folder .wwebjs_auth');
+    } catch (e) {
+      console.warn('[WA] Could not delete .wwebjs_auth folder:', e.message);
+    }
+  }
+}
+
+async function resetWA(reason) {
+  await clearWASession(reason);
 }
 
 // ── GET /api/wa/status ─────────────────────────────────────────────────────────
@@ -354,8 +377,18 @@ app.post('/api/wa/connect', async (req, res) => {
 
 // ── POST /api/wa/disconnect ────────────────────────────────────────────────────
 app.post('/api/wa/disconnect', async (req, res) => {
-  await resetWA();
-  res.json({ ok: true });
+  await clearWASession();
+  res.json({ ok: true, status: 'disconnected' });
+});
+
+app.post('/api/wa/clear-session', async (req, res) => {
+  await clearWASession();
+  res.json({ ok: true, status: 'disconnected', message: 'WhatsApp session cleared successfully' });
+});
+
+app.post('/api/wa/logout', async (req, res) => {
+  await clearWASession();
+  res.json({ ok: true, status: 'disconnected' });
 });
 
 // ── POST /api/wa/send ──────────────────────────────────────────────────────────
