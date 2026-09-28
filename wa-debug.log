@@ -1,0 +1,524 @@
+[2026-09-20T03:56:27.831Z] [info] POST /api/wa/connect called
+[2026-09-20T03:56:27.832Z] [info] WhatsApp initialization started
+[2026-09-20T03:56:39.651Z] [error] WhatsApp Init Error: Error: Execution context was destroyed, most likely because of a navigation.
+    at rewriteError (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\common\ExecutionContext.js:284:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async ExecutionContext._ExecutionContext_evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\common\ExecutionContext.js:227:56)
+    at async ExecutionContext.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\common\ExecutionContext.js:107:16)
+    at async Client.getWWebVersion (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:878:16)
+    at async Client.inject (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:101:25)
+    at async Client.initialize (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:346:9)
+[2026-09-20T04:00:41.265Z] [info] POST /api/wa/connect called
+[2026-09-20T04:00:41.267Z] [info] WhatsApp initialization started
+[2026-09-20T04:00:51.642Z] [info] QR generated for scanning
+[2026-09-20T04:01:51.447Z] [info] QR generated for scanning
+[2026-09-20T04:02:11.449Z] [info] QR generated for scanning
+[2026-09-20T04:02:32.156Z] [info] POST /api/wa/connect called
+[2026-09-20T04:02:32.156Z] [info] WhatsApp initialization started
+[2026-09-20T04:02:42.852Z] [info] QR generated for scanning
+[2026-09-20T04:09:34.903Z] [info] POST /api/wa/connect called
+[2026-09-20T04:09:34.905Z] [info] WhatsApp initialization started
+[2026-09-20T04:12:21.729Z] [info] POST /api/wa/connect called
+[2026-09-20T04:12:21.729Z] [info] WhatsApp initialization started
+[2026-09-20T04:15:27.600Z] [info] POST /api/wa/connect called
+[2026-09-20T04:15:27.600Z] [info] WhatsApp initialization started
+[2026-09-20T04:15:33.198Z] [error] WhatsApp Init Error: ProtocolError: Protocol error (Runtime.callFunctionOn): Execution context was destroyed.
+    at E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\common\Connection.js:329:24
+    at new Promise (<anonymous>)
+    at CDPSessionImpl.send (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\common\Connection.js:325:16)
+    at ExecutionContext._ExecutionContext_evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\common\ExecutionContext.js:211:46)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async ExecutionContext.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\common\ExecutionContext.js:107:16)
+[2026-09-20T04:16:20.415Z] [info] POST /api/wa/connect called
+[2026-09-20T04:16:20.416Z] [info] WhatsApp initialization started
+[2026-09-20T04:16:30.474Z] [info] QR generated for scanning
+[2026-09-20T04:17:30.319Z] [info] QR generated for scanning
+[2026-09-20T04:17:50.317Z] [info] QR generated for scanning
+[2026-09-20T04:21:51.077Z] [info] POST /api/wa/connect called
+[2026-09-20T04:21:51.078Z] [info] WhatsApp initialization started
+[2026-09-20T04:21:57.085Z] [info] WhatsApp authentication completed
+[2026-09-20T04:23:40.032Z] [info] POST /api/wa/connect called
+[2026-09-20T04:23:40.032Z] [info] WhatsApp initialization started
+[2026-09-20T04:23:40.877Z] [error] WhatsApp Init Error: Error: Couldn't load version 2.3000.1047967752 from the archive
+    at RemoteWebCache.resolve (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\webCache\RemoteWebCache.js:31:32)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async Client.initWebVersionCache (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:820:32)
+    at async Client.initialize (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:324:9)
+[2026-09-20T04:24:10.537Z] [info] POST /api/wa/connect called
+[2026-09-20T04:24:10.539Z] [info] WhatsApp initialization started
+[2026-09-20T04:24:16.748Z] [info] WhatsApp authentication completed
+[2026-09-20T04:24:22.839Z] [info] WhatsApp authentication completed
+[2026-09-20T04:31:04.152Z] [info] POST /api/wa/connect called
+[2026-09-20T04:31:04.154Z] [info] WhatsApp initialization started
+[2026-09-20T04:31:08.592Z] [info] WhatsApp authentication completed
+[2026-09-20T04:31:09.113Z] [info] WhatsApp Client is ready
+[2026-09-20T04:31:20.591Z] [info] WhatsApp authentication completed
+[2026-09-20T04:31:20.708Z] [info] WhatsApp Client is ready
+[2026-09-20T04:31:25.902Z] [info] WhatsApp authentication completed
+[2026-09-20T04:31:25.973Z] [info] WhatsApp Client is ready
+[2026-09-20T04:33:54.016Z] [info] Send requested: contacts=1, templateLen=9, media=yes
+[2026-09-20T04:33:54.016Z] [info] Sending to 919566085621@c.us (name=raghav)
+[2026-09-20T04:33:57.799Z] [error] Send error to 919566085621@c.us (name=raghav): Error: Data passed to getter must include an id property (it's how we memoize) but got undefined
+s (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:84:180)
+    at #evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\ExecutionContext.js:391:56)
+    at async ExecutionContext.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\ExecutionContext.js:277:16)
+    at async IsolatedWorld.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\IsolatedWorld.js:100:16)
+    at async CdpFrame.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Frame.js:362:20)
+    at async CdpPage.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Page.js:830:20)
+    at async Client.sendMessage (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:1533:25)
+    at async E:\code_base\BrickBloom_Git\BrickBloom\server.js:384:9
+    at i (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:113:348)
+    at l (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:113:124)
+    at <anonymous> (https://static.whatsapp.net/rsrc.php/v4iPDX4/ys/l/en_US-j/u1Kur6k7-HV.js:1759:3741)
+    at t (https://static.whatsapp.net/rsrc.php/v4iSzK4/y9/l/en_US-j/sVmPQYGHrIfj99JXV2aYc20Dr5E4kn-fZfoft1rkir6AFrzo8ARVxCVluTuiTkePDOhKFyYHJMOrqGkYs71Nq93UvSXVZq7zPRTimXTyCTiBBui4ISFwMaY17GUgBJSaveS-_sW3Fn7-2yqmxeXvQvsiKTTfbLCHDWbK7N30hsUlWxAggn206x8L2TzhRgxME01XdEwOwYeYbBY18zHAaD9ehyxyuGP9Ec6EO2iyN_hOuj0Vv_nRGUWhxOjPuHg4lKqGFi3_U6s63t4M7SgmV-g4s2XLtQyNiUhTXoaeC8bTc_1-Otys3eAfZ4uZlGxRHMjINyTyLn.js:752:3770)
+    at a (https://static.whatsapp.net/rsrc.php/v4iSzK4/y9/l/en_US-j/sVmPQYGHrIfj99JXV2aYc20Dr5E4kn-fZfoft1rkir6AFrzo8ARVxCVluTuiTkePDOhKFyYHJMOrqGkYs71Nq93UvSXVZq7zPRTimXTyCTiBBui4ISFwMaY17GUgBJSaveS-_sW3Fn7-2yqmxeXvQvsiKTTfbLCHDWbK7N30hsUlWxAggn206x8L2TzhRgxME01XdEwOwYeYbBY18zHAaD9ehyxyuGP9Ec6EO2iyN_hOuj0Vv_nRGUWhxOjPuHg4lKqGFi3_U6s63t4M7SgmV-g4s2XLtQyNiUhTXoaeC8bTc_1-Otys3eAfZ4uZlGxRHMjINyTyLn.js:754:864)
+    at i.initialize (https://static.whatsapp.net/rsrc.php/v4iPDX4/ys/l/en_US-j/u1Kur6k7-HV.js:2136:23590)
+    at w (https://static.whatsapp.net/rsrc.php/v4iPDX4/ys/l/en_US-j/u1Kur6k7-HV.js:2142:7748)
+    at c (https://static.whatsapp.net/rsrc.php/v4iovV4/yw/l/en_US-j/uRYuo6idfK-Dmyw9kb76vUF5PCnUTW5KNA60doeyVO844LOmBnn-uVPscelSW-8QpSUTUDQ6Xg6Ic.js:1849:2835)
+    at L (https://static.whatsapp.net/rsrc.php/v4iovV4/yw/l/en_US-j/uRYuo6idfK-Dmyw9kb76vUF5PCnUTW5KNA60doeyVO844LOmBnn-uVPscelSW-8QpSUTUDQ6Xg6Ic.js:1849:5227)
+[2026-09-20T04:45:25.058Z] [info] POST /api/wa/connect called
+[2026-09-20T04:45:25.059Z] [info] WhatsApp initialization started
+[2026-09-20T04:45:29.696Z] [info] WhatsApp authentication completed
+[2026-09-20T04:45:29.814Z] [info] WhatsApp Client is ready
+[2026-09-20T04:46:21.960Z] [info] Send requested: contacts=1, templateLen=9, media=yes
+[2026-09-20T04:46:22.205Z] [info] Sending to 129240028709079@lid (name=raghav)
+[2026-09-20T04:46:26.754Z] [error] Send error to 919566085621@c.us (name=raghav): Error: Data passed to getter must include an id property (it's how we memoize) but got undefined
+s (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:84:180)
+    at #evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\ExecutionContext.js:391:56)
+    at async ExecutionContext.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\ExecutionContext.js:277:16)
+    at async IsolatedWorld.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\IsolatedWorld.js:100:16)
+    at async CdpFrame.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Frame.js:362:20)
+    at async CdpPage.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Page.js:830:20)
+    at async Client.sendMessage (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:1533:25)
+    at async E:\code_base\BrickBloom_Git\BrickBloom\server.js:389:9
+    at i (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:113:348)
+    at l (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:113:124)
+    at <anonymous> (https://static.whatsapp.net/rsrc.php/v4iPDX4/y9/l/en_GB-j/u1Kur6k7-HV.js:1759:3741)
+    at t (https://static.whatsapp.net/rsrc.php/v4iSzK4/yN/l/en_GB-j/sVmPQYGHrIfj99JXV2aYc20Dr5E4kn-fZfoft1rkir6ARLkeIWuRx_2luTuiTkePDOhKFyYHJMOrqGkYs71Nq93UvSXVZq7zPRTimXTyCTiBBui4ISFwMaY17GUgBJSaveS-_sW3Fn7-2yqmxeXvQvsiKTTfbLCHDWbK7N30hsUlWxAggn206x8L2TzhRgxME01XdEwOwYeYbBY18zHAaD9ehyxyuGP9Ec6EO2iyN_hOuj0Vv_nRGUWhxOjPuHg4lKqGFi3_U6s63t4M7SgmV-g4s2XLtQyNiUhTXoaeC8bTc_1-Otys3eAfZ4uZlGxRHMjINyTyLn.js:752:3770)
+    at a (https://static.whatsapp.net/rsrc.php/v4iSzK4/yN/l/en_GB-j/sVmPQYGHrIfj99JXV2aYc20Dr5E4kn-fZfoft1rkir6ARLkeIWuRx_2luTuiTkePDOhKFyYHJMOrqGkYs71Nq93UvSXVZq7zPRTimXTyCTiBBui4ISFwMaY17GUgBJSaveS-_sW3Fn7-2yqmxeXvQvsiKTTfbLCHDWbK7N30hsUlWxAggn206x8L2TzhRgxME01XdEwOwYeYbBY18zHAaD9ehyxyuGP9Ec6EO2iyN_hOuj0Vv_nRGUWhxOjPuHg4lKqGFi3_U6s63t4M7SgmV-g4s2XLtQyNiUhTXoaeC8bTc_1-Otys3eAfZ4uZlGxRHMjINyTyLn.js:754:864)
+    at i.initialize (https://static.whatsapp.net/rsrc.php/v4iPDX4/y9/l/en_GB-j/u1Kur6k7-HV.js:2136:23590)
+    at w (https://static.whatsapp.net/rsrc.php/v4iPDX4/y9/l/en_GB-j/u1Kur6k7-HV.js:2142:7748)
+    at c (https://static.whatsapp.net/rsrc.php/v4iovV4/yL/l/en_GB-j/uRYuo6idfK-Dmyw9kb76vUJvUFT-HZ93ZA60doeyVO844LOmBnn-uVPscelSW-8QpSUTUDQ6Xg6Ic.js:1849:2835)
+    at L (https://static.whatsapp.net/rsrc.php/v4iovV4/yL/l/en_GB-j/uRYuo6idfK-Dmyw9kb76vUJvUFT-HZ93ZA60doeyVO844LOmBnn-uVPscelSW-8QpSUTUDQ6Xg6Ic.js:1849:5227)
+[2026-09-20T04:49:24.535Z] [info] POST /api/wa/connect called
+[2026-09-20T04:49:24.536Z] [info] WhatsApp initialization started
+[2026-09-20T04:49:29.281Z] [info] WhatsApp authentication completed
+[2026-09-20T04:49:29.801Z] [info] WhatsApp Client is ready
+[2026-09-20T04:50:27.116Z] [info] Send requested: contacts=1, templateLen=9, media=no
+[2026-09-20T04:50:27.369Z] [info] Sending to 129240028709079@lid (name=raghav)
+[2026-09-20T04:50:27.415Z] [info] Sent to 129240028709079@lid (name=raghav)
+[2026-09-20T04:50:51.444Z] [info] Send requested: contacts=1, templateLen=7, media=no
+[2026-09-20T04:50:51.739Z] [info] Sending to 74831349448855@lid (name=viji)
+[2026-09-20T04:50:51.763Z] [info] Sent to 74831349448855@lid (name=viji)
+[2026-09-20T04:51:07.594Z] [info] Send requested: contacts=1, templateLen=9, media=no
+[2026-09-20T04:51:07.918Z] [info] Sending to 95876739559532@lid (name=suresh)
+[2026-09-20T04:51:07.939Z] [info] Sent to 95876739559532@lid (name=suresh)
+[2026-09-20T04:51:19.240Z] [info] Send requested: contacts=1, templateLen=9, media=no
+[2026-09-20T04:51:19.484Z] [info] Sending to 80921529155651@lid (name=jaipal)
+[2026-09-20T04:51:19.510Z] [info] Sent to 80921529155651@lid (name=jaipal)
+[2026-09-20T04:51:30.524Z] [info] Send requested: contacts=4, templateLen=9, media=no
+[2026-09-20T04:51:30.807Z] [info] Sending to 129240028709079@lid (name=raghav)
+[2026-09-20T04:51:30.826Z] [info] Sent to 129240028709079@lid (name=raghav)
+[2026-09-20T04:51:34.119Z] [info] Sending to 74831349448855@lid (name=viji)
+[2026-09-20T04:51:34.139Z] [info] Sent to 74831349448855@lid (name=viji)
+[2026-09-20T04:51:37.477Z] [info] Sending to 95876739559532@lid (name=suresh)
+[2026-09-20T04:51:37.500Z] [info] Sent to 95876739559532@lid (name=suresh)
+[2026-09-20T04:51:40.751Z] [info] Sending to 80921529155651@lid (name=jaipal)
+[2026-09-20T04:51:40.767Z] [info] Sent to 80921529155651@lid (name=jaipal)
+[2026-09-20T04:52:07.055Z] [info] Send requested: contacts=1, templateLen=9, media=yes
+[2026-09-20T04:52:07.307Z] [info] Sending to 129240028709079@lid (name=raghav)
+[2026-09-20T04:52:10.570Z] [error] Send error to 919566085621@c.us (name=raghav): Error: Data passed to getter must include an id property (it's how we memoize) but got undefined
+s (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:84:180)
+    at #evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\ExecutionContext.js:391:56)
+    at async ExecutionContext.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\ExecutionContext.js:277:16)
+    at async IsolatedWorld.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\IsolatedWorld.js:100:16)
+    at async CdpFrame.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Frame.js:362:20)
+    at async CdpPage.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Page.js:830:20)
+    at async Client.sendMessage (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:1533:25)
+    at async E:\code_base\BrickBloom_Git\BrickBloom\server.js:384:9
+    at i (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:113:348)
+    at l (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:113:124)
+    at <anonymous> (https://static.whatsapp.net/rsrc.php/v4iPDX4/y9/l/en_GB-j/u1Kur6k7-HV.js:1759:3741)
+    at t (https://static.whatsapp.net/rsrc.php/v4iSzK4/yN/l/en_GB-j/sVmPQYGHrIfj99JXV2aYc20Dr5E4kn-fZfoft1rkir6ARLkeIWuRx_2luTuiTkePDOhKFyYHJMOrqGkYs71Nq93UvSXVZq7zPRTimXTyCTiBBui4ISFwMaY17GUgBJSaveS-_sW3Fn7-2yqmxeXvQvsiKTTfbLCHDWbK7N30hsUlWxAggn206x8L2TzhRgxME01XdEwOwYeYbBY18zHAaD9ehyxyuGP9Ec6EO2iyN_hOuj0Vv_nRGUWhxOjPuHg4lKqGFi3_U6s63t4M7SgmV-g4s2XLtQyNiUhTXoaeC8bTc_1-Otys3eAfZ4uZlGxRHMjINyTyLn.js:752:3770)
+    at a (https://static.whatsapp.net/rsrc.php/v4iSzK4/yN/l/en_GB-j/sVmPQYGHrIfj99JXV2aYc20Dr5E4kn-fZfoft1rkir6ARLkeIWuRx_2luTuiTkePDOhKFyYHJMOrqGkYs71Nq93UvSXVZq7zPRTimXTyCTiBBui4ISFwMaY17GUgBJSaveS-_sW3Fn7-2yqmxeXvQvsiKTTfbLCHDWbK7N30hsUlWxAggn206x8L2TzhRgxME01XdEwOwYeYbBY18zHAaD9ehyxyuGP9Ec6EO2iyN_hOuj0Vv_nRGUWhxOjPuHg4lKqGFi3_U6s63t4M7SgmV-g4s2XLtQyNiUhTXoaeC8bTc_1-Otys3eAfZ4uZlGxRHMjINyTyLn.js:754:864)
+    at i.initialize (https://static.whatsapp.net/rsrc.php/v4iPDX4/y9/l/en_GB-j/u1Kur6k7-HV.js:2136:23590)
+    at w (https://static.whatsapp.net/rsrc.php/v4iPDX4/y9/l/en_GB-j/u1Kur6k7-HV.js:2142:7748)
+    at c (https://static.whatsapp.net/rsrc.php/v4iovV4/yL/l/en_GB-j/uRYuo6idfK-Dmyw9kb76vUJvUFT-HZ93ZA60doeyVO844LOmBnn-uVPscelSW-8QpSUTUDQ6Xg6Ic.js:1849:2835)
+    at L (https://static.whatsapp.net/rsrc.php/v4iovV4/yL/l/en_GB-j/uRYuo6idfK-Dmyw9kb76vUJvUFT-HZ93ZA60doeyVO844LOmBnn-uVPscelSW-8QpSUTUDQ6Xg6Ic.js:1849:5227)
+[2026-09-20T04:53:26.167Z] [info] POST /api/wa/connect called
+[2026-09-20T04:53:26.168Z] [info] WhatsApp initialization started
+[2026-09-20T04:53:29.042Z] [error] WhatsApp Init Error: Error: net::ERR_NETWORK_CHANGED at https://web.whatsapp.com/
+    at navigate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\Frame.js:184:27)
+    at async Deferred.race (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\util\Deferred.js:36:20)
+    at async CdpFrame.goto (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\Frame.js:150:25)
+    at async CdpPage.goto (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Page.js:580:20)
+    at async Client.initialize (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:487:9)
+[2026-09-20T04:53:50.882Z] [info] POST /api/wa/connect called
+[2026-09-20T04:53:50.882Z] [info] WhatsApp initialization started
+[2026-09-20T04:53:50.939Z] [error] WhatsApp Init Error: Error: The browser is already running for E:\code_base\BrickBloom_Git\BrickBloom\.wwebjs_auth\session-brickbloom. Use a different `userDataDir` or stop the running browser first.
+    at ChromeLauncher.launch (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\node\BrowserLauncher.js:175:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async Client.initialize (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:462:23)
+[2026-09-20T04:54:08.277Z] [info] POST /api/wa/connect called
+[2026-09-20T04:54:08.278Z] [info] WhatsApp initialization started
+[2026-09-20T04:54:12.725Z] [info] WhatsApp authentication completed
+[2026-09-20T04:54:50.501Z] [info] POST /api/wa/connect called
+[2026-09-20T04:54:50.502Z] [info] WhatsApp initialization started
+[2026-09-20T04:54:54.538Z] [info] WhatsApp authentication completed
+[2026-09-20T04:54:55.409Z] [info] WhatsApp Client is ready
+[2026-09-20T05:07:16.909Z] [info] Send requested: contacts=1, templateLen=9, media=yes
+[2026-09-20T05:07:16.914Z] [error] Send error to 919566085621@c.us (name=raghav): Error: Attempted to use detached Frame '69ADDD069FFDBDE97757A6CB36C4EBED'.
+    at CdpFrame.<anonymous> (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\util\decorators.js:107:23)
+    at CdpPage.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Page.js:830:43)
+    at Client.getNumberId (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:2229:35)
+    at E:\code_base\BrickBloom_Git\BrickBloom\server.js:377:41
+    at Layer.handle [as handle_request] (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\express\lib\router\layer.js:95:5)
+    at E:\code_base\BrickBloom_Git\BrickBloom\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\express\lib\router\index.js:280:10)
+    at serveStatic (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\serve-static\index.js:75:16)
+    at Layer.handle [as handle_request] (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\express\lib\router\index.js:328:13)
+    at E:\code_base\BrickBloom_Git\BrickBloom\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\express\lib\router\index.js:346:12)
+[2026-09-20T05:08:50.703Z] [info] POST /api/wa/connect called
+[2026-09-20T05:08:50.705Z] [info] WhatsApp initialization started
+[2026-09-20T05:08:55.128Z] [info] WhatsApp authentication completed
+[2026-09-20T05:08:55.298Z] [info] WhatsApp Client is ready
+[2026-09-20T05:10:19.585Z] [warn] Resetting WhatsApp client: WhatsApp browser session is no longer active. Please reconnect.
+[2026-09-20T05:10:34.157Z] [info] POST /api/wa/connect called
+[2026-09-20T05:10:34.160Z] [info] WhatsApp initialization started
+[2026-09-20T05:10:39.210Z] [info] WhatsApp authentication completed
+[2026-09-20T05:12:23.562Z] [info] POST /api/wa/connect called
+[2026-09-20T05:12:23.574Z] [info] WhatsApp initialization started
+[2026-09-20T05:12:28.922Z] [info] WhatsApp authentication completed
+[2026-09-20T08:15:04.265Z] [info] POST /api/wa/connect called
+[2026-09-20T08:15:04.266Z] [info] WhatsApp initialization started
+[2026-09-20T08:15:10.246Z] [info] WhatsApp authentication completed
+[2026-09-20T08:15:11.391Z] [info] WhatsApp Client is ready
+[2026-09-20T08:23:48.597Z] [info] POST /api/wa/connect called
+[2026-09-20T08:23:48.599Z] [info] WhatsApp initialization started
+[2026-09-20T08:23:53.171Z] [info] WhatsApp authentication completed
+[2026-09-20T08:23:53.918Z] [info] WhatsApp Client is ready
+[2026-09-20T08:24:48.124Z] [info] POST /api/wa/connect called
+[2026-09-20T08:24:48.125Z] [info] WhatsApp initialization started
+[2026-09-20T08:24:53.121Z] [info] WhatsApp authentication completed
+[2026-09-20T08:24:53.179Z] [info] WhatsApp Client is ready
+[2026-09-20T08:25:51.025Z] [warn] Resetting WhatsApp client: WhatsApp browser session is no longer active. Please reconnect.
+[2026-09-20T08:26:50.900Z] [info] POST /api/wa/connect called
+[2026-09-20T08:26:50.902Z] [info] WhatsApp initialization started
+[2026-09-20T08:26:54.310Z] [info] WhatsApp authentication completed
+[2026-09-20T08:26:54.372Z] [info] WhatsApp Client is ready
+[2026-09-20T08:27:22.178Z] [warn] Resetting WhatsApp client: WhatsApp browser session is no longer active. Please reconnect.
+[2026-09-20T08:28:04.928Z] [info] POST /api/wa/connect called
+[2026-09-20T08:28:04.930Z] [info] WhatsApp initialization started
+[2026-09-20T08:28:08.796Z] [info] WhatsApp authentication completed
+[2026-09-20T08:28:08.858Z] [info] WhatsApp Client is ready
+[2026-09-20T08:28:20.937Z] [info] Send requested: contacts=1, templateLen=19, media=no
+[2026-09-20T08:28:21.210Z] [error] Send error to 910000000000@c.us (name=invalid-text): Error: The number 910000000000 is not registered on WhatsApp
+    at E:\code_base\BrickBloom_Git\BrickBloom\server.js:410:15
+[2026-09-20T08:28:21.230Z] [info] Send requested: contacts=1, templateLen=25, media=yes
+[2026-09-20T08:28:21.604Z] [error] Send error to 910000000000@c.us (name=invalid-media): Error: The number 910000000000 is not registered on WhatsApp
+    at E:\code_base\BrickBloom_Git\BrickBloom\server.js:410:15
+[2026-09-20T08:28:34.258Z] [info] POST /api/wa/connect called
+[2026-09-20T08:28:34.258Z] [info] WhatsApp initialization started
+[2026-09-20T08:28:38.599Z] [info] WhatsApp authentication completed
+[2026-09-20T08:28:38.660Z] [info] WhatsApp Client is ready
+[2026-09-20T08:29:34.634Z] [info] POST /api/wa/connect called
+[2026-09-20T08:29:34.634Z] [info] WhatsApp initialization started
+[2026-09-20T08:29:38.492Z] [info] WhatsApp authentication completed
+[2026-09-20T08:29:38.551Z] [info] WhatsApp Client is ready
+[2026-09-20T08:29:52.673Z] [info] Send requested: contacts=1, templateLen=9, media=yes
+[2026-09-20T08:29:53.164Z] [info] Sending to 129240028709079@lid (name=raghav)
+[2026-09-20T08:29:54.533Z] [error] Send error to 919566085621@c.us (name=raghav): Error: Data passed to getter must include an id property (it's how we memoize) but got undefined
+s (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:84:180)
+    at #evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\ExecutionContext.js:391:56)
+    at async ExecutionContext.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\ExecutionContext.js:277:16)
+    at async IsolatedWorld.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\IsolatedWorld.js:100:16)
+    at async CdpFrame.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Frame.js:362:20)
+    at async CdpPage.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Page.js:830:20)
+    at async Client.sendMessage (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:1533:25)
+    at async E:\code_base\BrickBloom_Git\BrickBloom\server.js:417:9
+    at i (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:113:348)
+    at l (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:113:124)
+    at <anonymous> (https://static.whatsapp.net/rsrc.php/v4iPDX4/y9/l/en_GB-j/u1Kur6k7-HV.js:1759:3741)
+    at t (https://static.whatsapp.net/rsrc.php/v4iSzK4/yN/l/en_GB-j/sVmPQYGHrIfj99JXV2aYc20Dr5E4kn-fZfoft1rkir6ARLkeIWuRx_2luTuiTkePDOhKFyYHJMOrqGkYs71Nq93UvSXVZq7zPRTimXTyCTiBBui4ISFwMaY17GUgBJSaveS-_sW3Fn7-2yqmxeXvQvsiKTTfbLCHDWbK7N30hsUlWxAggn206x8L2TzhRgxME01XdEwOwYeYbBY18zHAaD9ehyxyuGP9Ec6EO2iyN_hOuj0Vv_nRGUWhxOjPuHg4lKqGFi3_U6s63t4M7SgmV-g4s2XLtQyNiUhTXoaeC8bTc_1-Otys3eAfZ4uZlGxRHMjINyTyLn.js:752:3770)
+    at a (https://static.whatsapp.net/rsrc.php/v4iSzK4/yN/l/en_GB-j/sVmPQYGHrIfj99JXV2aYc20Dr5E4kn-fZfoft1rkir6ARLkeIWuRx_2luTuiTkePDOhKFyYHJMOrqGkYs71Nq93UvSXVZq7zPRTimXTyCTiBBui4ISFwMaY17GUgBJSaveS-_sW3Fn7-2yqmxeXvQvsiKTTfbLCHDWbK7N30hsUlWxAggn206x8L2TzhRgxME01XdEwOwYeYbBY18zHAaD9ehyxyuGP9Ec6EO2iyN_hOuj0Vv_nRGUWhxOjPuHg4lKqGFi3_U6s63t4M7SgmV-g4s2XLtQyNiUhTXoaeC8bTc_1-Otys3eAfZ4uZlGxRHMjINyTyLn.js:754:864)
+    at i.initialize (https://static.whatsapp.net/rsrc.php/v4iPDX4/y9/l/en_GB-j/u1Kur6k7-HV.js:2136:23590)
+    at w (https://static.whatsapp.net/rsrc.php/v4iPDX4/y9/l/en_GB-j/u1Kur6k7-HV.js:2142:7748)
+    at c (https://static.whatsapp.net/rsrc.php/v4iovV4/yL/l/en_GB-j/uRYuo6idfK-Dmyw9kb76vUJvUFT-HZ93ZA60doeyVO844LOmBnn-uVPscelSW-8QpSUTUDQ6Xg6Ic.js:1849:2835)
+    at L (https://static.whatsapp.net/rsrc.php/v4iovV4/yL/l/en_GB-j/uRYuo6idfK-Dmyw9kb76vUJvUFT-HZ93ZA60doeyVO844LOmBnn-uVPscelSW-8QpSUTUDQ6Xg6Ic.js:1849:5227)
+[2026-09-20T08:42:42.387Z] [info] POST /api/wa/connect called
+[2026-09-20T08:42:42.387Z] [info] WhatsApp initialization started
+[2026-09-20T08:42:46.706Z] [info] WhatsApp authentication completed
+[2026-09-20T08:42:46.817Z] [info] WhatsApp Client is ready
+[2026-09-20T08:44:37.088Z] [info] Send requested: contacts=1, templateLen=34, media=yes
+[2026-09-20T08:44:37.429Z] [info] Sending to 129240028709079@lid (name=raghav)
+[2026-09-20T08:44:39.604Z] [error] Send error to 919566085621@c.us (name=raghav): Error: Data passed to getter must include an id property (it's how we memoize) but got undefined
+s (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:84:180)
+    at #evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\ExecutionContext.js:391:56)
+    at async ExecutionContext.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\ExecutionContext.js:277:16)
+    at async IsolatedWorld.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\IsolatedWorld.js:100:16)
+    at async CdpFrame.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Frame.js:362:20)
+    at async CdpPage.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Page.js:830:20)
+    at async Client.sendMessage (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:1533:25)
+    at async E:\code_base\BrickBloom_Git\BrickBloom\server.js:417:9
+    at i (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:113:348)
+    at l (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:113:124)
+    at <anonymous> (https://static.whatsapp.net/rsrc.php/v4iPDX4/y9/l/en_GB-j/u1Kur6k7-HV.js:1759:3741)
+    at t (https://static.whatsapp.net/rsrc.php/v4iSzK4/yN/l/en_GB-j/sVmPQYGHrIfj99JXV2aYc20Dr5E4kn-fZfoft1rkir6ARLkeIWuRx_2luTuiTkePDOhKFyYHJMOrqGkYs71Nq93UvSXVZq7zPRTimXTyCTiBBui4ISFwMaY17GUgBJSaveS-_sW3Fn7-2yqmxeXvQvsiKTTfbLCHDWbK7N30hsUlWxAggn206x8L2TzhRgxME01XdEwOwYeYbBY18zHAaD9ehyxyuGP9Ec6EO2iyN_hOuj0Vv_nRGUWhxOjPuHg4lKqGFi3_U6s63t4M7SgmV-g4s2XLtQyNiUhTXoaeC8bTc_1-Otys3eAfZ4uZlGxRHMjINyTyLn.js:752:3770)
+    at a (https://static.whatsapp.net/rsrc.php/v4iSzK4/yN/l/en_GB-j/sVmPQYGHrIfj99JXV2aYc20Dr5E4kn-fZfoft1rkir6ARLkeIWuRx_2luTuiTkePDOhKFyYHJMOrqGkYs71Nq93UvSXVZq7zPRTimXTyCTiBBui4ISFwMaY17GUgBJSaveS-_sW3Fn7-2yqmxeXvQvsiKTTfbLCHDWbK7N30hsUlWxAggn206x8L2TzhRgxME01XdEwOwYeYbBY18zHAaD9ehyxyuGP9Ec6EO2iyN_hOuj0Vv_nRGUWhxOjPuHg4lKqGFi3_U6s63t4M7SgmV-g4s2XLtQyNiUhTXoaeC8bTc_1-Otys3eAfZ4uZlGxRHMjINyTyLn.js:754:864)
+    at i.initialize (https://static.whatsapp.net/rsrc.php/v4iPDX4/y9/l/en_GB-j/u1Kur6k7-HV.js:2136:23590)
+    at w (https://static.whatsapp.net/rsrc.php/v4iPDX4/y9/l/en_GB-j/u1Kur6k7-HV.js:2142:7748)
+    at c (https://static.whatsapp.net/rsrc.php/v4iovV4/yL/l/en_GB-j/uRYuo6idfK-Dmyw9kb76vUJvUFT-HZ93ZA60doeyVO844LOmBnn-uVPscelSW-8QpSUTUDQ6Xg6Ic.js:1849:2835)
+    at L (https://static.whatsapp.net/rsrc.php/v4iovV4/yL/l/en_GB-j/uRYuo6idfK-Dmyw9kb76vUJvUFT-HZ93ZA60doeyVO844LOmBnn-uVPscelSW-8QpSUTUDQ6Xg6Ic.js:1849:5227)
+[2026-09-20T08:45:39.445Z] [info] POST /api/wa/connect called
+[2026-09-20T08:45:39.446Z] [info] WhatsApp initialization started
+[2026-09-20T08:45:43.742Z] [info] WhatsApp authentication completed
+[2026-09-20T08:45:43.827Z] [info] WhatsApp Client is ready
+[2026-09-20T08:46:01.329Z] [info] Send requested: contacts=1, templateLen=34, media=yes
+[2026-09-20T08:46:01.745Z] [info] Sending to 129240028709079@lid (name=raghav)
+[2026-09-20T08:46:03.291Z] [error] Send error to 919566085621@c.us (name=raghav): Error: Data passed to getter must include an id property (it's how we memoize) but got undefined
+s (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:84:180)
+    at #evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\ExecutionContext.js:391:56)
+    at async ExecutionContext.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\ExecutionContext.js:277:16)
+    at async IsolatedWorld.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\IsolatedWorld.js:100:16)
+    at async CdpFrame.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Frame.js:362:20)
+    at async CdpPage.evaluate (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Page.js:830:20)
+    at async Client.sendMessage (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:1533:25)
+    at async E:\code_base\BrickBloom_Git\BrickBloom\server.js:417:9
+    at i (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:113:348)
+    at l (https://static.whatsapp.net/rsrc.php/v4/yL/r/6-eerGMZKhM.js:113:124)
+    at <anonymous> (https://static.whatsapp.net/rsrc.php/v4iPDX4/y9/l/en_GB-j/u1Kur6k7-HV.js:1759:3741)
+    at t (https://static.whatsapp.net/rsrc.php/v4iSzK4/yN/l/en_GB-j/sVmPQYGHrIfj99JXV2aYc20Dr5E4kn-fZfoft1rkir6ARLkeIWuRx_2luTuiTkePDOhKFyYHJMOrqGkYs71Nq93UvSXVZq7zPRTimXTyCTiBBui4ISFwMaY17GUgBJSaveS-_sW3Fn7-2yqmxeXvQvsiKTTfbLCHDWbK7N30hsUlWxAggn206x8L2TzhRgxME01XdEwOwYeYbBY18zHAaD9ehyxyuGP9Ec6EO2iyN_hOuj0Vv_nRGUWhxOjPuHg4lKqGFi3_U6s63t4M7SgmV-g4s2XLtQyNiUhTXoaeC8bTc_1-Otys3eAfZ4uZlGxRHMjINyTyLn.js:752:3770)
+    at a (https://static.whatsapp.net/rsrc.php/v4iSzK4/yN/l/en_GB-j/sVmPQYGHrIfj99JXV2aYc20Dr5E4kn-fZfoft1rkir6ARLkeIWuRx_2luTuiTkePDOhKFyYHJMOrqGkYs71Nq93UvSXVZq7zPRTimXTyCTiBBui4ISFwMaY17GUgBJSaveS-_sW3Fn7-2yqmxeXvQvsiKTTfbLCHDWbK7N30hsUlWxAggn206x8L2TzhRgxME01XdEwOwYeYbBY18zHAaD9ehyxyuGP9Ec6EO2iyN_hOuj0Vv_nRGUWhxOjPuHg4lKqGFi3_U6s63t4M7SgmV-g4s2XLtQyNiUhTXoaeC8bTc_1-Otys3eAfZ4uZlGxRHMjINyTyLn.js:754:864)
+    at i.initialize (https://static.whatsapp.net/rsrc.php/v4iPDX4/y9/l/en_GB-j/u1Kur6k7-HV.js:2136:23590)
+    at w (https://static.whatsapp.net/rsrc.php/v4iPDX4/y9/l/en_GB-j/u1Kur6k7-HV.js:2142:7748)
+    at c (https://static.whatsapp.net/rsrc.php/v4iovV4/yL/l/en_GB-j/uRYuo6idfK-Dmyw9kb76vUJvUFT-HZ93ZA60doeyVO844LOmBnn-uVPscelSW-8QpSUTUDQ6Xg6Ic.js:1849:2835)
+    at L (https://static.whatsapp.net/rsrc.php/v4iovV4/yL/l/en_GB-j/uRYuo6idfK-Dmyw9kb76vUJvUFT-HZ93ZA60doeyVO844LOmBnn-uVPscelSW-8QpSUTUDQ6Xg6Ic.js:1849:5227)
+[2026-09-20T08:53:17.436Z] [info] POST /api/wa/connect called
+[2026-09-20T08:53:17.436Z] [info] WhatsApp initialization started
+[2026-09-20T08:53:22.362Z] [info] WhatsApp authentication completed
+[2026-09-20T08:53:22.988Z] [info] WhatsApp Client is ready
+[2026-09-20T08:53:36.548Z] [info] Send requested: contacts=1, templateLen=34, media=yes
+[2026-09-20T08:53:36.835Z] [info] Sending to 129240028709079@lid (name=raghav)
+[2026-09-20T08:53:38.523Z] [info] Sent to 129240028709079@lid (name=raghav)
+[2026-09-20T08:53:47.887Z] [info] Send requested: contacts=3, templateLen=34, media=yes
+[2026-09-20T08:53:48.202Z] [info] Sending to 74831349448855@lid (name=viji)
+[2026-09-20T08:53:48.812Z] [info] Sent to 74831349448855@lid (name=viji)
+[2026-09-20T08:53:52.278Z] [info] Sending to 95876739559532@lid (name=suresh)
+[2026-09-20T08:53:53.052Z] [info] Sent to 95876739559532@lid (name=suresh)
+[2026-09-20T08:53:56.396Z] [info] Sending to 80921529155651@lid (name=jaipal)
+[2026-09-20T08:53:57.041Z] [info] Sent to 80921529155651@lid (name=jaipal)
+[2026-09-20T08:56:26.440Z] [info] POST /api/wa/connect called
+[2026-09-20T08:56:26.441Z] [info] WhatsApp initialization started
+[2026-09-20T08:56:29.894Z] [info] WhatsApp authentication completed
+[2026-09-20T08:56:29.951Z] [info] WhatsApp Client is ready
+[2026-09-20T08:56:50.074Z] [info] WhatsApp authentication completed
+[2026-09-20T08:56:50.092Z] [info] WhatsApp Client is ready
+[2026-09-20T08:56:51.737Z] [warn] WhatsApp client disconnected
+[2026-09-20T09:00:01.614Z] [info] POST /api/wa/connect called
+[2026-09-20T09:00:01.615Z] [info] WhatsApp initialization started
+[2026-09-20T09:00:05.020Z] [info] QR generated for scanning
+[2026-09-20T09:01:03.080Z] [info] WhatsApp authentication completed
+[2026-09-20T09:01:03.503Z] [info] WhatsApp Client is ready
+[2026-09-20T09:02:36.027Z] [info] Send requested: contacts=1, templateLen=349, media=yes
+[2026-09-20T09:02:36.300Z] [info] Sending to 129240028709079@lid (name=raghav)
+[2026-09-20T09:02:41.137Z] [info] Sent to 129240028709079@lid (name=raghav)
+[2026-09-20T09:03:05.864Z] [info] Send requested: contacts=1, templateLen=347, media=yes
+[2026-09-20T09:03:06.371Z] [info] Sending to 74831349448855@lid (name=viji)
+[2026-09-20T09:03:07.509Z] [info] Sent to 74831349448855@lid (name=viji)
+[2026-09-20T09:03:17.163Z] [info] Send requested: contacts=1, templateLen=349, media=yes
+[2026-09-20T09:03:17.537Z] [info] Sending to 95876739559532@lid (name=suresh)
+[2026-09-20T09:03:18.501Z] [info] Sent to 95876739559532@lid (name=suresh)
+[2026-09-20T09:03:42.524Z] [info] Send requested: contacts=1, templateLen=349, media=yes
+[2026-09-20T09:03:42.826Z] [info] Sending to 80921529155651@lid (name=jaipal)
+[2026-09-20T09:03:43.708Z] [info] Sent to 80921529155651@lid (name=jaipal)
+[2026-09-20T09:06:06.999Z] [info] POST /api/wa/connect called
+[2026-09-20T09:06:07.001Z] [info] WhatsApp initialization started
+[2026-09-20T09:06:10.780Z] [info] WhatsApp authentication completed
+[2026-09-20T09:07:34.854Z] [info] POST /api/wa/connect called
+[2026-09-20T09:07:34.855Z] [info] WhatsApp initialization started
+[2026-09-20T09:07:38.364Z] [info] WhatsApp authentication completed
+[2026-09-20T09:08:14.021Z] [info] POST /api/wa/connect called
+[2026-09-20T09:08:14.022Z] [info] WhatsApp initialization started
+[2026-09-20T09:08:17.682Z] [info] WhatsApp authentication completed
+[2026-09-20T09:10:24.758Z] [info] POST /api/wa/connect called
+[2026-09-20T09:10:24.759Z] [info] WhatsApp initialization started
+[2026-09-20T09:10:28.216Z] [info] WhatsApp authentication completed
+[2026-09-20T09:13:37.243Z] [info] POST /api/wa/connect called
+[2026-09-20T09:13:37.244Z] [info] WhatsApp initialization started
+[2026-09-20T09:13:42.070Z] [info] QR generated for scanning
+[2026-09-20T09:14:39.029Z] [info] WhatsApp authentication completed
+[2026-09-20T09:15:15.308Z] [info] POST /api/wa/connect called
+[2026-09-20T09:15:15.308Z] [info] WhatsApp initialization started
+[2026-09-20T09:15:25.372Z] [info] WhatsApp authentication completed
+[2026-09-20T09:15:25.678Z] [info] WhatsApp Client is ready
+[2026-09-20T09:15:39.503Z] [info] Send requested: contacts=4, templateLen=349, media=yes
+[2026-09-20T09:15:39.838Z] [info] Sending to 129240028709079@lid (name=raghav)
+[2026-09-20T09:15:43.312Z] [info] Sent to 129240028709079@lid (name=raghav)
+[2026-09-20T09:15:46.619Z] [info] Sending to 74831349448855@lid (name=viji)
+[2026-09-20T09:15:49.517Z] [info] Sent to 74831349448855@lid (name=viji)
+[2026-09-20T09:15:52.867Z] [info] Sending to 95876739559532@lid (name=suresh)
+[2026-09-20T09:15:55.777Z] [info] Sent to 95876739559532@lid (name=suresh)
+[2026-09-20T09:15:59.160Z] [info] Sending to 80921529155651@lid (name=jaipal)
+[2026-09-20T09:16:02.015Z] [info] Sent to 80921529155651@lid (name=jaipal)
+[2026-09-20T09:20:01.188Z] [info] POST /api/wa/connect called
+[2026-09-20T09:20:01.190Z] [info] WhatsApp initialization started
+[2026-09-20T09:20:05.097Z] [info] WhatsApp authentication completed
+[2026-09-20T09:20:31.196Z] [warn] Resetting WhatsApp client: WhatsApp initialization timed out. Please scan a fresh QR code.
+[2026-09-20T09:21:14.582Z] [info] POST /api/wa/connect called
+[2026-09-20T09:21:14.582Z] [info] WhatsApp initialization started
+[2026-09-20T09:21:17.961Z] [info] QR generated for scanning
+[2026-09-20T09:24:43.482Z] [info] POST /api/wa/connect called
+[2026-09-20T09:24:43.483Z] [info] WhatsApp initialization started
+[2026-09-20T09:24:55.605Z] [info] QR generated for scanning
+[2026-09-20T10:03:50.137Z] [info] POST /api/wa/connect called
+[2026-09-20T10:03:50.138Z] [info] WhatsApp initialization started
+[2026-09-20T10:04:00.275Z] [error] WhatsApp Init Error: auth timeout
+[2026-09-20T10:04:01.562Z] [info] POST /api/wa/connect called
+[2026-09-20T10:04:01.562Z] [info] WhatsApp initialization started
+[2026-09-20T10:04:31.564Z] [warn] Resetting WhatsApp client: WhatsApp initialization timed out. Please scan a fresh QR code.
+[2026-09-20T10:05:27.423Z] [info] POST /api/wa/connect called
+[2026-09-20T10:05:27.423Z] [info] WhatsApp initialization started
+[2026-09-20T10:05:39.486Z] [info] QR generated for scanning
+[2026-09-20T10:08:06.233Z] [info] POST /api/wa/connect called
+[2026-09-20T10:08:06.234Z] [info] WhatsApp initialization started
+[2026-09-20T10:08:09.528Z] [info] QR generated for scanning
+[2026-09-20T10:08:34.437Z] [info] WhatsApp authentication completed
+[2026-09-20T10:08:35.006Z] [info] WhatsApp Client is ready
+[2026-09-20T10:09:01.282Z] [info] POST /api/wa/connect called
+[2026-09-20T10:09:01.284Z] [info] WhatsApp initialization started
+[2026-09-20T10:09:07.048Z] [info] WhatsApp authentication completed
+[2026-09-20T10:09:27.409Z] [info] WhatsApp authentication completed
+[2026-09-20T10:09:31.291Z] [warn] Resetting WhatsApp client: WhatsApp initialization timed out. Please scan a fresh QR code.
+[2026-09-20T10:10:06.144Z] [info] POST /api/wa/connect called
+[2026-09-20T10:10:06.145Z] [info] WhatsApp initialization started
+[2026-09-20T10:10:11.793Z] [info] WhatsApp authentication completed
+[2026-09-20T10:10:18.667Z] [info] WhatsApp authentication completed
+[2026-09-20T10:10:36.145Z] [warn] Resetting WhatsApp client: WhatsApp initialization timed out. Please scan a fresh QR code.
+[2026-09-20T10:11:29.524Z] [info] POST /api/wa/connect called
+[2026-09-20T10:11:29.524Z] [info] WhatsApp initialization started
+[2026-09-20T10:11:43.454Z] [error] WhatsApp Init Error: Error: Waiting failed
+    at <instance_members_initializer> (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\common\WaitTask.js:24:21)
+    at new WaitTask (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\common\WaitTask.js:30:16)
+    at IsolatedWorld.waitForFunction (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Realm.js:25:26)
+    at CdpFrame.waitForFunction (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Frame.js:583:43)
+    at CdpFrame.<anonymous> (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\util\decorators.js:109:27)
+    at CdpPage.waitForFunction (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Page.js:1451:37)
+    at Client.inject (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:139:55)
+    at async Client.initialize (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:537:9)
+[2026-09-20T10:11:48.541Z] [info] POST /api/wa/connect called
+[2026-09-20T10:11:48.542Z] [info] WhatsApp initialization started
+[2026-09-20T10:11:51.707Z] [info] WhatsApp authentication completed
+[2026-09-20T10:11:51.929Z] [info] WhatsApp Client is ready
+[2026-09-20T10:12:05.481Z] [warn] Resetting WhatsApp client: WhatsApp browser session is no longer active. Please reconnect.
+[2026-09-20T10:12:44.444Z] [info] WhatsApp initialization started
+[2026-09-20T10:12:44.444Z] [info] POST /api/wa/connect called
+[2026-09-20T10:12:48.010Z] [info] WhatsApp authentication completed
+[2026-09-20T10:12:48.285Z] [info] WhatsApp Client is ready
+[2026-09-20T10:12:56.042Z] [info] WhatsApp authentication completed
+[2026-09-20T10:12:56.136Z] [info] WhatsApp Client is ready
+[2026-09-20T10:14:59.538Z] [info] POST /api/wa/connect called
+[2026-09-20T10:14:59.539Z] [info] WhatsApp initialization started
+[2026-09-20T10:15:11.340Z] [info] WhatsApp authentication completed
+[2026-09-20T10:15:11.904Z] [info] WhatsApp Client is ready
+[2026-09-20T10:15:34.338Z] [info] POST /api/wa/connect called
+[2026-09-20T10:15:34.339Z] [info] WhatsApp initialization started
+[2026-09-20T10:15:37.867Z] [error] WhatsApp Init Error: Error: Waiting failed
+    at <instance_members_initializer> (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\common\WaitTask.js:24:21)
+    at new WaitTask (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\common\WaitTask.js:30:16)
+    at IsolatedWorld.waitForFunction (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Realm.js:25:26)
+    at CdpFrame.waitForFunction (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Frame.js:583:43)
+    at CdpFrame.<anonymous> (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\util\decorators.js:109:27)
+    at CdpPage.waitForFunction (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Page.js:1451:37)
+    at Client.inject (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:139:55)
+    at async Client.initialize (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:537:9)
+[2026-09-20T10:15:40.545Z] [info] POST /api/wa/connect called
+[2026-09-20T10:15:40.546Z] [info] WhatsApp initialization started
+[2026-09-20T10:15:44.855Z] [info] WhatsApp authentication completed
+[2026-09-20T10:16:10.549Z] [warn] Resetting WhatsApp client: WhatsApp initialization timed out. Please scan a fresh QR code.
+[2026-09-20T10:16:19.313Z] [info] POST /api/wa/connect called
+[2026-09-20T10:16:19.314Z] [info] WhatsApp initialization started
+[2026-09-20T10:16:24.858Z] [info] WhatsApp authentication completed
+[2026-09-20T10:16:29.057Z] [info] WhatsApp authentication completed
+[2026-09-20T10:16:49.323Z] [warn] Resetting WhatsApp client: WhatsApp initialization timed out. Please scan a fresh QR code.
+[2026-09-20T10:18:31.965Z] [info] POST /api/wa/connect called
+[2026-09-20T10:18:31.966Z] [info] WhatsApp initialization started
+[2026-09-20T10:18:36.284Z] [info] QR generated for scanning
+[2026-09-20T10:19:41.763Z] [info] WhatsApp authentication completed
+[2026-09-20T10:19:42.270Z] [info] WhatsApp Client is ready
+[2026-09-20T10:20:36.431Z] [info] Send requested: contacts=1, templateLen=349, media=yes
+[2026-09-20T10:20:36.778Z] [info] Sending to 129240028709079@lid (name=raghav)
+[2026-09-20T10:20:41.726Z] [info] Sent to 129240028709079@lid (name=raghav)
+[2026-09-20T10:20:59.764Z] [info] Send requested: contacts=1, templateLen=347, media=yes
+[2026-09-20T10:21:00.057Z] [info] Sending to 74831349448855@lid (name=viji)
+[2026-09-20T10:21:02.366Z] [info] Sent to 74831349448855@lid (name=viji)
+[2026-09-20T10:21:16.229Z] [info] Send requested: contacts=1, templateLen=349, media=yes
+[2026-09-20T10:21:16.639Z] [info] Sending to 95876739559532@lid (name=suresh)
+[2026-09-20T10:21:17.613Z] [info] Sent to 95876739559532@lid (name=suresh)
+[2026-09-20T10:21:35.522Z] [info] Send requested: contacts=1, templateLen=349, media=yes
+[2026-09-20T10:21:37.105Z] [info] Sending to 80921529155651@lid (name=jaipal)
+[2026-09-20T10:21:38.483Z] [info] Sent to 80921529155651@lid (name=jaipal)
+[2026-09-20T10:21:43.197Z] [info] Send requested: contacts=4, templateLen=349, media=yes
+[2026-09-20T10:21:43.642Z] [info] Sending to 129240028709079@lid (name=raghav)
+[2026-09-20T10:21:44.616Z] [info] Sent to 129240028709079@lid (name=raghav)
+[2026-09-20T10:21:48.032Z] [info] Sending to 74831349448855@lid (name=viji)
+[2026-09-20T10:21:48.946Z] [info] Sent to 74831349448855@lid (name=viji)
+[2026-09-20T10:21:52.291Z] [info] Sending to 95876739559532@lid (name=suresh)
+[2026-09-20T10:21:53.199Z] [info] Sent to 95876739559532@lid (name=suresh)
+[2026-09-20T10:21:56.541Z] [info] Sending to 80921529155651@lid (name=jaipal)
+[2026-09-20T10:21:58.676Z] [info] Sent to 80921529155651@lid (name=jaipal)
+[2026-09-20T10:24:45.442Z] [info] WhatsApp authentication completed
+[2026-09-20T10:24:46.068Z] [info] WhatsApp Client is ready
+[2026-09-20T10:25:09.100Z] [info] Send requested: contacts=6, templateLen=349, media=yes
+[2026-09-20T10:25:09.377Z] [info] Sending to 129240028709079@lid (name=raghav)
+[2026-09-20T10:25:10.343Z] [info] Sent to 129240028709079@lid (name=raghav)
+[2026-09-20T10:25:13.730Z] [info] Sending to 74831349448855@lid (name=viji)
+[2026-09-20T10:25:14.563Z] [info] Sent to 74831349448855@lid (name=viji)
+[2026-09-20T10:25:17.917Z] [info] Sending to 95876739559532@lid (name=suresh)
+[2026-09-20T10:25:18.793Z] [info] Sent to 95876739559532@lid (name=suresh)
+[2026-09-20T10:25:22.136Z] [info] Sending to 80921529155651@lid (name=jaipal)
+[2026-09-20T10:25:22.943Z] [info] Sent to 80921529155651@lid (name=jaipal)
+[2026-09-20T10:25:26.291Z] [info] Sending to 280560333271149@lid (name=Bhanu)
+[2026-09-20T10:25:27.178Z] [info] Sent to 280560333271149@lid (name=Bhanu)
+[2026-09-20T10:25:30.540Z] [info] Sending to 87321013698593@lid (name=kiran)
+[2026-09-20T10:25:31.416Z] [info] Sent to 87321013698593@lid (name=kiran)
+[2026-09-20T17:38:26.832Z] [info] POST /api/wa/connect called
+[2026-09-20T17:38:26.898Z] [info] WhatsApp initialization started
+[2026-09-20T17:38:33.466Z] [error] WhatsApp Init Error: Error: Navigating frame was detached
+    at <instance_members_initializer> (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\LifecycleWatcher.js:36:14)
+    at new LifecycleWatcher (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\LifecycleWatcher.js:40:16)
+    at CdpFrame.goto (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\cdp\Frame.js:149:29)
+    at CdpFrame.<anonymous> (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\util\decorators.js:109:27)
+    at CdpPage.goto (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\puppeteer-core\lib\cjs\puppeteer\api\Page.js:580:43)
+    at Client.initialize (E:\code_base\BrickBloom_Git\BrickBloom\node_modules\whatsapp-web.js\src\Client.js:527:20)
+[2026-09-20T17:38:38.847Z] [info] POST /api/wa/connect called
+[2026-09-20T17:38:38.852Z] [info] WhatsApp initialization started
+[2026-09-20T17:38:45.202Z] [info] WhatsApp authentication completed
+[2026-09-20T17:38:47.961Z] [info] WhatsApp Client is ready
+[2026-09-20T17:38:56.355Z] [info] WhatsApp authentication completed
+[2026-09-20T17:38:56.406Z] [info] WhatsApp Client is ready
+[2026-09-20T17:38:57.481Z] [warn] WhatsApp client disconnected
+[2026-09-20T17:38:57.809Z] [warn] WhatsApp client disconnected
+[2026-09-20T17:38:58.445Z] [warn] WhatsApp client disconnected
+[2026-09-20T17:38:59.733Z] [warn] WhatsApp client disconnected
+[2026-09-20T17:39:00.672Z] [warn] WhatsApp client disconnected
+[2026-09-20T17:39:04.336Z] [warn] WhatsApp client disconnected
+[2026-09-20T17:39:04.562Z] [warn] WhatsApp client disconnected
+[2026-09-20T17:39:05.778Z] [warn] WhatsApp client disconnected
+[2026-09-20T17:39:07.368Z] [warn] WhatsApp client disconnected
+[2026-09-20T17:39:08.494Z] [warn] WhatsApp client disconnected
+[2026-09-20T17:39:11.301Z] [warn] WhatsApp client disconnected
+[2026-09-20T17:39:14.464Z] [warn] WhatsApp client disconnected
+[2026-09-20T17:39:17.836Z] [info] POST /api/wa/connect called
+[2026-09-20T17:39:17.840Z] [info] WhatsApp initialization started
+[2026-09-20T17:39:21.619Z] [info] QR generated for scanning
+[2026-09-20T17:40:26.894Z] [info] WhatsApp authentication completed
+[2026-09-20T17:40:29.181Z] [info] WhatsApp Client is ready
+[2026-09-20T17:41:13.050Z] [info] POST /api/wa/connect called
+[2026-09-20T17:41:13.063Z] [info] WhatsApp initialization started
+[2026-09-20T17:41:25.572Z] [info] WhatsApp authentication completed

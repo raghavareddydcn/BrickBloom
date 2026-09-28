@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#faf6f0"/>
+      <stop offset="100%" stop-color="#e5d8c3"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#2c1a08" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="900" height="600" fill="url(#bg)"/>
+  
+  <!-- Group of Coconut Husk Chips -->
+  <g filter="url(#shadow)" transform="translate(50, 20)">
+    <!-- Chip 1 -->
+    <polygon points="200,200 320,160 380,260 250,300" fill="#a6713c"/>
+    <polygon points="200,200 250,300 230,320 180,220" fill="#6e441c"/>
+    
+    <!-- Chip 2 -->
+    <polygon points="400,180 540,150 580,270 440,290" fill="#c48a50"/>
+    <polygon points="440,290 580,270 560,300 420,315" fill="#7a4b1e"/>
+
+    <!-- Chip 3 (Center) -->
+    <polygon points="300,280 480,240 520,380 340,420" fill="#8c5828"/>
+    <polygon points="300,280 340,420 310,440 270,300" fill="#523211"/>
+
+    <!-- Chip 4 (Front Right) -->
+    <polygon points="500,290 660,260 700,380 540,410" fill="#b37b43"/>
+    <polygon points="540,410 700,380 680,405 520,430" fill="#693d18"/>
+    
+    <!-- Husk Fibers on Chips -->
+    <line x1="330" y1="290" x2="490" y2="390" stroke="#d69d62" stroke-width="3" stroke-linecap="round"/>
+    <line x1="350" y1="310" x2="470" y2="400" stroke="#d69d62" stroke-width="2" stroke-dasharray="8 6"/>
+    <line x1="430" y1="200" x2="560" y2="280" stroke="#e3b27b" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Label -->
+  <rect x="330" y="490" width="240" height="42" rx="21" fill="#0c6a2a"/>
+  <text x="450" y="517" font-family="'Inter', sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="1">COIR HUSK CHIPS</text>
+</svg>

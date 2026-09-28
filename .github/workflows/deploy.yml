@@ -31,8 +31,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload the public/ directory as the site root
-          path: './public'
+          # Publish the repository root so the site is served at the clean URL
+          path: './'
 
       - name: Deploy to GitHub Pages
         id: deployment

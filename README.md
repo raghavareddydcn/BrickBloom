@@ -37,15 +37,13 @@ cocopeat-site/
 │   ├── app.js                 # AngularJS single-page application controller
 │   ├── styles.css             # Design tokens, Apple-inspired theme & layout styles
 │   ├── index.html             # Main landing page & interactive lead form
-│   ├── blocks.html            # Coco Blocks product detail page
-│   ├── coco-bricks.html       # Coco Bricks product detail page
+│   ├── blocks.html            # Premium Cocopeat product detail page
 │   ├── coco-grow-cubes.html   # Grow Cubes product detail page
-│   ├── coco-growslabs.html    # GrowSlabs product detail page
 │   ├── coir-chips.html        # Coir Chips product detail page
-│   ├── growbags.html          # Standard Growbags product detail page
-│   ├── loose.html             # Loose Substrate product detail page
-│   ├── open-top-growbags.html # Open Top Growbags product detail page
-│   ├── tabs.html              # Coco Tabs product detail page
+│   ├── growbags.html          # Premium Kit product detail page
+│   ├── loose.html             # Medium Kit product detail page
+│   ├── open-top-growbags.html # Ready Pot product detail page
+│   ├── tabs.html               # Starter Kit product detail page
 │   └── images/                # Brand logos, favicons, and graphic assets
 ├── server.js                  # Express server & REST API endpoints
 ├── SKILLS.md                  # Comprehensive skills & architectural audit

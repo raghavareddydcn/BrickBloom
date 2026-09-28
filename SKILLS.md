@@ -6,6 +6,27 @@
 
 ---
 
+## Validation Skill (Post-Change Gate)
+
+Use this skill after every UI, content, or backend change before pushing code.
+
+1. **Static quality gate**
+   - Run editor diagnostics and ensure no new errors in changed files.
+   - Confirm synced source/public parity for mirrored files (`index.html`, `styles.css`, `app.js`, `site.js`).
+
+2. **Behavior validation gate**
+   - Verify changed UI blocks exist in both source and `public/` copies.
+   - Check responsive behavior at desktop, tablet, and mobile breakpoints.
+
+3. **Git integrity gate**
+   - Ensure only intended files are changed.
+   - Commit with a scoped message and push only after checks pass.
+
+4. **Release note gate**
+   - Summarize what changed, what was validated, and the commit hash.
+
+---
+
 ## 2. Technical Stack Matrix
 
 | Layer | Technology / Library | Version / Details | Purpose |
@@ -62,7 +83,7 @@ To effectively maintain, extend, and scale this project, developers require the 
 ### Frontend Structure (`public/`)
 - `index.html`: Main landing page driven by AngularJS (`ng-app="brickbloomSite"`).
 - `app.js`: Angular controller fetching `/api/market-intelligence` and handling `submitLead()`.
-- Product Detail Pages: `blocks.html`, `coco-bricks.html`, `coco-grow-cubes.html`, `coco-growslabs.html`, `coir-chips.html`, `growbags.html`, `loose.html`, `open-top-growbags.html`, `tabs.html`.
+- Product Detail Pages: `blocks.html`, `coco-grow-cubes.html`, `coir-chips.html`, `growbags.html`, `loose.html`, `open-top-growbags.html`, `tabs.html`.
 - `styles.css`: Centralized CSS stylesheet containing design system design tokens and responsive rules.
 
 ---

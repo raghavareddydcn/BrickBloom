@@ -8,3 +8,5 @@ Thumbs.db
 .env.local
 *.tsbuildinfo
 dist/
+.wwebjs_auth/
+.wwebjs_cache/
