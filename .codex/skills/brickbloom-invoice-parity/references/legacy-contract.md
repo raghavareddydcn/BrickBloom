@@ -27,13 +27,13 @@ Use Firestore `products` as the catalog. If it is empty, seed these defaults (pr
 | Medium Kit | 249 | 235 | 229 | 5 |
 | Premium Kit | 699 | 659 | 649 | 5 |
 | Ready pot With Out Plant | 130 | 119 | 99 | 5 |
-| Packing | 50 | 50 | 50 | 0 |
+| Packing Box | 100 | 100 | 100 | 0 |
 
-Synchronize `Packing` as an available catalog record. The tier price is price100 when quantity is at least 100 and nonzero; otherwise price50 when quantity is at least 50 and nonzero; otherwise price1 when nonzero. Missing/zero selected prices must not overwrite a manually entered price.
+Synchronize `Packing Box` as an available catalog record. The tier price is price100 when quantity is at least 100 and nonzero; otherwise price50 when quantity is at least 50 and nonzero; otherwise price1 when nonzero. Missing/zero selected prices must not overwrite a manually entered price.
 
 ## Item, tax, and validation rules
 
-Start each invoice with one blank product row and a pinned `Packing` row. Insert added product rows before packing. Packing cannot be removed. When all normal rows are removed, restore one blank normal row plus packing. Product change applies its tier price and default GST; custom products are saved to the catalog.
+Start each invoice with one blank product row and a pinned `Packing Box` row. Insert added product rows before packing. Packing cannot be removed. When all normal rows are removed, restore one blank normal row plus packing. Product change applies its tier price and default GST; custom products are saved to the catalog.
 
 Supported GST rates are 0, 5, 12, and 18. Each line taxable value is `qty * price`; line tax is taxable value times GST divided by 100. Grand total is subtotal plus tax plus transport. Advance paid is shown separately and balance is never negative.
 

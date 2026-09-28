@@ -11,7 +11,6 @@ const AdminLayout = lazy(() => import('@/components/layout/AdminLayout'));
 const AdminHub = lazy(() => import('@/pages/AdminHub'));
 const InvoiceWorkspace = lazy(() => import('@/pages/InvoiceWorkspace'));
 const InventoryWorkspace = lazy(() => import('@/pages/InventoryWorkspace'));
-const WhatsAppWorkspace = lazy(() => import('@/pages/WhatsAppWorkspace'));
 const AuditLogWorkspace = lazy(() => import('@/pages/AuditLogWorkspace'));
 const UsersWorkspace = lazy(() => import('@/pages/UsersWorkspace'));
 
@@ -37,7 +36,7 @@ export default function App() {
         <Route index element={<AdminHub />} />
         <Route path="invoices" element={<InvoiceWorkspace />} />
         <Route path="inventory" element={<InventoryWorkspace />} />
-        <Route path="whatsapp" element={<WhatsAppWorkspace />} />
+        <Route path="whatsapp" element={<LegacyRedirect to="/whatsapp" />} />
         <Route path="audit" element={<AuditLogWorkspace />} />
         <Route path="users" element={<UsersWorkspace />} />
       </Route>
@@ -45,7 +44,7 @@ export default function App() {
       <Route path="/dashboard" element={<LegacyRedirect to="/admin" />} />
       <Route path="/invoice" element={<LegacyRedirect to="/admin/invoices" />} />
       <Route path="/inventory" element={<LegacyRedirect to="/admin/inventory" />} />
-      <Route path="/whatsapp" element={<LegacyRedirect to="/admin/whatsapp" />} />
+      <Route path="/whatsapp" element={<LegacyRedirect to="/whatsapp" />} />
     </Routes>
   );
 }

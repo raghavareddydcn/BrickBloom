@@ -514,6 +514,7 @@
       const errDiv    = document.getElementById('waError');
       const btnC      = document.getElementById('btnConnect');
       const btnD      = document.getElementById('btnDisconnect');
+      const btnClear  = document.getElementById('btnClearSession');
 
       pill.className = 'status-pill ' + status;
 
@@ -566,21 +567,45 @@
 
     async function connectWA() {
       document.getElementById('btnConnect').disabled = true;
-      log('Connecting to WhatsApp Web…', 'i');
+      const errDiv = document.getElementById('waError');
+      if (errDiv) errDiv.style.display = 'none';
+      applyState({ status: 'initializing' });
+      log('Connecting to WhatsApp Web...', 'i');
       try {
         const r = await fetch('/api/wa/connect', { method: 'POST' });
-        if (!r.ok) throw new Error('Server error ' + r.status);
+        const d = await r.json().catch(() => ({}));
+        if (!r.ok || d.ok === false) {
+          throw new Error(d.error || ('Server error ' + r.status));
+        }
+        if (d.status) applyState({ status: d.status });
       } catch (err) {
         log('Connect failed: ' + err.message, 'e');
         document.getElementById('btnConnect').disabled = false;
+        applyState({ status: 'disconnected', error: err.message });
       }
     }
 
     async function disconnectWA() {
-      log('Disconnecting…', 'i');
+      log('Disconnecting WhatsApp...', 'i');
       try {
         await fetch('/api/wa/disconnect', { method: 'POST' });
-      } catch (_) {}
+        applyState({ status: 'disconnected' });
+        log('WhatsApp disconnected.', 'i');
+      } catch (err) {
+        log('Disconnect error: ' + err.message, 'e');
+      }
+    }
+
+    async function clearSessionWA() {
+      if (!confirm('Clear WhatsApp saved session and log out? You will need to scan QR code again.')) return;
+      log('Clearing WhatsApp session & browser locks...', 'i');
+      try {
+        const r = await fetch('/api/wa/clear-session', { method: 'POST' });
+        applyState({ status: 'disconnected' });
+        log('✅ Session cleared. Click Connect to scan a new QR code.', 's');
+      } catch (err) {
+        log('Error clearing session: ' + err.message, 'e');
+      }
     }
 
     // ── Read media attachment as base64 ────────────────────────────────────────
