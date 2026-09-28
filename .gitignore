@@ -8,5 +8,8 @@ Thumbs.db
 .env.local
 *.tsbuildinfo
 dist/
+.tools/
+.playwright-cli/
+output/playwright/
 .wwebjs_auth/
 .wwebjs_cache/

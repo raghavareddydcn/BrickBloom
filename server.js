@@ -79,32 +79,6 @@ app.get('/api/market-intelligence', (req, res) => {
   res.json(marketIntelligence);
 });
 
-// ─── Admin portal ──────────────────────────────────────────────────────────
-app.get('/dashboard', (req, res) => {
-  res.sendFile(path.join(publicDir, 'admin.html'));
-});
-
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(publicDir, 'admin.html'));
-});
-
-app.get('/invoice', (req, res) => {
-  res.sendFile(path.join(publicDir, 'invoice.html'));
-});
-
-app.get('/inventory', (req, res) => {
-  res.sendFile(path.join(publicDir, 'inventory.html'));
-});
-
-app.get('/public', (req, res) => {
-  res.redirect('/');
-});
-
-app.get('/public/:asset(*)', (req, res) => {
-  const assetPath = req.params.asset;
-  res.redirect(`/${assetPath}`);
-});
-
 app.post('/api/leads', async (req, res) => {
   const { name, email, company, message } = req.body;
 
@@ -198,10 +172,6 @@ app.delete('/api/invoices/:id', (req, res) => {
   } catch (err) {
     res.status(500).json({ error: 'Failed to delete invoice' });
   }
-});
-
-app.get('/whatsapp', (req, res) => {
-  res.sendFile(path.join(publicDir, 'whatsapp.html'));
 });
 
 // ─── WhatsApp Bulk Sender ─────────────────────────────────────────────────────
