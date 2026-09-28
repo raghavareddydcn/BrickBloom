@@ -504,6 +504,24 @@ app.get('/api/audit-log', (req, res) => {
   }
 });
 
+// ── Explicit App & Tool Routes ──
+app.get(['/whatsapp', '/whatsapp.html'], (req, res) => {
+  const candidates = [
+    path.join(publicDir, 'whatsapp.html'),
+    path.join(distDir, 'whatsapp.html'),
+    path.join(__dirname, 'whatsapp.html')
+  ];
+  const target = candidates.find(f => fs.existsSync(f));
+  if (target) {
+    return res.sendFile(target);
+  }
+  res.status(404).send('WhatsApp tool template not found.');
+});
+
+app.get('/admin.html', (req, res) => {
+  res.redirect(301, '/admin');
+});
+
 app.get('/{*path}', (req, res) => {
   const indexPath = fs.existsSync(path.join(distDir, 'index.html'))
     ? path.join(distDir, 'index.html')

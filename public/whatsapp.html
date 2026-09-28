@@ -169,14 +169,14 @@
         if (isExpired) {
           alert('Your session has expired due to 30 minutes of inactivity. Please sign in again.');
         }
-        window.location.replace('/admin.html');
+        window.location.replace('/admin');
       }
     })();
     var BB_ROLE = sessionStorage.getItem('bb_admin_role') || 'viewer';
     var BB_USER = sessionStorage.getItem('bb_admin_user') || 'admin';
     if (BB_ROLE === 'viewer') {
       alert('Access denied. You need Editor or Admin role to access the WhatsApp Tool.');
-      window.location.replace('/admin.html');
+      window.location.replace('/admin');
     }
 
     function formatName(s) {
@@ -251,7 +251,7 @@
     </a>
     <div class="topbar-actions">
         <span id="waUserPill" style="background:rgba(255,255,255,0.18);color:#fff;padding:4px 14px;border-radius:999px;font-size:13px;font-weight:600;letter-spacing:0.3px;">Admin</span>
-        <a href="/admin.html" class="tbtn tbtn-inv">🏢 Admin Hub</a>
+        <a href="/admin" class="tbtn tbtn-inv">🏢 Admin Hub</a>
         <button class="tbtn tbtn-logout" onclick="logout()">🚪 Logout</button>
       </div>
   </header>
@@ -758,7 +758,7 @@
       if (isIdle) {
         alert('Your session has expired due to 30 minutes of inactivity. Please sign in again.');
       }
-      window.location.replace('/admin.html');
+      window.location.replace('/admin');
     }
 
     // ── Init ───────────────────────────────────────────────────────────────────
