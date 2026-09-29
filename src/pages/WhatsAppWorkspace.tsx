@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import * as XLSX from 'xlsx';
 import {
     CheckCircle2,
+  Clock,
   FileSpreadsheet,
   FileText,
   LoaderCircle,
@@ -11,6 +12,7 @@ import {
   Play,
   QrCode,
   RefreshCw,
+  RotateCcw,
   Send,
   Server,
   SkipForward,
@@ -27,6 +29,7 @@ type WaStatus = 'disconnected' | 'initializing' | 'qr' | 'ready';
 interface Contact {
   name: string;
   phone: string;
+  status?: 'pending' | 'sent' | 'skipped';
 }
 
 interface LogEntry {
@@ -84,6 +87,11 @@ export default function WhatsAppWorkspace() {
   const templateRef = useRef<HTMLTextAreaElement>(null);
 
   // Sending Controls State
+  const [engineMode, setEngineMode] = useState<'direct' | 'server'>('direct');
+  const [directTarget, setDirectTarget] = useState<'web' | 'app'>('web');
+  const [directIndex, setDirectIndex] = useState<number>(0);
+  const [autoAdvance, setAutoAdvance] = useState<boolean>(true);
+
   const [sendMode, setSendMode] = useState<'batch' | 'manual'>('batch');
   const [batchSize, setBatchSize] = useState<string>('all');
   const [delaySec, setDelaySec] = useState<number>(5);
@@ -292,12 +300,15 @@ export default function WhatsAppWorkspace() {
     const parsed: Contact[] = rows
       .map((row) => {
         const nameVal = String(row[nCol] ?? '').trim();
-        const rawPhone = String(row[pCol] ?? '').replace(/[^0-9+]/g, '');
-        return { name: nameVal || 'Customer', phone: rawPhone };
+        let rawPhone = String(row[pCol] ?? '').replace(/[^0-9+]/g, '');
+        if (rawPhone.startsWith('+')) rawPhone = rawPhone.slice(1);
+        if (rawPhone.length === 10) rawPhone = '91' + rawPhone;
+        return { name: nameVal || 'Customer', phone: rawPhone, status: 'pending' as const };
       })
       .filter((c) => c.phone.length >= 10);
 
     setContacts(parsed);
+    setDirectIndex(0);
   };
 
   const handleNameColChange = (col: string) => {
@@ -391,6 +402,55 @@ export default function WhatsAppWorkspace() {
         // ignore
       }
     }
+  };
+
+  const getWhatsAppUrl = (phone: string, text: string) => {
+    const cleanPhone = phone.replace(/[^\d]/g, '');
+    const encoded = encodeURIComponent(text);
+    if (directTarget === 'web') {
+      return `https://web.whatsapp.com/send?phone=${cleanPhone}&text=${encoded}`;
+    }
+    return `https://wa.me/${cleanPhone}?text=${encoded}`;
+  };
+
+  const handleDirectSendCurrent = () => {
+    const current = contacts[directIndex];
+    if (!current) return;
+
+    const message = mergeMessage(template, current);
+    const url = getWhatsAppUrl(current.phone, message);
+
+    window.open(url, '_blank', 'noopener,noreferrer');
+
+    setContacts((prev) =>
+      prev.map((c, i) => (i === directIndex ? { ...c, status: 'sent' } : c))
+    );
+    addLog('success', `Opened WhatsApp for ${current.name} (+${current.phone})`);
+
+    if (autoAdvance && directIndex < contacts.length - 1) {
+      setDirectIndex((prev) => prev + 1);
+    }
+  };
+
+  const handleDirectSkipCurrent = () => {
+    const current = contacts[directIndex];
+    if (!current) return;
+
+    setContacts((prev) =>
+      prev.map((c, i) => (i === directIndex ? { ...c, status: 'skipped' } : c))
+    );
+    addLog('warning', `Skipped ${current.name} (+${current.phone})`);
+
+    if (directIndex < contacts.length - 1) {
+      setDirectIndex((prev) => prev + 1);
+    }
+  };
+
+  const handleDirectResetQueue = () => {
+    if (!window.confirm('Reset queue progress and mark all leads as pending?')) return;
+    setContacts((prev) => prev.map((c) => ({ ...c, status: 'pending' })));
+    setDirectIndex(0);
+    addLog('info', 'Queue progress reset to beginning.');
   };
 
   // Batch Send
@@ -534,6 +594,12 @@ export default function WhatsAppWorkspace() {
 
   const isConnected = status === 'ready';
 
+  const currentDirect = contacts[directIndex];
+  const directSentCount = contacts.filter((c) => c.status === 'sent').length;
+  const directSkippedCount = contacts.filter((c) => c.status === 'skipped').length;
+  const directProgressPercent =
+    contacts.length > 0 ? Math.round((directSentCount / contacts.length) * 100) : 0;
+
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       {/* Top Header Card */}
@@ -545,55 +611,123 @@ export default function WhatsAppWorkspace() {
             </h1>
             <span
               className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
-                status === 'ready'
+                engineMode === 'direct'
+                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                  : isConnected
                   ? 'bg-emerald-100 text-emerald-800'
                   : status === 'qr'
                   ? 'bg-blue-100 text-blue-800'
                   : 'bg-amber-100 text-amber-800'
               }`}
             >
-              {status === 'ready' ? 'Connected' : status === 'qr' ? 'Scan QR' : 'Ready to Connect'}
+              {engineMode === 'direct'
+                ? 'Standard Web Dispatch (No Backend)'
+                : isConnected
+                ? 'Server Connected'
+                : status === 'qr'
+                ? 'Scan QR'
+                : 'Server Offline'}
             </span>
           </div>
           <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            Connect local business WhatsApp, import recipient spreadsheets, compose personalized messages, and broadcast updates.
+            {engineMode === 'direct'
+              ? 'Zero-backend Click-to-Chat protocol. Personalize and send messages directly via WhatsApp Web / App.'
+              : 'Automated background outreach powered by local Node.js / Puppeteer Chromium instance.'}
           </p>
         </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Mode Switcher */}
+          <div className="inline-flex rounded-lg border border-slate-200 p-0.5 bg-slate-50 text-xs font-semibold">
+            <button
+              type="button"
+              onClick={() => setEngineMode('direct')}
+              className={`rounded px-2.5 py-1 transition ${
+                engineMode === 'direct'
+                  ? 'bg-white text-emerald-800 shadow-sm font-bold'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              Direct Web (Zero-Backend)
+            </button>
+            <button
+              type="button"
+              onClick={() => setEngineMode('server')}
+              className={`rounded px-2.5 py-1 transition ${
+                engineMode === 'server'
+                  ? 'bg-white text-brand-900 shadow-sm font-bold'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              Node.js Server
+            </button>
+          </div>
+
+          {engineMode === 'direct' && (
+            <div className="inline-flex rounded-lg border border-slate-200 p-0.5 bg-slate-50 text-xs font-semibold">
+              <button
+                type="button"
+                onClick={() => setDirectTarget('web')}
+                className={`rounded px-2.5 py-1 transition ${
+                  directTarget === 'web'
+                    ? 'bg-white text-brand-900 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                WhatsApp Web
+              </button>
+              <button
+                type="button"
+                onClick={() => setDirectTarget('app')}
+                className={`rounded px-2.5 py-1 transition ${
+                  directTarget === 'app'
+                    ? 'bg-white text-brand-900 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                App / wa.me
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Backend Server Configuration Banner */}
-      <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-        <div className="flex items-center gap-2 text-slate-700">
-          <Server className="h-4 w-4 text-brand-700 shrink-0" />
-          <div>
-            <span className="font-bold text-slate-800">Backend Server:</span>{' '}
-            <span className="text-slate-500 font-mono">{serverUrl}</span>
-            <span className="block text-[11px] text-slate-500">
-              WhatsApp Web uses a Node.js/Chromium instance (<code>npm run server</code>). Set this to your local or hosted backend.
-            </span>
+      {/* Backend Server Configuration Banner (only in server mode) */}
+      {engineMode === 'server' && (
+        <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2 text-slate-700">
+            <Server className="h-4 w-4 text-brand-700 shrink-0" />
+            <div>
+              <span className="font-bold text-slate-800">Backend Server:</span>{' '}
+              <span className="text-slate-500 font-mono">{serverUrl}</span>
+              <span className="block text-[11px] text-slate-500">
+                WhatsApp Web uses a Node.js/Chromium instance (<code>npm run server</code>). Set this to your local or hosted backend.
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={serverUrlInput}
+              onChange={(e) => setServerUrlInput(e.target.value)}
+              placeholder="http://localhost:3000"
+              className="w-48 sm:w-56 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:outline-none"
+            />
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={saveServerUrl}
+              className="h-8 text-xs font-semibold"
+            >
+              Save & Connect
+            </Button>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            value={serverUrlInput}
-            onChange={(e) => setServerUrlInput(e.target.value)}
-            placeholder="http://localhost:3000"
-            className="w-48 sm:w-56 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:outline-none"
-          />
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={saveServerUrl}
-            className="h-8 text-xs font-semibold"
-          >
-            Save & Connect
-          </Button>
-        </div>
-      </div>
+      )}
 
-      {/* WhatsApp Session Status Card */}
-      <Card className="border-slate-200 shadow-sm">
+      {/* WhatsApp Session Status Card (only in server mode) */}
+      {engineMode === 'server' && (
+        <Card className="border-slate-200 shadow-sm">
         <CardHeader className="pb-3">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -734,6 +868,7 @@ export default function WhatsAppWorkspace() {
           </div>
         )}
       </Card>
+      )}
 
       {/* Main Outreach Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
@@ -920,194 +1055,397 @@ export default function WhatsAppWorkspace() {
         {/* Right Column: Execution & Terminal Log */}
         <div className="space-y-6">
           {/* Card: Send Controls */}
-          <Card className="border-slate-200 shadow-sm">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-2">
-                <Send className="h-4 w-4 text-brand-700" />
-                <CardTitle className="text-base">3. Outreach Delivery Mode</CardTitle>
-              </div>
-              <CardDescription className="text-xs">
-                Choose between automated batch delivery or step-by-step manual review.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Mode Toggle */}
-              <div className="grid grid-cols-2 gap-2 rounded-lg border border-slate-200 p-1 bg-slate-50 text-xs font-semibold">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSendMode('batch');
-                    setManualActive(false);
-                  }}
-                  className={`rounded-md py-1.5 transition ${
-                    sendMode === 'batch'
-                      ? 'bg-white text-brand-900 shadow-sm'
-                      : 'text-slate-500 hover:text-slate-900'
-                  }`}
-                >
-                  🚀 Automatic Batch
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSendMode('manual')}
-                  className={`rounded-md py-1.5 transition ${
-                    sendMode === 'manual'
-                      ? 'bg-white text-brand-900 shadow-sm'
-                      : 'text-slate-500 hover:text-slate-900'
-                  }`}
-                >
-                  🔍 Manual Review Mode
-                </button>
-              </div>
-
-              {/* Mode A: Batch Configuration */}
-              {sendMode === 'batch' && (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[11px] font-semibold text-slate-600 block mb-1">Batch Size</label>
-                      <select
-                        value={batchSize}
-                        onChange={(e) => setBatchSize(e.target.value)}
-                        disabled={isSending}
-                        className="h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-xs font-medium text-slate-800 outline-none"
-                      >
-                        <option value="all">All Contacts ({contacts.length})</option>
-                        <option value="5">First 5</option>
-                        <option value="10">First 10</option>
-                        <option value="25">First 25</option>
-                        <option value="50">First 50</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="text-[11px] font-semibold text-slate-600 block mb-1">Delay Between Sends</label>
-                      <select
-                        value={delaySec}
-                        onChange={(e) => setDelaySec(Number(e.target.value))}
-                        disabled={isSending}
-                        className="h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-xs font-medium text-slate-800 outline-none"
-                      >
-                        <option value={3}>3 seconds</option>
-                        <option value={5}>5 seconds (recommended)</option>
-                        <option value={10}>10 seconds</option>
-                        <option value={15}>15 seconds (safe)</option>
-                      </select>
-                    </div>
+          {engineMode === 'direct' ? (
+            <Card className="border-slate-200 shadow-sm">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Send className="h-4 w-4 text-emerald-700" />
+                    <CardTitle className="text-base">3. Direct WhatsApp Dispatch Runner</CardTitle>
                   </div>
+                  {contacts.length > 0 && (
+                    <span className="text-xs font-bold text-slate-600 font-mono">
+                      {directIndex + 1} / {contacts.length}
+                    </span>
+                  )}
+                </div>
+                <CardDescription className="text-xs">
+                  Runs directly in your browser. Click to open each recipient in WhatsApp Web / App with their message pre-filled.
+                </CardDescription>
+              </CardHeader>
 
-                  {/* Progress Indicator */}
-                  {sendProgress && (
-                    <div className="space-y-1.5 rounded-lg border border-brand-100 bg-brand-50/60 p-3">
-                      <div className="flex items-center justify-between text-xs font-semibold text-brand-900">
-                        <span>Sending batch progress…</span>
+              <CardContent className="space-y-4">
+                {contacts.length === 0 ? (
+                  <div className="text-center py-8 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 space-y-2">
+                    <Users className="h-8 w-8 mx-auto text-slate-400" />
+                    <p className="text-xs font-medium text-slate-600">
+                      Upload an Excel or CSV file on the left to start sending.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {/* Progress Bar */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
                         <span>
-                          {sendProgress.current} / {sendProgress.total}
+                          Progress: {directSentCount} sent, {directSkippedCount} skipped
                         </span>
+                        <span>{directProgressPercent}%</span>
                       </div>
-                      <div className="h-2 w-full overflow-hidden rounded-full bg-brand-200">
+                      <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
                         <div
-                          className="h-full bg-brand-600 transition-all duration-300"
-                          style={{ width: `${(sendProgress.current / sendProgress.total) * 100}%` }}
+                          className="h-full bg-emerald-500 transition-all duration-300"
+                          style={{ width: `${directProgressPercent}%` }}
                         />
                       </div>
                     </div>
-                  )}
 
-                  <Button
-                    onClick={handleStartBatchSend}
-                    disabled={isSending || !isConnected || contacts.length === 0}
-                    className="w-full bg-brand-700 hover:bg-brand-800 text-white font-semibold"
-                  >
-                    {isSending ? (
-                      <>
-                        <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-                        Sending Batch…
-                      </>
-                    ) : (
-                      <>
-                        <Play className="mr-2 h-4 w-4" />
-                        Start Batch Delivery
-                      </>
-                    )}
-                  </Button>
-                </div>
-              )}
+                    {/* Active Lead Box */}
+                    {currentDirect ? (
+                      <div className="rounded-xl border border-emerald-200 bg-emerald-50/30 p-4 space-y-3">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-bold text-emerald-900 uppercase tracking-wide">
+                                Lead #{directIndex + 1}
+                              </span>
+                              <span
+                                className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                                  currentDirect.status === 'sent'
+                                    ? 'bg-emerald-100 text-emerald-800'
+                                    : currentDirect.status === 'skipped'
+                                    ? 'bg-amber-100 text-amber-800'
+                                    : 'bg-slate-100 text-slate-600'
+                                }`}
+                              >
+                                {currentDirect.status?.toUpperCase() || 'PENDING'}
+                              </span>
+                            </div>
+                            <h3 className="text-sm font-extrabold text-slate-900 mt-1">
+                              {currentDirect.name}
+                            </h3>
+                            <p className="text-xs font-mono font-medium text-slate-600">
+                              +{currentDirect.phone}
+                            </p>
+                          </div>
 
-              {/* Mode B: Manual Step-Through Box */}
-              {sendMode === 'manual' && (
-                <div className="space-y-3">
-                  {!manualActive ? (
-                    <div className="text-center py-4 space-y-2">
-                      <p className="text-xs text-slate-600">
-                        Review and customize the message for each recipient one-by-one before sending.
-                      </p>
-                      <Button
-                        onClick={handleStartManualMode}
-                        disabled={!isConnected || contacts.length === 0}
-                        variant="outline"
-                        className="border-brand-600 text-brand-700 hover:bg-brand-50"
-                      >
-                        <Users className="mr-1.5 h-4 w-4" />
-                        Begin Manual Review ({contacts.length} recipients)
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="rounded-lg border border-brand-200 bg-brand-50/40 p-4 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-brand-900">
-                          Recipient {manualIdx + 1} of {contacts.length}
-                        </span>
-                        <span className="font-mono text-xs font-semibold text-slate-600">
-                          {contacts[manualIdx]?.phone}
-                        </span>
+                          <div className="text-right">
+                            <label className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 cursor-pointer select-none">
+                              <input
+                                type="checkbox"
+                                checked={autoAdvance}
+                                onChange={(e) => setAutoAdvance(e.target.checked)}
+                                className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                              />
+                              Auto-advance
+                            </label>
+                          </div>
+                        </div>
+
+                        {/* Action buttons */}
+                        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-emerald-100">
+                          <Button
+                            onClick={handleDirectSendCurrent}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm h-9 px-4"
+                          >
+                            <MessageCircle className="mr-1.5 h-4 w-4" />
+                            Send in WhatsApp
+                          </Button>
+
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleDirectSkipCurrent}
+                            className="text-xs h-9 border-slate-200"
+                          >
+                            <SkipForward className="mr-1 h-3.5 w-3.5" />
+                            Skip
+                          </Button>
+
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleDirectResetQueue}
+                            className="text-xs h-9 text-slate-500 hover:text-slate-800 ml-auto"
+                            title="Reset progress to beginning"
+                          >
+                            <RotateCcw className="mr-1 h-3.5 w-3.5" />
+                            Reset
+                          </Button>
+                        </div>
                       </div>
-
-                      <p className="text-xs font-semibold text-slate-800">
-                        {contacts[manualIdx]?.name}
-                      </p>
-
-                      <textarea
-                        value={manualCustomMsg}
-                        onChange={(e) => setManualCustomMsg(e.target.value)}
-                        rows={3}
-                        className="w-full rounded-md border border-slate-200 p-2 text-xs text-slate-800 outline-none"
-                      />
-
-                      <div className="flex flex-wrap items-center gap-2 pt-1">
-                        <Button
-                          size="sm"
-                          onClick={handleManualSendCurrent}
-                          className="bg-brand-700 hover:bg-brand-800 text-xs"
-                        >
-                          <Send className="mr-1.5 h-3.5 w-3.5" />
-                          Send &amp; Next
-                        </Button>
+                    ) : (
+                      <div className="text-center py-6 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                        <CheckCircle2 className="h-8 w-8 mx-auto text-emerald-600" />
+                        <p className="text-xs font-bold text-slate-800">
+                          All contacts reviewed!
+                        </p>
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={handleManualSkip}
+                          onClick={handleDirectResetQueue}
                           className="text-xs"
                         >
-                          <SkipForward className="mr-1.5 h-3.5 w-3.5" />
-                          Skip
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={handleManualStop}
-                          className="text-xs text-rose-600 hover:bg-rose-50"
-                        >
-                          <Square className="mr-1.5 h-3.5 w-3.5" />
-                          Stop Review
+                          Start Over
                         </Button>
                       </div>
+                    )}
+
+                    {/* Recipient list table */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                        <span>Recipient Queue ({contacts.length})</span>
+                        <span className="text-[11px] font-normal text-slate-500">
+                          Click row to jump to contact
+                        </span>
+                      </div>
+
+                      <div className="max-h-48 overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-inner">
+                        <table className="w-full text-left text-xs">
+                          <thead className="sticky top-0 bg-slate-100 text-[10px] uppercase font-bold text-slate-500">
+                            <tr>
+                              <th className="px-3 py-1.5">#</th>
+                              <th className="px-3 py-1.5">Name</th>
+                              <th className="px-3 py-1.5">Phone</th>
+                              <th className="px-3 py-1.5">Status</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100 text-slate-700">
+                            {contacts.map((c, i) => {
+                              const isCurrent = i === directIndex;
+                              return (
+                                <tr
+                                  key={i}
+                                  onClick={() => setDirectIndex(i)}
+                                  className={`cursor-pointer transition hover:bg-slate-50 ${
+                                    isCurrent ? 'bg-emerald-50/80 font-bold' : ''
+                                  }`}
+                                >
+                                  <td className="px-3 py-1.5 font-mono text-[11px] text-slate-400">
+                                    {i + 1}
+                                  </td>
+                                  <td className="px-3 py-1.5 truncate max-w-[140px]">{c.name}</td>
+                                  <td className="px-3 py-1.5 font-mono text-[11px] text-slate-600">
+                                    {c.phone}
+                                  </td>
+                                  <td className="px-3 py-1.5">
+                                    {c.status === 'sent' && (
+                                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700">
+                                        <CheckCircle2 className="h-3 w-3" /> Sent
+                                      </span>
+                                    )}
+                                    {c.status === 'skipped' && (
+                                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700">
+                                        <Clock className="h-3 w-3" /> Skipped
+                                      </span>
+                                    )}
+                                    {(!c.status || c.status === 'pending') && (
+                                      <span className="text-[10px] font-medium text-slate-400">
+                                        Pending
+                                      </span>
+                                    )}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                  )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="border-slate-200 shadow-sm">
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-2">
+                  <Send className="h-4 w-4 text-brand-700" />
+                  <CardTitle className="text-base">3. Outreach Delivery Mode</CardTitle>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+                <CardDescription className="text-xs">
+                  Choose between automated batch delivery or step-by-step manual review.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Mode Toggle */}
+                <div className="grid grid-cols-2 gap-2 rounded-lg border border-slate-200 p-1 bg-slate-50 text-xs font-semibold">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSendMode('batch');
+                      setManualActive(false);
+                    }}
+                    className={`rounded-md py-1.5 transition ${
+                      sendMode === 'batch'
+                        ? 'bg-white text-brand-900 shadow-sm'
+                        : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                  >
+                    🚀 Automatic Batch
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSendMode('manual')}
+                    className={`rounded-md py-1.5 transition ${
+                      sendMode === 'manual'
+                        ? 'bg-white text-brand-900 shadow-sm'
+                        : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                  >
+                    🔍 Manual Review Mode
+                  </button>
+                </div>
+
+                {/* Mode A: Batch Configuration */}
+                {sendMode === 'batch' && (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-[11px] font-semibold text-slate-600 block mb-1">Batch Size</label>
+                        <select
+                          value={batchSize}
+                          onChange={(e) => setBatchSize(e.target.value)}
+                          disabled={isSending}
+                          className="h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-xs font-medium text-slate-800 outline-none"
+                        >
+                          <option value="all">All Contacts ({contacts.length})</option>
+                          <option value="5">First 5</option>
+                          <option value="10">First 10</option>
+                          <option value="25">First 25</option>
+                          <option value="50">First 50</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="text-[11px] font-semibold text-slate-600 block mb-1">Delay Between Sends</label>
+                        <select
+                          value={delaySec}
+                          onChange={(e) => setDelaySec(Number(e.target.value))}
+                          disabled={isSending}
+                          className="h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-xs font-medium text-slate-800 outline-none"
+                        >
+                          <option value={3}>3 seconds</option>
+                          <option value={5}>5 seconds (recommended)</option>
+                          <option value={10}>10 seconds</option>
+                          <option value={15}>15 seconds (safe)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Progress Indicator */}
+                    {sendProgress && (
+                      <div className="space-y-1.5 rounded-lg border border-brand-100 bg-brand-50/60 p-3">
+                        <div className="flex items-center justify-between text-xs font-semibold text-brand-900">
+                          <span>Sending batch progress…</span>
+                          <span>
+                            {sendProgress.current} / {sendProgress.total}
+                          </span>
+                        </div>
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-brand-200">
+                          <div
+                            className="h-full bg-brand-600 transition-all duration-300"
+                            style={{ width: `${(sendProgress.current / sendProgress.total) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    <Button
+                      onClick={handleStartBatchSend}
+                      disabled={isSending || !isConnected || contacts.length === 0}
+                      className="w-full bg-brand-700 hover:bg-brand-800 text-white font-semibold"
+                    >
+                      {isSending ? (
+                        <>
+                          <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                          Sending Batch…
+                        </>
+                      ) : (
+                        <>
+                          <Play className="mr-2 h-4 w-4" />
+                          Start Batch Delivery
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                )}
+
+                {/* Mode B: Manual Step-Through Box */}
+                {sendMode === 'manual' && (
+                  <div className="space-y-3">
+                    {!manualActive ? (
+                      <div className="text-center py-4 space-y-2">
+                        <p className="text-xs text-slate-600">
+                          Review and customize the message for each recipient one-by-one before sending.
+                        </p>
+                        <Button
+                          onClick={handleStartManualMode}
+                          disabled={!isConnected || contacts.length === 0}
+                          variant="outline"
+                          className="border-brand-600 text-brand-700 hover:bg-brand-50"
+                        >
+                          <Users className="mr-1.5 h-4 w-4" />
+                          Begin Manual Review ({contacts.length} recipients)
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="rounded-lg border border-brand-200 bg-brand-50/40 p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-brand-900">
+                            Recipient {manualIdx + 1} of {contacts.length}
+                          </span>
+                          <span className="font-mono text-xs font-semibold text-slate-600">
+                            {contacts[manualIdx]?.phone}
+                          </span>
+                        </div>
+
+                        <p className="text-xs font-semibold text-slate-800">
+                          {contacts[manualIdx]?.name}
+                        </p>
+
+                        <textarea
+                          value={manualCustomMsg}
+                          onChange={(e) => setManualCustomMsg(e.target.value)}
+                          rows={3}
+                          className="w-full rounded-md border border-slate-200 p-2 text-xs text-slate-800 outline-none"
+                        />
+
+                        <div className="flex flex-wrap items-center gap-2 pt-1">
+                          <Button
+                            size="sm"
+                            onClick={handleManualSendCurrent}
+                            className="bg-brand-700 hover:bg-brand-800 text-xs"
+                          >
+                            <Send className="mr-1.5 h-3.5 w-3.5" />
+                            Send &amp; Next
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={handleManualSkip}
+                            className="text-xs"
+                          >
+                            <SkipForward className="mr-1.5 h-3.5 w-3.5" />
+                            Skip
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={handleManualStop}
+                            className="text-xs text-rose-600 hover:bg-rose-50"
+                          >
+                            <Square className="mr-1.5 h-3.5 w-3.5" />
+                            Stop Review
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Card: Live Activity Log */}
           <Card className="border-slate-200 shadow-sm">
