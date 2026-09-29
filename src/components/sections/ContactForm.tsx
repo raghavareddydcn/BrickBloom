@@ -2,29 +2,20 @@ import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { motion, useInView } from 'framer-motion';
-import axios from 'axios';
-import { CheckCircle2, AlertCircle, Loader2, Send } from 'lucide-react';
-
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { CheckCircle2, AlertCircle, Loader2, Send, Sparkles, Phone, Mail, Building, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 
 const schema = z.object({
-  name:    z.string().min(2,  'Please enter your name'),
-  email:   z.string().email('Please enter a valid work email'),
-  phone:   z.string().min(7,  'Please enter a valid phone number'),
-  company: z.string().min(2,  'Please enter your company name'),
-  product: z.string().min(1,  'Please select a product'),
-  message: z.string().min(20, 'Please add more detail about your inquiry (min 20 characters)'),
+  name: z.string().min(2, 'Please enter your full name'),
+  email: z.string().email('Please enter a valid work email address'),
+  phone: z.string().min(7, 'Please enter a valid contact phone number'),
+  company: z.string().min(2, 'Please enter your company or farm name'),
+  product: z.string().min(1, 'Please select a product format'),
+  message: z.string().min(10, 'Please include some details about your required quantity and destination port'),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -36,13 +27,17 @@ const PRODUCTS = [
   'Premium Kit',
   'Coco Grow Disk',
   'Premium Cocopeat',
-  'Multiple Products / Unsure',
+  'Open Top Growbags',
+  'Coco GrowSlabs',
+  'Coir Chips',
+  'Multiple Formats / Custom Blend',
 ];
 
 const BULLETS = [
-  { icon: '✓', text: 'Custom EC & pH buffering upon request' },
-  { icon: '✓', text: 'FCL Container shipping (20ft / 40ft High Cube)' },
-  { icon: '✓', text: '24-Hour quotation turnaround time' },
+  'Custom electrical conductivity (EC) & calcium buffering upon request',
+  'FCL Container shipping (20ft / 40ft High Cube containers)',
+  '24-Hour dedicated quotation turnaround time',
+  'Lab certificate of analysis (COA) provided with every container batch',
 ];
 
 export default function ContactForm() {
@@ -59,210 +54,315 @@ export default function ContactForm() {
     watch,
     reset,
     formState: { errors },
-  } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      product: 'Premium Cocopeat',
+    },
+  });
+
+  const selectedProduct = watch('product');
 
   const onSubmit = async (data: FormValues) => {
     setStatus('loading');
     setErrorMsg('');
     try {
-      await axios.post(
-        'https://formsubmit.co/ajax/admin@brickbloom.co.in',
-        {
-          ...data,
-          _subject: `BrickBloom Sourcing Inquiry for ${data.product} from ${data.company}`,
-        },
-        { headers: { 'Content-Type': 'application/json', Accept: 'application/json' } }
-      );
+      // 1. Try local server API first
+      let sentLocal = false;
+      try {
+        const localRes = await fetch('/api/leads', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (localRes.ok) sentLocal = true;
+      } catch {
+        // local server might not be running or proxy disabled
+      }
+
+      // 2. Fallback to FormSubmit if on external static hosting
+      if (!sentLocal) {
+        await fetch('https://formsubmit.co/ajax/admin@brickbloom.co.in', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            ...data,
+            _subject: `BrickBloom Sourcing Inquiry for ${data.product} from ${data.company}`,
+          }),
+        });
+      }
+
       setStatus('success');
       reset();
-    } catch (err) {
+    } catch {
       setStatus('error');
-      setErrorMsg('There was a problem submitting your inquiry. Please email us directly at admin@brickbloom.co.in');
+      setErrorMsg('There was a problem submitting your inquiry. Please reach out to us at admin@brickbloom.co.in');
     }
   };
 
-  const FormField = ({
-    id, label, error, children,
-  }: { id: string; label: string; error?: string; children: React.ReactNode }) => (
-    <div className="space-y-1.5">
-      <Label htmlFor={id} className="text-slate-700 font-semibold">{label}</Label>
-      {children}
-      {error && (
-        <p className="text-xs text-red-500 flex items-center gap-1">
-          <AlertCircle className="w-3 h-3" />
-          {error}
-        </p>
-      )}
-    </div>
-  );
-
   return (
-    <section id="contact" className="section-pad bg-brand-50">
-      <div className="max-w-7xl mx-auto" ref={ref}>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-
-          {/* Left — Info panel */}
+    <section id="contact" className="py-24 sm:py-32 bg-slate-50 relative overflow-hidden">
+      <div
+        ref={ref}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          
+          {/* Left Column: Sourcing Desk Context */}
           <motion.div
-            initial={{ opacity: 0, x: -24 }}
+            initial={{ opacity: 0, x: -28 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-5 space-y-6"
           >
-            <span className="eyebrow">Direct Sourcing Desk</span>
-            <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl text-slate-900 leading-tight text-balance">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-100/80 border border-brand-200 px-3.5 py-1 text-xs font-bold text-brand-800 uppercase tracking-widest">
+              <Sparkles className="h-3.5 w-3.5 text-brand-700" />
+              <span>Direct Sourcing Desk</span>
+            </div>
+
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-slate-900 tracking-tight leading-[1.15]">
               Start your BrickBloom inquiry.
             </h2>
-            <p className="mt-5 text-base text-slate-500 leading-relaxed max-w-md">
-              Tell us about your crop program, desired product format, and destination port.
-              Our team will prepare custom pricing and shipping options.
+
+            <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+              Tell us about your crop program, desired product format, and destination port. Our sourcing team will prepare FOB/CIF pricing, pallet configurations, and shipment schedules.
             </p>
 
             {/* Bullets */}
-            <ul className="mt-8 space-y-4">
-              {BULLETS.map((b) => (
-                <li key={b.text} className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                    {b.icon}
+            <div className="space-y-3 pt-2">
+              {BULLETS.map((bullet, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <div className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-brand-100 text-brand-800 mt-0.5">
+                    <Check className="h-3 w-3 stroke-[2.5]" />
+                  </div>
+                  <span className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
+                    {bullet}
                   </span>
-                  <span className="text-sm text-slate-700 leading-relaxed">{b.text}</span>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
 
-            {/* Contact email */}
-            <div className="mt-10 p-5 rounded-2xl bg-white border border-border shadow-card">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Direct contact</p>
-              <a
-                href="mailto:admin@brickbloom.co.in"
-                className="text-sm font-medium text-brand-700 hover:text-brand-900 transition-colors"
-              >
-                admin@brickbloom.co.in
-              </a>
-              <p className="text-xs text-slate-400 mt-1">India & Sri Lanka · FCL Export</p>
+            {/* Direct Contacts Card */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 space-y-3 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="grid h-9 w-9 place-items-center rounded-xl bg-brand-50 text-brand-700">
+                  <Mail className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-[11px] uppercase font-bold text-slate-400">Direct Inquiries</p>
+                  <a href="mailto:admin@brickbloom.co.in" className="text-xs sm:text-sm font-semibold text-brand-800 hover:underline">
+                    admin@brickbloom.co.in
+                  </a>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="grid h-9 w-9 place-items-center rounded-xl bg-brand-50 text-brand-700">
+                  <Building className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-[11px] uppercase font-bold text-slate-400">Corporate Trademark</p>
+                  <p className="text-xs text-slate-700 font-medium">
+                    Konaseema Coco Products LLP • India &amp; Sri Lanka
+                  </p>
+                </div>
+              </div>
             </div>
           </motion.div>
 
-          {/* Right — Form */}
+          {/* Right Column: Interactive Form */}
           <motion.div
-            initial={{ opacity: 0, x: 24 }}
+            initial={{ opacity: 0, x: 28 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.65, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="bg-white rounded-3xl border border-border shadow-lg p-6 sm:p-8"
+            className="lg:col-span-7 rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-10 shadow-xl shadow-slate-900/5 relative"
           >
-            {status === 'success' ? (
-              <div className="flex flex-col items-center text-center py-10 gap-4">
-                <div className="w-16 h-16 rounded-full bg-brand-100 flex items-center justify-center">
-                  <CheckCircle2 className="w-8 h-8 text-brand-600" />
-                </div>
-                <h3 className="font-display text-2xl text-slate-900">Inquiry Received!</h3>
-                <p className="text-slate-500 max-w-xs text-sm leading-relaxed">
-                  Our sourcing desk will get back to you within 24 hours with custom pricing.
-                </p>
-                <Button variant="outline" onClick={() => setStatus('idle')} className="mt-2">
-                  Submit Another
-                </Button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <FormField id="name" label="Your Name" error={errors.name?.message}>
-                    <Input
-                      id="name"
-                      placeholder="e.g. Alexander Wright"
-                      {...register('name')}
-                      className={errors.name ? 'border-red-400 focus-visible:ring-red-400' : ''}
-                    />
-                  </FormField>
-                  <FormField id="email" label="Work Email" error={errors.email?.message}>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="alexander@greenhouse.com"
-                      {...register('email')}
-                      className={errors.email ? 'border-red-400 focus-visible:ring-red-400' : ''}
-                    />
-                  </FormField>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <FormField id="phone" label="Phone Number" error={errors.phone?.message}>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      placeholder="+91 98765 43210"
-                      {...register('phone')}
-                      className={errors.phone ? 'border-red-400 focus-visible:ring-red-400' : ''}
-                    />
-                  </FormField>
-                  <FormField id="company" label="Company / Farm" error={errors.company?.message}>
-                    <Input
-                      id="company"
-                      placeholder="Apex Hydroponics Ltd"
-                      {...register('company')}
-                      className={errors.company ? 'border-red-400 focus-visible:ring-red-400' : ''}
-                    />
-                  </FormField>
-                </div>
-
-                <FormField id="product" label="Product of Interest" error={errors.product?.message}>
-                  <Select
-                    onValueChange={(val) => setValue('product', val, { shouldValidate: true })}
-                    value={watch('product') ?? ''}
-                  >
-                    <SelectTrigger
-                      id="product"
-                      className={errors.product ? 'border-red-400 focus:ring-red-400' : ''}
-                    >
-                      <SelectValue placeholder="Select a product..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {PRODUCTS.map((p) => (
-                        <SelectItem key={p} value={p}>{p}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormField>
-
-                <FormField id="message" label="Inquiry Details" error={errors.message?.message}>
-                  <Textarea
-                    id="message"
-                    placeholder="Specify volume, target format (e.g., 5kg blocks, GrowSlabs), and destination port..."
-                    {...register('message')}
-                    className={`min-h-[130px] ${errors.message ? 'border-red-400 focus-visible:ring-red-400' : ''}`}
-                  />
-                </FormField>
-
-                {status === 'error' && (
-                  <p className="text-sm text-red-500 flex items-start gap-2 bg-red-50 rounded-xl p-3">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                    {errorMsg}
-                  </p>
-                )}
-
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="w-full gap-2"
-                  disabled={status === 'loading'}
+            <AnimatePresence mode="wait">
+              {status === 'success' ? (
+                <motion.div
+                  key="success-box"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="py-12 text-center space-y-4"
                 >
-                  {status === 'loading' ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4" />
-                      Send Sourcing Inquiry
-                    </>
-                  )}
-                </Button>
+                  <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-emerald-100 text-emerald-700">
+                    <CheckCircle2 className="h-8 w-8" />
+                  </div>
+                  <h3 className="font-display text-2xl sm:text-3xl text-slate-900">
+                    Inquiry Received
+                  </h3>
+                  <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+                    Thank you. Our international sourcing desk has received your requirements and will reply within 24 hours with product specifications and logistics availability.
+                  </p>
+                  <Button
+                    onClick={() => setStatus('idle')}
+                    variant="outline"
+                    className="rounded-full mt-4"
+                  >
+                    Submit Another Inquiry
+                  </Button>
+                </motion.div>
+              ) : (
+                <form key="form-box" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    
+                    {/* Name */}
+                    <div className="space-y-1.5">
+                      <Label htmlFor="name" className="text-xs font-semibold text-slate-700">Full Name *</Label>
+                      <Input
+                        id="name"
+                        {...register('name')}
+                        placeholder="e.g. Alexander Wright"
+                        className="h-10 text-xs sm:text-sm rounded-xl border-slate-200"
+                      />
+                      {errors.name && (
+                        <p className="text-[11px] text-rose-600 flex items-center gap-1 font-medium">
+                          <AlertCircle className="h-3 w-3" />
+                          {errors.name.message}
+                        </p>
+                      )}
+                    </div>
 
-                <p className="text-center text-xs text-muted-foreground">
-                  We respond within 24 hours &middot; No spam, ever.
-                </p>
-              </form>
-            )}
+                    {/* Work Email */}
+                    <div className="space-y-1.5">
+                      <Label htmlFor="email" className="text-xs font-semibold text-slate-700">Work Email *</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        {...register('email')}
+                        placeholder="alexander@greenhouse.com"
+                        className="h-10 text-xs sm:text-sm rounded-xl border-slate-200"
+                      />
+                      {errors.email && (
+                        <p className="text-[11px] text-rose-600 flex items-center gap-1 font-medium">
+                          <AlertCircle className="h-3 w-3" />
+                          {errors.email.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Phone */}
+                    <div className="space-y-1.5">
+                      <Label htmlFor="phone" className="text-xs font-semibold text-slate-700">Phone / WhatsApp Number *</Label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                        <Input
+                          id="phone"
+                          {...register('phone')}
+                          placeholder="+1 (555) 123-4567"
+                          className="h-10 text-xs sm:text-sm rounded-xl border-slate-200 pl-9"
+                        />
+                      </div>
+                      {errors.phone && (
+                        <p className="text-[11px] text-rose-600 flex items-center gap-1 font-medium">
+                          <AlertCircle className="h-3 w-3" />
+                          {errors.phone.message}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Company */}
+                    <div className="space-y-1.5">
+                      <Label htmlFor="company" className="text-xs font-semibold text-slate-700">Company / Nursery Name *</Label>
+                      <Input
+                        id="company"
+                        {...register('company')}
+                        placeholder="Apex Hydroponics Ltd"
+                        className="h-10 text-xs sm:text-sm rounded-xl border-slate-200"
+                      />
+                      {errors.company && (
+                        <p className="text-[11px] text-rose-600 flex items-center gap-1 font-medium">
+                          <AlertCircle className="h-3 w-3" />
+                          {errors.company.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Interactive Product Selector Chips */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold text-slate-700 block">
+                      Target Product Format *
+                    </Label>
+                    <div className="flex flex-wrap gap-2">
+                      {PRODUCTS.map((prod) => {
+                        const isSelected = selectedProduct === prod;
+                        return (
+                          <button
+                            key={prod}
+                            type="button"
+                            onClick={() => setValue('product', prod, { shouldValidate: true })}
+                            className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
+                              isSelected
+                                ? 'bg-brand-700 text-white shadow-sm'
+                                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                            }`}
+                          >
+                            {prod}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {errors.product && (
+                      <p className="text-[11px] text-rose-600 flex items-center gap-1 font-medium">
+                        <AlertCircle className="h-3 w-3" />
+                        {errors.product.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Inquiry Message */}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="message" className="text-xs font-semibold text-slate-700">
+                      Inquiry Details &amp; Volume *
+                    </Label>
+                    <Textarea
+                      id="message"
+                      rows={3}
+                      {...register('message')}
+                      placeholder="Specify target container volume (e.g. 1x 40ft HQ), custom EC/pH needs, or delivery port..."
+                      className="rounded-xl border-slate-200 text-xs sm:text-sm leading-relaxed"
+                    />
+                    {errors.message && (
+                      <p className="text-[11px] text-rose-600 flex items-center gap-1 font-medium">
+                        <AlertCircle className="h-3 w-3" />
+                        {errors.message.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {errorMsg && (
+                    <div className="rounded-xl bg-rose-50 p-3 text-xs font-semibold text-rose-700 flex items-center gap-2">
+                      <AlertCircle className="h-4 w-4 shrink-0" />
+                      <span>{errorMsg}</span>
+                    </div>
+                  )}
+
+                  {/* Submit Button */}
+                  <Button
+                    type="submit"
+                    disabled={status === 'loading'}
+                    className="w-full h-11 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-semibold text-sm shadow-md shadow-brand-900/10 hover:shadow-brand-700/20 transition-all"
+                  >
+                    {status === 'loading' ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Transmitting Sourcing Inquiry…
+                      </>
+                    ) : (
+                      <>
+                        <Send className="mr-2 h-4 w-4" />
+                        Send Sourcing Inquiry
+                      </>
+                    )}
+                  </Button>
+                </form>
+              )}
+            </AnimatePresence>
           </motion.div>
+
         </div>
       </div>
     </section>
