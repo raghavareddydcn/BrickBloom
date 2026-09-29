@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import * as XLSX from 'xlsx';
 import {
     CheckCircle2,
-  ExternalLink,
   FileSpreadsheet,
   FileText,
   LoaderCircle,
@@ -13,6 +12,7 @@ import {
   QrCode,
   RefreshCw,
   Send,
+  Server,
   SkipForward,
   Square,
   Trash2,
@@ -44,6 +44,26 @@ interface MediaAttachment {
 }
 
 export default function WhatsAppWorkspace() {
+  // ── Backend Server URL (persisted) ─────────────────────────────────────────
+  const [serverUrl, setServerUrl] = useState<string>(
+    () => localStorage.getItem('wa_server_url') ?? 'http://localhost:3000'
+  );
+  const [serverUrlInput, setServerUrlInput] = useState<string>(
+    () => localStorage.getItem('wa_server_url') ?? 'http://localhost:3000'
+  );
+
+  // Helper: prefix every /api call with the configured server base URL
+  const api = useCallback(
+    (path: string) => `${serverUrl.replace(/\/$/, '')}${path}`,
+    [serverUrl]
+  );
+
+  const saveServerUrl = () => {
+    const trimmed = serverUrlInput.trim().replace(/\/$/, '');
+    setServerUrl(trimmed);
+    localStorage.setItem('wa_server_url', trimmed);
+  };
+
   // Session State
   const [status, setStatus] = useState<WaStatus>('disconnected');
   const [qrCode, setQrCode] = useState<string | null>(null);
@@ -103,9 +123,9 @@ export default function WhatsAppWorkspace() {
   };
 
   // Poll / Status check
-  const fetchStatus = async () => {
+  const fetchStatus = useCallback(async () => {
     try {
-      const res = await fetch('/api/wa/status');
+      const res = await fetch(api('/api/wa/status'));
       if (res.ok) {
         const data = await res.json();
         applyState(data);
@@ -113,15 +133,15 @@ export default function WhatsAppWorkspace() {
     } catch {
       // Local server might be offline
     }
-  };
+  }, [api]);
 
-  // SSE Stream listener
+  // SSE Stream listener — reconnects whenever serverUrl changes
   useEffect(() => {
     fetchStatus();
 
     let sse: EventSource | null = null;
     try {
-      sse = new EventSource('/api/wa/stream');
+      sse = new EventSource(api('/api/wa/stream'));
       sse.addEventListener('state', (e) => {
         try {
           const data = JSON.parse(e.data);
@@ -143,7 +163,7 @@ export default function WhatsAppWorkspace() {
       if (sse) sse.close();
       window.clearInterval(interval);
     };
-  }, []);
+  }, [api, fetchStatus]);
 
   // Connect WhatsApp session
   const handleConnect = async () => {
@@ -151,7 +171,13 @@ export default function WhatsAppWorkspace() {
     setSessionError(null);
     addLog('info', 'Connecting to WhatsApp Web client...');
     try {
-      const res = await fetch('/api/wa/connect', { method: 'POST' });
+      const res = await fetch(api('/api/wa/connect'), { method: 'POST' });
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error(
+          `Backend server at ${serverUrl} is not responding with API data (Status: ${res.status}). Make sure server.js is running (npm run server) and Backend Server URL is configured.`
+        );
+      }
       const data = await res.json();
       if (!res.ok || data.ok === false) {
         throw new Error(data.error || 'Server error');
@@ -171,7 +197,7 @@ export default function WhatsAppWorkspace() {
     setBusyAction('disconnecting');
     addLog('info', 'Disconnecting WhatsApp session...');
     try {
-      await fetch('/api/wa/disconnect', { method: 'POST' });
+      await fetch(api('/api/wa/disconnect'), { method: 'POST' });
       setStatus('disconnected');
       setQrCode(null);
       addLog('info', 'WhatsApp session disconnected.');
@@ -191,7 +217,7 @@ export default function WhatsAppWorkspace() {
     setBusyAction('clearing');
     addLog('warning', 'Clearing WhatsApp session directory (.wwebjs_auth) & browser locks...');
     try {
-      const res = await fetch('/api/wa/clear-session', { method: 'POST' });
+      const res = await fetch(api('/api/wa/clear-session'), { method: 'POST' });
       if (res.ok) {
         setStatus('disconnected');
         setQrCode(null);
@@ -395,7 +421,7 @@ export default function WhatsAppWorkspace() {
 
     try {
       const payloadMedia = media ? { mimetype: media.mimetype, data: media.data, filename: media.filename } : null;
-      const res = await fetch('/api/wa/send', {
+      const res = await fetch(api('/api/wa/send'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -455,7 +481,7 @@ export default function WhatsAppWorkspace() {
     addLog('info', `Sending manual message to ${contact.name} (${contact.phone})...`);
     try {
       const payloadMedia = media ? { mimetype: media.mimetype, data: media.data, filename: media.filename } : null;
-      const res = await fetch('/api/wa/send', {
+      const res = await fetch(api('/api/wa/send'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -533,16 +559,36 @@ export default function WhatsAppWorkspace() {
             Connect local business WhatsApp, import recipient spreadsheets, compose personalized messages, and broadcast updates.
           </p>
         </div>
+      </div>
+
+      {/* Backend Server Configuration Banner */}
+      <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div className="flex items-center gap-2 text-slate-700">
+          <Server className="h-4 w-4 text-brand-700 shrink-0" />
+          <div>
+            <span className="font-bold text-slate-800">Backend Server:</span>{' '}
+            <span className="text-slate-500 font-mono">{serverUrl}</span>
+            <span className="block text-[11px] text-slate-500">
+              WhatsApp Web uses a Node.js/Chromium instance (<code>npm run server</code>). Set this to your local or hosted backend.
+            </span>
+          </div>
+        </div>
         <div className="flex items-center gap-2">
-          <a
-            href="/whatsapp.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-[#e8d7ba] bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-[#f0e4cf] hover:text-slate-900"
+          <input
+            type="text"
+            value={serverUrlInput}
+            onChange={(e) => setServerUrlInput(e.target.value)}
+            placeholder="http://localhost:3000"
+            className="w-48 sm:w-56 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:outline-none"
+          />
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={saveServerUrl}
+            className="h-8 text-xs font-semibold"
           >
-            <ExternalLink className="h-3.5 w-3.5" />
-            Standalone Full Page Tool
-          </a>
+            Save & Connect
+          </Button>
         </div>
       </div>
 

@@ -47,8 +47,8 @@ export default function App() {
       <Route path="/operations" element={<LegacyRedirect to="/admin" />} />
       <Route path="/dashboard" element={<LegacyRedirect to="/admin" />} />
       <Route path="/invoice" element={<LegacyRedirect to="/admin/invoices" />} />
-      <Route path="/inventory" element={<LegacyRedirect to="/admin/inventory" />} />
-      <Route path="/whatsapp" element={<LegacyRedirect to="/whatsapp.html" />} />
+      <Route path="/whatsapp" element={<LegacyRedirect to="/admin/whatsapp" />} />
+      <Route path="/whatsapp.html" element={<LegacyRedirect to="/admin/whatsapp" />} />
     </Routes>
   );
 }
