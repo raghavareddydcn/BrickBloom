@@ -220,14 +220,14 @@ export default function AdminHub() {
         <div className="rounded-2xl border border-[#e2d5be] bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-amber-600/40">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
-              Catalog &amp; Stock
+              Inventory &amp; Products
             </span>
             <div className="grid h-8 w-8 place-items-center rounded-xl bg-amber-50 text-amber-800 border border-amber-200">
               <Package className="h-4 w-4" />
             </div>
           </div>
           <p className="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2 tracking-tight">
-            {productCount} <span className="text-base font-bold text-slate-500">SKUs</span>
+            {productCount} <span className="text-base font-bold text-slate-500">Products</span>
           </p>
           <div className="mt-2 flex items-center gap-1.5 flex-wrap">
             {outOfStockCount > 0 && (
@@ -282,36 +282,30 @@ export default function AdminHub() {
       {/* The 5 Core Tools Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {TOOLS.map((tool) => {
-          const Icon = tool.icon;
           return (
             <Link
               key={tool.title}
               to={tool.to}
-              className="group relative flex flex-col justify-between rounded-3xl border border-[#e2d5be] bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-600/70 hover:shadow-xl overflow-hidden"
+              className="group relative flex flex-col justify-between rounded-3xl border border-[#e2d5be] bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-600/70 hover:shadow-xl overflow-hidden text-center"
             >
               {/* Top Accent Stripe */}
               <div className={`absolute top-0 left-0 right-0 h-1.5 ${tool.accentBar}`} />
 
-              <div>
-                {/* Icon Wrap */}
-                <div
-                  className={`grid h-13 w-13 place-items-center rounded-2xl ${tool.iconWrapBg} ${tool.iconColor} shadow-sm mb-4 group-hover:scale-105 transition-transform`}
-                >
-                  <Icon className="h-6 w-6" />
-                </div>
-
+              <div className="flex flex-col items-center">
                 {/* Badge */}
                 <div
-                  className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider mb-2.5 ${tool.badgeClass}`}
+                  className={`inline-flex items-center justify-center rounded-full border px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider mb-3 ${tool.badgeClass}`}
                 >
                   {tool.to === '/admin/users' && userCount > 0 ? `${userCount} Operators • ${tool.badge}` : tool.badge}
                 </div>
 
-                {/* Title & Description */}
+                {/* Title */}
                 <h3 className="font-display text-2xl font-extrabold text-slate-900 leading-snug group-hover:text-emerald-950 transition-colors">
                   {tool.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-2.5">
+
+                {/* Description */}
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-2.5 max-w-sm">
                   {tool.description}
                 </p>
               </div>
@@ -319,7 +313,7 @@ export default function AdminHub() {
               {/* Action Button */}
               <div className="mt-6 pt-4 border-t border-slate-100">
                 <div
-                  className={`flex items-center justify-between rounded-xl px-4 py-3 text-xs sm:text-sm font-bold shadow-sm transition-all ${tool.buttonBg}`}
+                  className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs sm:text-sm font-bold shadow-sm transition-all ${tool.buttonBg}`}
                 >
                   <span>{tool.actionText}</span>
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
