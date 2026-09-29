@@ -51,7 +51,7 @@ export default function ProductDetail() {
   return (
     <>
       {/* Breadcrumb */}
-      <div className="pt-20 bg-white border-b border-border">
+      <div className="bg-white border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <nav className="flex items-center gap-1.5 text-xs text-muted-foreground" aria-label="Breadcrumb">
             <Link to="/" className="hover:text-brand-700 transition-colors">Home</Link>

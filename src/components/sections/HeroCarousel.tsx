@@ -58,7 +58,7 @@ export default function HeroCarousel() {
 
   return (
     <section
-      className="relative w-full h-[85vh] min-h-[520px] max-h-[860px] overflow-hidden bg-[#041c0e] flex items-center justify-center select-none"
+      className="relative w-full h-[calc(100vh-4rem)] min-h-[520px] max-h-[860px] overflow-hidden bg-[#041c0e] flex items-center justify-center select-none"
       role="banner"
       aria-label="BrickBloom Hero Poster Showcase"
       onMouseEnter={() => setPaused(true)}
