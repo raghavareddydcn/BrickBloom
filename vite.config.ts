@@ -23,48 +23,91 @@ function rootBranchDeployPlugin(): Plugin {
       const distDir = path.resolve(rootDir, 'dist');
       const distIndex = path.join(distDir, 'index.html');
       const rootIndex = path.join(rootDir, 'index.html');
-      const root404 = path.join(rootDir, '404.html');
-      const rootNoJekyll = path.join(rootDir, '.nojekyll');
-      const rootCname = path.join(rootDir, 'CNAME');
       const distAssets = path.join(distDir, 'assets');
       const rootAssets = path.join(rootDir, 'assets');
 
-      if (fs.existsSync(distIndex)) {
-        fs.copyFileSync(distIndex, rootIndex);
-        fs.copyFileSync(distIndex, root404);
-        fs.writeFileSync(rootNoJekyll, '');
-        fs.writeFileSync(rootCname, 'brickbloom.co.in\n');
+      if (!fs.existsSync(distIndex)) return;
 
-        // Create physical HTML entry points for direct URLs in GitHub Pages branch mode
-        const staticRoutes = [
-          'admin',
-          'admin/invoices',
-          'admin/inventory',
-          'admin/whatsapp',
-          'admin/audit',
-          'admin/users'
-        ];
-        fs.copyFileSync(distIndex, path.join(rootDir, 'admin.html'));
-        fs.copyFileSync(distIndex, path.join(rootDir, 'invoice.html'));
-        fs.copyFileSync(distIndex, path.join(rootDir, 'inventory.html'));
+      // Sync compiled index.html to branch root
+      fs.copyFileSync(distIndex, rootIndex);
 
-        for (const route of staticRoutes) {
-          const dir = path.join(rootDir, route);
-          if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-          }
-          fs.copyFileSync(distIndex, path.join(dir, 'index.html'));
-        }
-        console.log('[root-branch-deploy] Copied compiled index.html, 404.html, admin entry points to root');
+      // Helper to ensure target file exists in BOTH dist and root directories
+      const copyToBoth = (src: string, relPath: string) => {
+        const destDist = path.join(distDir, relPath);
+        const destRoot = path.join(rootDir, relPath);
+        fs.mkdirSync(path.dirname(destDist), { recursive: true });
+        fs.mkdirSync(path.dirname(destRoot), { recursive: true });
+        fs.copyFileSync(src, destDist);
+        fs.copyFileSync(src, destRoot);
+      };
 
-        if (fs.existsSync(distAssets)) {
-          if (!fs.existsSync(rootAssets)) {
-            fs.mkdirSync(rootAssets, { recursive: true });
-          }
-          fs.cpSync(distAssets, rootAssets, { recursive: true });
-          console.log('[root-branch-deploy] Copied compiled assets to root ./assets');
-        }
+      // 1. Static HTML fallbacks for direct clean URL access
+      const staticHtmlFiles = [
+        '404.html',
+        'admin.html',
+        'invoice.html',
+        'inventory.html',
+        'operations.html',
+        'dashboard.html',
+        // Legacy product URL compatibility
+        'tabs.html',
+        'blocks.html',
+        'growbags.html',
+        'loose.html',
+        'coco-grow-cubes.html',
+        'open-top-growbags.html',
+        'coco-bricks.html',
+        'coco-growslabs.html',
+        'coir-chips.html',
+      ];
+      for (const file of staticHtmlFiles) {
+        copyToBoth(distIndex, file);
       }
+
+      // 2. Directory entry points (folder/index.html) so direct navigation and refreshes never 404
+      const dirRoutes = [
+        'admin',
+        'admin/invoices',
+        'admin/inventory',
+        'admin/whatsapp',
+        'admin/audit',
+        'admin/users',
+        'products/ready-pot',
+        'products/starter-kit',
+        'products/medium-kit',
+        'products/premium-kit',
+        'products/coco-grow-disk',
+        'products/premium-cocopeat',
+        'products/coco-bricks',
+        'products/coco-growslabs',
+        'products/coir-chips',
+      ];
+      for (const route of dirRoutes) {
+        copyToBoth(distIndex, path.join(route, 'index.html'));
+      }
+
+      // 3. GitHub Pages metadata files in both locations
+      fs.writeFileSync(path.join(distDir, '.nojekyll'), '');
+      fs.writeFileSync(path.join(rootDir, '.nojekyll'), '');
+      fs.writeFileSync(path.join(distDir, 'CNAME'), 'brickbloom.co.in\n');
+      fs.writeFileSync(path.join(rootDir, 'CNAME'), 'brickbloom.co.in\n');
+
+      // 4. Standalone WhatsApp tool synchronization
+      const publicWa = path.join(rootDir, 'public', 'whatsapp.html');
+      if (fs.existsSync(publicWa)) {
+        copyToBoth(publicWa, 'whatsapp.html');
+      }
+
+      // 5. Assets synchronization to root for branch deployment mode
+      if (fs.existsSync(distAssets)) {
+        if (fs.existsSync(rootAssets)) {
+          fs.rmSync(rootAssets, { recursive: true, force: true });
+        }
+        fs.mkdirSync(rootAssets, { recursive: true });
+        fs.cpSync(distAssets, rootAssets, { recursive: true });
+      }
+
+      console.log('[root-branch-deploy] Generated static entry points in both dist/ and root for GitHub Pages branch deployment.');
     },
   };
 }
