@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8f4ec"/>
+      <stop offset="100%" stop-color="#ded0b7"/>
+    </linearGradient>
+    <radialGradient id="loosePeat" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#9a6532"/>
+      <stop offset="60%" stop-color="#73451d"/>
+      <stop offset="100%" stop-color="#4d2c0e"/>
+    </radialGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#2c1a08" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="900" height="600" fill="url(#bg)"/>
+  
+  <g filter="url(#shadow)">
+    <!-- Eco Bag Container -->
+    <path d="M 250,220 L 650,220 L 600,450 C 580,480 320,480 300,450 Z" fill="#d7ccc8"/>
+    <path d="M 250,220 C 350,260 550,260 650,220 L 650,235 C 550,275 350,275 250,235 Z" fill="#b0bec5"/>
+    
+    <!-- Heap of Loose Coir Pith -->
+    <path d="M 230,225 C 260,140 400,90 450,90 C 520,90 640,150 670,225 C 570,265 330,265 230,225 Z" fill="url(#loosePeat)"/>
+    
+    <!-- Coir Fiber flecks & texture -->
+    <circle cx="340" cy="170" r="18" fill="#c48a4d" opacity="0.6"/>
+    <circle cx="420" cy="140" r="22" fill="#8d5626" opacity="0.8"/>
+    <circle cx="510" cy="165" r="26" fill="#b5793e" opacity="0.7"/>
+    <circle cx="460" cy="190" r="30" fill="#693b13" opacity="0.9"/>
+    
+    <path d="M 380,150 Q 410,130 430,160" stroke="#d79b5c" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M 470,130 Q 500,110 520,140" stroke="#a46932" stroke-width="5" fill="none" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Label -->
+  <rect x="300" y="490" width="300" height="42" rx="21" fill="#0c6a2a"/>
+  <text x="450" y="517" font-family="'Inter', sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="1">COCO LOOSE SUBSTRATE</text>
+</svg>

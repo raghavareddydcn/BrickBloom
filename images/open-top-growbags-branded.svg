@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" width="900" height="900">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D8D5D0"/>
+      <stop offset="100%" stop-color="#E8E5E0"/>
+    </linearGradient>
+    <linearGradient id="bagOuter" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1C1C1C"/>
+      <stop offset="100%" stop-color="#0A0A0A"/>
+    </linearGradient>
+    <linearGradient id="bagSide" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#050505"/>
+      <stop offset="100%" stop-color="#1A1A1A"/>
+    </linearGradient>
+    <linearGradient id="coirChipsGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#A07040"/>
+      <stop offset="100%" stop-color="#6B4010"/>
+    </linearGradient>
+    <linearGradient id="labelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F0EAE0"/>
+    </linearGradient>
+    <linearGradient id="labelHeaderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8B1A1A"/>
+      <stop offset="50%" stop-color="#5C1010"/>
+      <stop offset="100%" stop-color="#1E6B1E"/>
+    </linearGradient>
+    <filter id="bagShadow">
+      <feDropShadow dx="5" dy="10" stdDeviation="10" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+    <pattern id="chipPat" x="0" y="0" width="14" height="10" patternUnits="userSpaceOnUse">
+      <rect width="14" height="10" fill="#8B5E2A"/>
+      <rect x="1" y="1" width="5" height="3" rx="1" fill="#A07040"/>
+      <rect x="8" y="5" width="4" height="3" rx="1" fill="#7B4A1E"/>
+      <rect x="2" y="6" width="3" height="2" rx="1" fill="#9B6A30"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="900" fill="url(#bgGrad)"/>
+  <ellipse cx="450" cy="850" rx="380" ry="40" fill="#888" opacity="0.1"/>
+
+  <!-- === OPEN-TOP GROW BAG (center, main) === -->
+  <g transform="translate(220, 80)" filter="url(#bagShadow)">
+    <!-- Bag body (trapezoid shape, wider at top) -->
+    <path d="M 30,180 L 0,620 L 430,620 L 400,180 Z" fill="url(#bagOuter)" rx="8"/>
+    <!-- Bag front face texture -->
+    <path d="M 30,180 L 0,620 L 430,620 L 400,180 Z" fill="#111111" opacity="0.5"/>
+    <!-- Side handles/reinforcement top -->
+    <rect x="40" y="175" width="340" height="20" rx="5" fill="#0D0D0D"/>
+
+    <!-- Open top rim -->
+    <path d="M 20,175 Q 215,145 410,175 Q 215,205 20,175 Z" fill="#252525"/>
+    
+    <!-- Coir chips inside top opening -->
+    <ellipse cx="215" cy="175" rx="185" ry="35" fill="url(#chipPat)"/>
+    <ellipse cx="215" cy="175" rx="185" ry="35" fill="url(#coirChipsGrad)" opacity="0.4"/>
+    <!-- Chip texture details -->
+    <rect x="80" y="155" width="18" height="10" rx="3" fill="#B08040" opacity="0.8"/>
+    <rect x="120" y="162" width="15" height="9" rx="3" fill="#9B6A30" opacity="0.7"/>
+    <rect x="160" y="158" width="20" height="11" rx="3" fill="#A07040" opacity="0.8"/>
+    <rect x="200" y="163" width="16" height="8" rx="3" fill="#8B5E28" opacity="0.9"/>
+    <rect x="235" y="157" width="18" height="10" rx="3" fill="#B08040" opacity="0.7"/>
+    <rect x="270" y="162" width="15" height="9" rx="3" fill="#9B6A30" opacity="0.8"/>
+    <rect x="305" y="156" width="20" height="11" rx="3" fill="#A07040" opacity="0.7"/>
+
+    <!-- Shine/sheen on bag -->
+    <path d="M 50,180 L 40,550 L 80,550 L 90,180 Z" fill="white" opacity="0.03"/>
+    <path d="M 360,180 L 355,550 L 395,550 L 390,180 Z" fill="white" opacity="0.02"/>
+
+    <!-- === BRICKBLOOM LABEL === -->
+    <rect x="60" y="270" width="300" height="250" rx="8" fill="url(#labelGrad)" stroke="#C8A880" stroke-width="2"/>
+    <!-- Label header -->
+    <rect x="60" y="270" width="300" height="46" rx="8" fill="url(#labelHeaderGrad)"/>
+    <rect x="60" y="308" width="300" height="8" fill="url(#labelHeaderGrad)"/>
+    <text x="210" y="300" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="16" fill="white" letter-spacing="1.5">BRICKBLOOM</text>
+    <!-- Product name -->
+    <text x="210" y="348" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="15" fill="#2E1A08">OPEN-TOP</text>
+    <text x="210" y="368" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="15" fill="#2E1A08">GROW BAG</text>
+    <line x1="80" y1="378" x2="340" y2="378" stroke="#C8A880" stroke-width="1"/>
+    <text x="210" y="396" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#7B4A1E">PREMIUM COARSE COCO</text>
+    <text x="210" y="412" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#7B4A1E">SUBSTRATE</text>
+    <text x="210" y="432" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="12" fill="#5C3210">70L | 18.5 GALLONS</text>
+    <line x1="80" y1="443" x2="340" y2="443" stroke="#C8A880" stroke-width="1"/>
+    <text x="210" y="460" text-anchor="middle" font-family="Georgia, serif" font-size="10" fill="#5C3210">100% NATURAL &amp; SUSTAINABLE</text>
+    <text x="210" y="475" text-anchor="middle" font-family="Georgia, serif" font-size="10" fill="#5C3210">DURABLE BLACK GROW BAG</text>
+    <text x="210" y="493" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#7B4A1E">Made in India · Konasema Coco Products</text>
+    
+    <!-- Drain holes at bottom of bag -->
+    <circle cx="80" cy="600" r="5" fill="#0D0D0D"/>
+    <circle cx="170" cy="608" r="5" fill="#0D0D0D"/>
+    <circle cx="260" cy="608" r="5" fill="#0D0D0D"/>
+    <circle cx="350" cy="600" r="5" fill="#0D0D0D"/>
+  </g>
+
+  <!-- BrickBloom brand badge -->
+  <g transform="translate(28, 28)">
+    <rect x="0" y="0" width="200" height="68" rx="14" fill="#1A0A00" opacity="0.92"/>
+    <text x="100" y="22" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#C8A87A" letter-spacing="1">KONASEMA COCO PRODUCTS</text>
+    <text x="100" y="44" text-anchor="middle" font-family="Georgia, serif" font-weight="900" font-size="20" fill="white">BrickBloom</text>
+    <text x="100" y="60" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="10" fill="#C8A87A">From Nature. For Nature.</text>
+  </g>
+
+  <!-- Spec badges -->
+  <g transform="translate(660, 30)">
+    <rect x="0" y="0" width="212" height="36" rx="18" fill="white" opacity="0.9" stroke="#C8A87A" stroke-width="1"/>
+    <text x="106" y="14" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#7B4A1E">PREMIUM COARSE SUBSTRATE</text>
+    <text x="106" y="28" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="11" fill="#3E1F06">Open-Top Grow System</text>
+  </g>
+  <g transform="translate(660, 76)">
+    <rect x="0" y="0" width="212" height="36" rx="18" fill="white" opacity="0.9" stroke="#4CAF50" stroke-width="1"/>
+    <text x="106" y="14" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#2E7D32">IDEAL FOR TOMATOES &amp; PEPPERS</text>
+    <text x="106" y="28" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="11" fill="#1B5E20">Commercial Horticulture</text>
+  </g>
+</svg>

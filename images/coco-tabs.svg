@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5f0e6"/>
+      <stop offset="100%" stop-color="#e8dec8"/>
+    </linearGradient>
+    <radialGradient id="coir" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8d5b28"/>
+      <stop offset="70%" stop-color="#6e4219"/>
+      <stop offset="100%" stop-color="#4a2a0c"/>
+    </radialGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="12" flood-color="#3a220a" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="900" height="600" fill="url(#bg)"/>
+  
+  <!-- Grid of Compressed Tabs -->
+  <g filter="url(#shadow)">
+    <!-- Back Tabs -->
+    <ellipse cx="280" cy="380" rx="90" ry="40" fill="url(#coir)"/>
+    <ellipse cx="280" cy="370" rx="90" ry="40" fill="#a06830"/>
+    <ellipse cx="620" cy="380" rx="90" ry="40" fill="url(#coir)"/>
+    <ellipse cx="620" cy="370" rx="90" ry="40" fill="#a06830"/>
+    
+    <!-- Expanded Main Tab with Sprout -->
+    <path d="M 370,280 C 370,220 530,220 530,280 L 530,360 C 530,420 370,420 370,360 Z" fill="url(#coir)"/>
+    <ellipse cx="450" cy="280" rx="80" ry="35" fill="#a87034"/>
+    <ellipse cx="450" cy="275" rx="72" ry="30" fill="#6e4219"/>
+    
+    <!-- Seedling Sprout -->
+    <path d="M 450,270 C 445,210 420,180 400,160 C 430,170 448,190 450,270 Z" fill="#4caf50"/>
+    <path d="M 450,270 C 455,200 480,170 500,150 C 470,160 452,185 450,270 Z" fill="#2e7d32"/>
+    <path d="M 450,270 Q 450,210 448,170" stroke="#81c784" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Label -->
+  <rect x="340" y="490" width="220" height="42" rx="21" fill="#0c6a2a"/>
+  <text x="450" y="517" font-family="'Inter', sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="1">COCO TABS</text>
+</svg>
