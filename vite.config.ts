@@ -11,15 +11,24 @@ function githubPagesRoutesPlugin(): Plugin {
       const distIndex = path.join(distDir, 'index.html');
 
       if (fs.existsSync(distIndex)) {
-        // GitHub Pages hosts files, not SPA rewrites. Put an application shell at
-        // every routed admin URL in the published dist artifact.
+        // GitHub Pages hosts static files without SPA rewrite rules.
+        // Put application shells at every routed URL in the published dist artifact.
         const staticRoutes = [
           'admin',
           'admin/invoices',
           'admin/inventory',
           'admin/whatsapp',
           'admin/audit',
-          'admin/users'
+          'admin/users',
+          'products/ready-pot',
+          'products/starter-kit',
+          'products/medium-kit',
+          'products/premium-kit',
+          'products/coco-grow-disk',
+          'products/premium-cocopeat',
+          'products/coco-bricks',
+          'products/coco-growslabs',
+          'products/coir-chips',
         ];
 
         for (const route of staticRoutes) {
@@ -29,9 +38,10 @@ function githubPagesRoutesPlugin(): Plugin {
           }
           fs.copyFileSync(distIndex, path.join(dir, 'index.html'));
         }
+        // SPA fallback for all other routes
         fs.copyFileSync(distIndex, path.join(distDir, '404.html'));
-        // The old standalone page remains in the working tree for recovery, but
-        // is deliberately omitted from the Pages artifact.
+
+        // Remove legacy standalone page if present in build artifact
         fs.rmSync(path.join(distDir, 'whatsapp.html'), { force: true });
         console.log('[github-pages-routes] Created React route entry points in dist');
       }
