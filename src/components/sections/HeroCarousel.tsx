@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 const SLIDES = [
   {
     src: '/images/actual-products/image-1.jpeg',
-    alt: 'BrickBloom — Premium Coir Pots, Coco Peat and Gardening Kits Poster',
+    alt: 'BrickBloom — Premium Coir Pots, Coco Peat and Gardening Kits Catalog Poster',
   },
   {
     src: '/images/actual-products/image-2.jpeg',
@@ -13,7 +13,7 @@ const SLIDES = [
   },
   {
     src: '/images/actual-products/image-3.jpeg',
-    alt: 'BrickBloom — Grow Greener, Live Better Poster',
+    alt: 'BrickBloom — Grow Greener, Live Better Catalog Poster',
   },
 ];
 
@@ -34,7 +34,6 @@ export default function HeroCarousel() {
     setProgress(0);
   }, []);
 
-  // Smooth progress ticker
   useEffect(() => {
     if (paused) return;
     const tickInterval = 50;
@@ -59,20 +58,20 @@ export default function HeroCarousel() {
 
   return (
     <section
-      className="relative w-full h-[88svh] min-h-[540px] max-h-[920px] overflow-hidden bg-[#041c0e] flex items-center justify-center select-none"
+      className="relative w-full h-[85vh] min-h-[520px] max-h-[860px] overflow-hidden bg-[#041c0e] flex items-center justify-center select-none"
       role="banner"
-      aria-label="BrickBloom hero poster showcase"
+      aria-label="BrickBloom Hero Poster Showcase"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* Ambient Blurred Background of Current Poster */}
+      {/* Ambient Blurred Backdrop for widescreen displays */}
       <AnimatePresence initial={false}>
         <motion.div
           key={'bg-' + SLIDES[current].src}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.35 }}
+          animate={{ opacity: 0.3 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1.2 }}
+          transition={{ duration: 1 }}
           className="absolute inset-0 z-0 overflow-hidden pointer-events-none"
         >
           <img
@@ -84,54 +83,55 @@ export default function HeroCarousel() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Main Crisp Poster Slides — 100% Unobstructed */}
-      <div className="relative z-10 h-full w-full max-w-7xl mx-auto flex items-center justify-center p-2 sm:p-4">
+      {/* Main Poster — Full aspect ratio with zero obstructions and bottom clearance */}
+      <div className="relative z-10 h-full w-full max-w-7xl mx-auto flex items-center justify-center px-4 pt-3 pb-16">
         <AnimatePresence initial={false} mode="wait">
           <motion.div
             key={'slide-' + SLIDES[current].src}
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.01 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="h-full w-full flex items-center justify-center"
           >
             <img
               src={SLIDES[current].src}
               alt={SLIDES[current].alt}
               loading="eager"
-              className="max-h-full max-w-full object-contain rounded-xl sm:rounded-2xl shadow-2xl drop-shadow-[0_20px_35px_rgba(0,0,0,0.5)]"
+              className="max-h-full max-w-full object-contain rounded-xl sm:rounded-2xl shadow-2xl drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)]"
             />
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Left / Right Minimal Arrow Controls */}
+      {/* Left Chevron */}
       <button
         onClick={prev}
         aria-label="Previous slide"
-        className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-20 grid h-10 w-10 sm:h-12 sm:w-12 place-items-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-md hover:bg-black/60 hover:scale-110 active:scale-95 transition-all shadow-lg"
+        className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-20 grid h-10 w-10 sm:h-12 sm:w-12 place-items-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-md hover:bg-black/70 hover:scale-105 active:scale-95 transition-all shadow-lg"
       >
         <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
       </button>
 
+      {/* Right Chevron */}
       <button
         onClick={next}
         aria-label="Next slide"
-        className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-20 grid h-10 w-10 sm:h-12 sm:w-12 place-items-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-md hover:bg-black/60 hover:scale-110 active:scale-95 transition-all shadow-lg"
+        className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-20 grid h-10 w-10 sm:h-12 sm:w-12 place-items-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-md hover:bg-black/70 hover:scale-105 active:scale-95 transition-all shadow-lg"
       >
         <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
       </button>
 
-      {/* Bottom Floating Bar: Slide Counter, Dots & Scroll Down Hint */}
-      <div className="absolute bottom-4 left-0 right-0 z-20 px-4 sm:px-8">
+      {/* Bottom Floating Bar */}
+      <div className="absolute bottom-3 left-0 right-0 z-20 px-4 sm:px-8">
         <div className="mx-auto max-w-7xl flex items-center justify-between gap-4">
           
           {/* Slide Indicator & Dots */}
-          <div className="flex items-center gap-2.5 rounded-full border border-white/20 bg-black/50 backdrop-blur-md px-3.5 py-1.5 shadow-lg">
+          <div className="flex items-center gap-2.5 rounded-full border border-white/20 bg-black/60 backdrop-blur-md px-3.5 py-1.5 shadow-lg">
             <span className="font-mono text-xs font-bold text-emerald-400">
               0{current + 1} / 0{SLIDES.length}
             </span>
-            <div className="h-3 w-px bg-white/20 mx-1" />
+            <div className="h-3 w-px bg-white/20 mx-0.5" />
             <div className="flex items-center gap-1.5">
               {SLIDES.map((_, i) => (
                 <button
@@ -151,11 +151,11 @@ export default function HeroCarousel() {
             </div>
           </div>
 
-          {/* Scroll Down Button */}
+          {/* Quick jump to products */}
           <motion.button
             onClick={scrollToProducts}
-            aria-label="Scroll to products"
-            className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/50 backdrop-blur-md px-4 py-1.5 text-xs font-semibold text-white/90 hover:bg-black/70 hover:text-white transition-all shadow-lg"
+            aria-label="Explore products"
+            className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/60 backdrop-blur-md px-4 py-1.5 text-xs font-semibold text-white/90 hover:bg-black/80 hover:text-white transition-all shadow-lg"
             animate={{ y: [0, 3, 0] }}
             transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
           >
@@ -165,10 +165,10 @@ export default function HeroCarousel() {
         </div>
       </div>
 
-      {/* Bottom Edge Timer Line */}
+      {/* Bottom Progress Line */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10 z-30 pointer-events-none">
         <div
-          className="h-full bg-emerald-400/80 transition-all duration-75"
+          className="h-full bg-emerald-400/90 transition-all duration-75"
           style={{ width: `${progress}%` }}
         />
       </div>

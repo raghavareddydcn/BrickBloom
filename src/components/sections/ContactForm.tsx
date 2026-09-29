@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, AlertCircle, Loader2, Send, Sparkles, Phone, Mail, Building, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -41,9 +41,6 @@ const BULLETS = [
 ];
 
 export default function ContactForm() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-60px' });
-
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -102,19 +99,11 @@ export default function ContactForm() {
 
   return (
     <section id="contact" className="py-24 sm:py-32 bg-slate-50 relative overflow-hidden">
-      <div
-        ref={ref}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
-      >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           
           {/* Left Column: Sourcing Desk Context */}
-          <motion.div
-            initial={{ opacity: 0, x: -28 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-5 space-y-6"
-          >
+          <div className="lg:col-span-5 space-y-6">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-100/80 border border-brand-200 px-3.5 py-1 text-xs font-bold text-brand-800 uppercase tracking-widest">
               <Sparkles className="h-3.5 w-3.5 text-brand-700" />
               <span>Direct Sourcing Desk</span>
@@ -167,15 +156,10 @@ export default function ContactForm() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Right Column: Interactive Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 28 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.65, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-7 rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-10 shadow-xl shadow-slate-900/5 relative"
-          >
+          <div className="lg:col-span-7 rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-10 shadow-xl shadow-slate-900/5 relative">
             <AnimatePresence mode="wait">
               {status === 'success' ? (
                 <motion.div
@@ -361,7 +345,7 @@ export default function ContactForm() {
                 </form>
               )}
             </AnimatePresence>
-          </motion.div>
+          </div>
 
         </div>
       </div>

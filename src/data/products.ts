@@ -232,7 +232,7 @@ export const products: Product[] = [
     eyebrow: 'Greenhouse Hydroponics',
     tagline: 'Precision greenhouse growing slabs.',
     benefit: 'Ready-to-use slabs crafted for hydroponic channels, balanced drainage, and crop steering.',
-    image: '/images/ALL products.png',
+    image: '/images/GrowBag.jpeg',
     inclusions: [
       'Uniform slab shape supports quick bench and gutter setup',
       'Engineered fiber-to-pith ratio for root-zone oxygenation',
@@ -257,7 +257,7 @@ export const products: Product[] = [
     eyebrow: 'Aeration & Drainage',
     tagline: 'Enhanced aeration and drainage media.',
     benefit: 'Open-structure coir chips for superior drainage, root aeration, and soil blending.',
-    image: '/images/coir-chips.svg',
+    image: '/images/CoCoPeatProducts.jpeg',
     inclusions: [
       'Uniform chip sizing for consistent root aeration',
       'Naturally resilient husk chunks resistant to decomposition',
