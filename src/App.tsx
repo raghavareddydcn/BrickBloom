@@ -41,6 +41,9 @@ export default function App() {
         <Route path="audit" element={<AuditLogWorkspace />} />
         <Route path="users" element={<UsersWorkspace />} />
       </Route>
+      <Route path="/admin.html" element={<LegacyRedirect to="/admin" />} />
+      <Route path="/invoice.html" element={<LegacyRedirect to="/admin/invoices" />} />
+      <Route path="/inventory.html" element={<LegacyRedirect to="/admin/inventory" />} />
       <Route path="/operations" element={<LegacyRedirect to="/admin" />} />
       <Route path="/dashboard" element={<LegacyRedirect to="/admin" />} />
       <Route path="/invoice" element={<LegacyRedirect to="/admin/invoices" />} />
