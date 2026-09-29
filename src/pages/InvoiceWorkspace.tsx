@@ -110,7 +110,7 @@ export default function InvoiceWorkspace() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-5">
-      <div className="no-print rounded-2xl border border-[#e8d7ba] bg-[#fcf7ee] p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="no-print rounded-2xl border border-[#e2d5be] bg-white p-5 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-display">Invoices &amp; Billing</h1>

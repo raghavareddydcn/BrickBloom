@@ -12,7 +12,7 @@ export default function UsersWorkspace() {
   const updateUser = async (user: User, patch: Partial<User>) => { if (!isAdmin) return; await updateDoc(doc(firestore, 'admin_users', user.id), patch); };
   return (
     <div className="mx-auto max-w-6xl space-y-5">
-      <div className="rounded-2xl border border-[#e8d7ba] bg-[#fcf7ee] p-4 sm:p-5 shadow-sm flex items-center justify-between gap-4">
+      <div className="rounded-2xl border border-[#e2d5be] bg-white p-5 shadow-sm flex items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-display">User Profiles</h1>

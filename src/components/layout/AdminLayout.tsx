@@ -36,26 +36,35 @@ export default function AdminLayout() {
   const initial = username.charAt(0).toUpperCase();
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#f0e4cf_0%,#f7f1e5_100%)] text-slate-800 font-sans flex flex-col">
+    <div className="min-h-screen bg-[#f7f5ef] text-slate-800 font-sans flex flex-col selection:bg-[#031c0e] selection:text-white">
       {/* Ultra-Premium Glass Topbar matching public/admin.html */}
-      <header className="sticky top-0 z-40 h-[66px] bg-[#031c0e]/95 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 flex items-center justify-between shadow-2xl text-white">
-        <NavLink to="/admin" className="flex items-center gap-3" aria-label="BrickBloom Admin Suite">
+      <header className="sticky top-0 z-40 h-[66px] bg-[#021a0d]/95 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 flex items-center justify-between shadow-xl text-white">
+        <NavLink to="/admin" className="flex items-center gap-3 group" aria-label="BrickBloom Admin Suite">
           <img
             src="/images/OurProducts/Logo_new.jpeg"
             alt="BrickBloom"
-            className="h-10 w-auto rounded-lg object-contain bg-[#f5ebd9] p-1 shadow-md"
+            className="h-10 w-auto rounded-lg object-contain bg-[#f5ebd9] p-1 shadow-md transition-transform group-hover:scale-105"
           />
           <div>
             <span className="font-display text-lg font-bold text-white tracking-wide block leading-none">
               BRICKBLOOM
             </span>
-            <span className="text-[10px] uppercase font-bold tracking-[1.2px] text-emerald-400 block mt-0.5">
-              Admin Enterprise Suite
+            <span className="text-[10px] uppercase font-bold tracking-[1.4px] text-emerald-400 block mt-0.5">
+              Operations Enterprise Suite
             </span>
           </div>
         </NavLink>
 
         <div className="flex items-center gap-3">
+          {/* Live Cloud Sync Pill */}
+          <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold text-emerald-300">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>Cloud Synced</span>
+          </div>
+
           {/* User Identity Pill */}
           <div className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-bold text-slate-200 shadow-sm">
             <span className="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-tr from-emerald-600 to-emerald-400 text-xs font-extrabold text-white">
@@ -96,36 +105,44 @@ export default function AdminLayout() {
       </header>
 
       {/* Main Workspace Layout */}
-      <div className="flex-1 mx-auto grid w-full max-w-7xl grid-cols-1 lg:grid-cols-[240px_minmax(0,1fr)] items-start gap-6 p-4 sm:p-6 lg:p-8">
+      <div className="flex-1 mx-auto grid w-full max-w-7xl grid-cols-1 lg:grid-cols-[240px_minmax(0,1fr)] items-start gap-8 p-4 sm:p-6 lg:p-8">
         
-        {/* Sidebar */}
-        <aside className="h-fit rounded-3xl bg-[#fcf7ee]/90 border border-[#e8d7ba] p-4 shadow-md backdrop-blur-md">
-          <nav className="flex gap-1.5 overflow-x-auto lg:flex-col" aria-label="Operations navigation">
-            {navigation.map(({ to, label, icon: Icon, end }) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={end}
-                className={({ isActive }) =>
-                  cn(
-                    'flex shrink-0 items-center gap-3 rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm font-bold transition-all',
-                    isActive
-                      ? 'bg-gradient-to-r from-brand-900 to-brand-800 text-white shadow-md shadow-brand-950/20'
-                      : 'text-slate-700 hover:bg-[#f0e4cf] hover:text-slate-900'
-                  )
-                }
-              >
-                <Icon className="h-4 w-4 shrink-0" /> {label}
-              </NavLink>
-            ))}
-          </nav>
-
-          <div className="mt-6 hidden lg:block rounded-2xl border border-brand-200/60 bg-brand-50/60 p-3.5">
-            <div className="flex items-center gap-2 text-brand-900 font-bold text-xs">
-              <ShieldCheck className="h-4 w-4 text-brand-700" />
-              <span>Live Enterprise Sync</span>
+        {/* Modern Sidebar Navigation */}
+        <aside className="w-full space-y-6">
+          <div>
+            <div className="px-3 pb-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-500">
+              Operations Suite
             </div>
-            <p className="mt-1 text-[11px] leading-relaxed text-brand-800/80 font-medium">
+            <nav className="flex gap-1 overflow-x-auto lg:flex-col" aria-label="Operations navigation">
+              {navigation.map(({ to, label, icon: Icon, end }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end={end}
+                  className={({ isActive }) =>
+                    cn(
+                      'group flex shrink-0 items-center justify-between rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold transition-all',
+                      isActive
+                        ? 'bg-[#031c0e] text-white shadow-sm shadow-[#031c0e]/20 font-bold'
+                        : 'text-slate-700 hover:bg-[#ebdcc4]/50 hover:text-slate-950'
+                    )
+                  }
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Icon className="h-4 w-4 shrink-0 transition-transform group-hover:scale-110" />
+                    <span>{label}</span>
+                  </div>
+                </NavLink>
+              ))}
+            </nav>
+          </div>
+
+          <div className="hidden lg:block rounded-2xl border border-[#e2d5be] bg-white/70 p-3.5 shadow-sm backdrop-blur-sm">
+            <div className="flex items-center gap-2 text-emerald-950 font-bold text-xs">
+              <ShieldCheck className="h-4 w-4 text-emerald-700" />
+              <span>Bangalore Hub Active</span>
+            </div>
+            <p className="mt-1 text-[11px] leading-relaxed text-slate-600">
               Tax invoices, real-time warehouse inventory, and WhatsApp outreach synced across your workspace.
             </p>
           </div>
@@ -137,7 +154,7 @@ export default function AdminLayout() {
         </main>
       </div>
 
-      <footer className="text-center py-4 text-xs text-slate-500 border-t border-[#e8d7ba]/60">
+      <footer className="text-center py-4 text-xs text-slate-500 border-t border-[#e2d5be]/70">
         &copy; 2026 Konaseema Coco Products LLP &bull; BrickBloom Enterprise Suite
       </footer>
     </div>
