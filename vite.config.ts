@@ -3,23 +3,53 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import fs from 'fs';
 
-function spaFallbackPlugin(): Plugin {
+function rootBranchDeployPlugin(): Plugin {
   return {
-    name: 'spa-fallback-404',
+    name: 'root-branch-deploy-plugin',
+    transformIndexHtml: {
+      order: 'pre',
+      handler(html) {
+        return html
+          .replace(
+            /<script type="module" crossorigin src="\/assets\/[^"]+"><\/script>/,
+            '<script type="module" src="/src/main.tsx"></script>'
+          )
+          .replace(/<link rel="modulepreload"[^>]+>\r?\n?/g, '')
+          .replace(/<link rel="stylesheet" crossorigin href="\/assets\/[^"]+">\r?\n?/, '');
+      },
+    },
     closeBundle() {
-      const distDir = path.resolve(__dirname, 'dist');
+      const rootDir = __dirname;
+      const distDir = path.resolve(rootDir, 'dist');
       const distIndex = path.join(distDir, 'index.html');
-      const dist404 = path.join(distDir, '404.html');
+      const rootIndex = path.join(rootDir, 'index.html');
+      const root404 = path.join(rootDir, '404.html');
+      const rootNoJekyll = path.join(rootDir, '.nojekyll');
+      const rootCname = path.join(rootDir, 'CNAME');
+      const distAssets = path.join(distDir, 'assets');
+      const rootAssets = path.join(rootDir, 'assets');
+
       if (fs.existsSync(distIndex)) {
-        fs.copyFileSync(distIndex, dist404);
-        console.log('[spa-fallback-404] Generated dist/404.html for GitHub Pages SPA routing');
+        fs.copyFileSync(distIndex, rootIndex);
+        fs.copyFileSync(distIndex, root404);
+        fs.writeFileSync(rootNoJekyll, '');
+        fs.writeFileSync(rootCname, 'brickbloom.co.in\n');
+        console.log('[root-branch-deploy] Copied compiled index.html, 404.html, .nojekyll, CNAME to root');
+
+        if (fs.existsSync(distAssets)) {
+          if (!fs.existsSync(rootAssets)) {
+            fs.mkdirSync(rootAssets, { recursive: true });
+          }
+          fs.cpSync(distAssets, rootAssets, { recursive: true });
+          console.log('[root-branch-deploy] Copied compiled assets to root ./assets');
+        }
       }
     },
   };
 }
 
 export default defineConfig({
-  plugins: [react(), spaFallbackPlugin()],
+  plugins: [react(), rootBranchDeployPlugin()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
