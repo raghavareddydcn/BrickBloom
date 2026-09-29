@@ -21,16 +21,6 @@ export default function App() {
       <Route element={<MarketingLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/products/:slug" element={<ProductDetail />} />
-          {/* Fallback legacy routes compatibility */}
-          <Route path="/tabs.html" element={<ProductDetail />} />
-          <Route path="/blocks.html" element={<ProductDetail />} />
-          <Route path="/growbags.html" element={<ProductDetail />} />
-          <Route path="/loose.html" element={<ProductDetail />} />
-          <Route path="/coco-grow-cubes.html" element={<ProductDetail />} />
-          <Route path="/open-top-growbags.html" element={<ProductDetail />} />
-          <Route path="/coco-bricks.html" element={<ProductDetail />} />
-          <Route path="/coco-growslabs.html" element={<ProductDetail />} />
-          <Route path="/coir-chips.html" element={<ProductDetail />} />
           <Route path="*" element={<NotFound />} />
       </Route>
       <Route path="/admin" element={<AdminRoutes />}>
@@ -41,14 +31,11 @@ export default function App() {
         <Route path="audit" element={<AuditLogWorkspace />} />
         <Route path="users" element={<UsersWorkspace />} />
       </Route>
-      <Route path="/admin.html" element={<LegacyRedirect to="/admin" />} />
-      <Route path="/invoice.html" element={<LegacyRedirect to="/admin/invoices" />} />
-      <Route path="/inventory.html" element={<LegacyRedirect to="/admin/inventory" />} />
       <Route path="/operations" element={<LegacyRedirect to="/admin" />} />
       <Route path="/dashboard" element={<LegacyRedirect to="/admin" />} />
       <Route path="/invoice" element={<LegacyRedirect to="/admin/invoices" />} />
       <Route path="/inventory" element={<LegacyRedirect to="/admin/inventory" />} />
-      <Route path="/whatsapp" element={<LegacyRedirect to="/whatsapp.html" />} />
+      <Route path="/whatsapp" element={<LegacyRedirect to="/admin/whatsapp" />} />
     </Routes>
   );
 }

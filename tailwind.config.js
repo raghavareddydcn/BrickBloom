@@ -78,7 +78,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans:    ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        sans:    ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         display: ['"DM Serif Display"', 'Georgia', 'serif'],
       },
       borderRadius: {

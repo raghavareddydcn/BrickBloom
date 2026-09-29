@@ -535,7 +535,7 @@ export default function WhatsAppWorkspace() {
         </div>
         <div className="flex items-center gap-2">
           <a
-            href="/whatsapp.html"
+            href="/admin/whatsapp"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 rounded-xl border border-[#e8d7ba] bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-[#f0e4cf] hover:text-slate-900"

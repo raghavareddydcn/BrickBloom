@@ -7,15 +7,6 @@ import { productBySlug, products } from '@/data/products';
 import ContactForm from '@/components/sections/ContactForm';
 
 const LEGACY_MAP: Record<string, string> = {
-  '/tabs.html': 'starter-kit',
-  '/blocks.html': 'premium-cocopeat',
-  '/growbags.html': 'premium-kit',
-  '/loose.html': 'medium-kit',
-  '/coco-grow-cubes.html': 'coco-grow-disk',
-  '/open-top-growbags.html': 'ready-pot',
-  '/coco-bricks.html': 'coco-bricks',
-  '/coco-growslabs.html': 'coco-growslabs',
-  '/coir-chips.html': 'coir-chips',
 };
 
 export default function ProductDetail() {
