@@ -3,6 +3,7 @@ import * as XLSX from 'xlsx';
 import {
     CheckCircle2,
   Clock,
+  Cloud,
   FileSpreadsheet,
   FileText,
   LoaderCircle,
@@ -15,6 +16,7 @@ import {
   RotateCcw,
   Send,
   Server,
+  Settings,
   SkipForward,
   Square,
   Trash2,
@@ -87,14 +89,36 @@ export default function WhatsAppWorkspace() {
   const templateRef = useRef<HTMLTextAreaElement>(null);
 
   // Sending Controls State
-  const [engineMode, setEngineMode] = useState<'direct' | 'server'>('direct');
+  const [engineMode, setEngineMode] = useState<'cloud' | 'direct' | 'server'>('cloud');
   const [directTarget, setDirectTarget] = useState<'web' | 'app'>('web');
   const [directIndex, setDirectIndex] = useState<number>(0);
   const [autoAdvance, setAutoAdvance] = useState<boolean>(true);
 
+  // ── Meta WhatsApp Cloud API State (Persisted) ──────────────────────────────
+  const [cloudPhoneId, setCloudPhoneId] = useState<string>(
+    () => localStorage.getItem('wa_cloud_phone_id') ?? ''
+  );
+  const [cloudAccessToken, setCloudAccessToken] = useState<string>(
+    () => localStorage.getItem('wa_cloud_token') ?? ''
+  );
+  const [cloudMediaUrl, setCloudMediaUrl] = useState<string>(
+    () => localStorage.getItem('wa_cloud_media_url') ?? ''
+  );
+  const [showCloudConfig, setShowCloudConfig] = useState<boolean>(false);
+
+  const saveCloudConfig = (pId: string, tok: string, mUrl: string) => {
+    setCloudPhoneId(pId.trim());
+    setCloudAccessToken(tok.trim());
+    setCloudMediaUrl(mUrl.trim());
+    localStorage.setItem('wa_cloud_phone_id', pId.trim());
+    localStorage.setItem('wa_cloud_token', tok.trim());
+    localStorage.setItem('wa_cloud_media_url', mUrl.trim());
+    addLog('info', 'Meta Cloud API credentials saved locally.');
+  };
+
   const [sendMode, setSendMode] = useState<'batch' | 'manual'>('batch');
   const [batchSize, setBatchSize] = useState<string>('all');
-  const [delaySec, setDelaySec] = useState<number>(5);
+  const [delaySec, setDelaySec] = useState<number>(1);
   const [isSending, setIsSending] = useState(false);
   const [sendProgress, setSendProgress] = useState<{ current: number; total: number } | null>(null);
 
@@ -453,6 +477,145 @@ export default function WhatsAppWorkspace() {
     addLog('info', 'Queue progress reset to beginning.');
   };
 
+  // ── Meta WhatsApp Cloud API Direct Dispatcher ──────────────────────────────
+  const sendCloudMessage = async (contact: Contact, text: string) => {
+    if (!cloudPhoneId || !cloudAccessToken) {
+      throw new Error('Meta Cloud API credentials missing. Please configure Phone Number ID and Access Token.');
+    }
+
+    const cleanPhone = contact.phone.replace(/[^\d]/g, '');
+    const endpoint = `https://graph.facebook.com/v20.0/${cloudPhoneId}/messages`;
+
+    // Determine payload: document/image with caption vs plain text
+    let body: Record<string, unknown>;
+
+    // If media attachment or hosted media URL provided
+    const targetMediaUrl = cloudMediaUrl.trim();
+
+    if (targetMediaUrl) {
+      const isPdf = /\.pdf($|\?)/i.test(targetMediaUrl) || media?.mimetype === 'application/pdf';
+      if (isPdf) {
+        body = {
+          messaging_product: 'whatsapp',
+          recipient_type: 'individual',
+          to: cleanPhone,
+          type: 'document',
+          document: {
+            link: targetMediaUrl,
+            caption: text,
+            filename: media?.filename || 'BrickBloom_Document.pdf',
+          },
+        };
+      } else {
+        body = {
+          messaging_product: 'whatsapp',
+          recipient_type: 'individual',
+          to: cleanPhone,
+          type: 'image',
+          image: {
+            link: targetMediaUrl,
+            caption: text,
+          },
+        };
+      }
+    } else {
+      body = {
+        messaging_product: 'whatsapp',
+        recipient_type: 'individual',
+        to: cleanPhone,
+        type: 'text',
+        text: { preview_url: true, body: text },
+      };
+    }
+
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${cloudAccessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      const errDetail =
+        data?.error?.error_user_msg ||
+        data?.error?.message ||
+        `HTTP ${res.status}: Failed to deliver`;
+      throw new Error(errDetail);
+    }
+
+    return data;
+  };
+
+  const handleStartCloudBatchSend = async () => {
+    if (!cloudPhoneId || !cloudAccessToken) {
+      setShowCloudConfig(true);
+      alert('Please configure your Meta WhatsApp Cloud API credentials first.');
+      return;
+    }
+    if (!contacts.length) {
+      alert('Upload recipient contacts first.');
+      return;
+    }
+
+    let toSend = contacts;
+    if (batchSize !== 'all') {
+      const limit = parseInt(batchSize, 10);
+      toSend = contacts.slice(0, limit);
+    }
+
+    if (
+      !window.confirm(
+        `Start automated Meta Cloud API broadcast to ${toSend.length} contacts? Messages will be sent in background.`
+      )
+    ) {
+      return;
+    }
+
+    setIsSending(true);
+    setSendProgress({ current: 0, total: toSend.length });
+    addLog('info', `[Meta Cloud API] Initiating automated broadcast to ${toSend.length} leads...`);
+
+    let sent = 0;
+    let failed = 0;
+
+    for (let i = 0; i < toSend.length; i++) {
+      const contact = toSend[i];
+      const message = mergeMessage(template, contact);
+
+      try {
+        await sendCloudMessage(contact, message);
+        sent++;
+        setContacts((prev) =>
+          prev.map((c) => (c.phone === contact.phone ? { ...c, status: 'sent' } : c))
+        );
+        addLog('success', `[Meta API] Delivered to ${contact.name} (+${contact.phone})`);
+      } catch (err: unknown) {
+        failed++;
+        const msg = err instanceof Error ? err.message : String(err);
+        setContacts((prev) =>
+          prev.map((c) => (c.phone === contact.phone ? { ...c, status: 'skipped' } : c))
+        );
+        addLog('error', `[Meta API] Failed for ${contact.name} (+${contact.phone}): ${msg}`);
+      }
+
+      setSendProgress({ current: i + 1, total: toSend.length });
+
+      if (i < toSend.length - 1 && delaySec > 0) {
+        await new Promise((r) => setTimeout(r, delaySec * 1000));
+      }
+    }
+
+    setIsSending(false);
+    setSendProgress(null);
+    addLog(
+      'info',
+      `[Meta Cloud API] Broadcast finished: ${sent} delivered, ${failed} failed or skipped.`
+    );
+  };
+
   // Batch Send
   const handleStartBatchSend = async () => {
     if (status !== 'ready') {
@@ -611,7 +774,9 @@ export default function WhatsAppWorkspace() {
             </h1>
             <span
               className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
-                engineMode === 'direct'
+                engineMode === 'cloud'
+                  ? 'bg-blue-100 text-blue-800 border border-blue-200'
+                  : engineMode === 'direct'
                   ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                   : isConnected
                   ? 'bg-emerald-100 text-emerald-800'
@@ -620,18 +785,22 @@ export default function WhatsAppWorkspace() {
                   : 'bg-amber-100 text-amber-800'
               }`}
             >
-              {engineMode === 'direct'
-                ? 'Standard Web Dispatch (No Backend)'
+              {engineMode === 'cloud'
+                ? 'Meta Cloud API (Official Bulk + Media)'
+                : engineMode === 'direct'
+                ? 'Direct Click-to-Chat (Zero Backend)'
                 : isConnected
-                ? 'Server Connected'
+                ? 'Node.js Connected'
                 : status === 'qr'
                 ? 'Scan QR'
                 : 'Server Offline'}
             </span>
           </div>
           <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            {engineMode === 'direct'
-              ? 'Zero-backend Click-to-Chat protocol. Personalize and send messages directly via WhatsApp Web / App.'
+            {engineMode === 'cloud'
+              ? 'Official Meta WhatsApp Cloud API. Sends 1-click automated bulk messages with PDF/image attachments directly from GitHub Pages.'
+              : engineMode === 'direct'
+              ? 'Zero-backend Click-to-Chat runner. Opens conversations directly in WhatsApp Web or App.'
               : 'Automated background outreach powered by local Node.js / Puppeteer Chromium instance.'}
           </p>
         </div>
@@ -641,6 +810,17 @@ export default function WhatsAppWorkspace() {
           <div className="inline-flex rounded-lg border border-slate-200 p-0.5 bg-slate-50 text-xs font-semibold">
             <button
               type="button"
+              onClick={() => setEngineMode('cloud')}
+              className={`rounded px-2.5 py-1 transition ${
+                engineMode === 'cloud'
+                  ? 'bg-white text-blue-900 shadow-sm font-bold'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              ⚡ Meta Cloud API (Bulk + Media)
+            </button>
+            <button
+              type="button"
               onClick={() => setEngineMode('direct')}
               className={`rounded px-2.5 py-1 transition ${
                 engineMode === 'direct'
@@ -648,7 +828,7 @@ export default function WhatsAppWorkspace() {
                   : 'text-slate-500 hover:text-slate-800'
               }`}
             >
-              Direct Web (Zero-Backend)
+              Direct Web
             </button>
             <button
               type="button"
@@ -662,6 +842,18 @@ export default function WhatsAppWorkspace() {
               Node.js Server
             </button>
           </div>
+
+          {engineMode === 'cloud' && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setShowCloudConfig((prev) => !prev)}
+              className="h-8 text-xs font-semibold gap-1.5 border-blue-200 text-blue-800 hover:bg-blue-50"
+            >
+              <Settings className="h-3.5 w-3.5" />
+              API Keys
+            </Button>
+          )}
 
           {engineMode === 'direct' && (
             <div className="inline-flex rounded-lg border border-slate-200 p-0.5 bg-slate-50 text-xs font-semibold">
@@ -691,6 +883,90 @@ export default function WhatsAppWorkspace() {
           )}
         </div>
       </div>
+
+      {/* Meta Cloud API Configuration Drawer/Banner */}
+      {(showCloudConfig || (engineMode === 'cloud' && (!cloudPhoneId || !cloudAccessToken))) && (
+        <div className="rounded-xl border border-blue-200 bg-blue-50/70 p-4 shadow-sm space-y-3 text-xs">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-blue-900 font-bold">
+              <Cloud className="h-4 w-4 text-blue-600" />
+              <span>Meta WhatsApp Cloud API Configuration</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowCloudConfig(false)}
+              className="text-blue-500 hover:text-blue-800"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <p className="text-blue-700 text-[11px] leading-relaxed">
+            Get your credentials free from{' '}
+            <a
+              href="https://developers.facebook.com/apps"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline font-bold"
+            >
+              developers.facebook.com
+            </a>{' '}
+            &rarr; Your App &rarr; WhatsApp &rarr; API Setup. Your token is stored safely in your browser&apos;s localStorage only.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div>
+              <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                Phone Number ID *
+              </label>
+              <input
+                type="text"
+                defaultValue={cloudPhoneId}
+                id="cloud-phone-id"
+                placeholder="e.g. 109283746592817"
+                className="w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                Access Token (Bearer) *
+              </label>
+              <input
+                type="password"
+                defaultValue={cloudAccessToken}
+                id="cloud-access-token"
+                placeholder="EAAG..."
+                className="w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="text-[11px] font-bold text-slate-700 block mb-1">
+                Public PDF / Media URL (Optional)
+              </label>
+              <input
+                type="text"
+                defaultValue={cloudMediaUrl}
+                id="cloud-media-url"
+                placeholder="https://.../catalog.pdf"
+                className="w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none"
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-end gap-2 pt-1">
+            <Button
+              size="sm"
+              onClick={() => {
+                const p = (document.getElementById('cloud-phone-id') as HTMLInputElement)?.value;
+                const t = (document.getElementById('cloud-access-token') as HTMLInputElement)?.value;
+                const m = (document.getElementById('cloud-media-url') as HTMLInputElement)?.value;
+                saveCloudConfig(p, t, m);
+                setShowCloudConfig(false);
+              }}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs h-8 px-4"
+            >
+              Save Credentials
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Backend Server Configuration Banner (only in server mode) */}
       {engineMode === 'server' && (
@@ -1055,7 +1331,174 @@ export default function WhatsAppWorkspace() {
         {/* Right Column: Execution & Terminal Log */}
         <div className="space-y-6">
           {/* Card: Send Controls */}
-          {engineMode === 'direct' ? (
+          {engineMode === 'cloud' ? (
+            <Card className="border-blue-200 shadow-sm">
+              <CardHeader className="pb-3 bg-blue-50/30">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Cloud className="h-4 w-4 text-blue-600" />
+                    <CardTitle className="text-base text-blue-950">3. Meta Cloud API Automated Bulk Delivery</CardTitle>
+                  </div>
+                  {contacts.length > 0 && (
+                    <span className="text-xs font-bold text-blue-700 font-mono">
+                      {contacts.length} leads
+                    </span>
+                  )}
+                </div>
+                <CardDescription className="text-xs text-blue-700/80">
+                  Sends automated background messages directly through Meta's official WhatsApp Cloud servers with PDF/image support.
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="space-y-4 pt-4">
+                {contacts.length === 0 ? (
+                  <div className="text-center py-8 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 space-y-2">
+                    <Users className="h-8 w-8 mx-auto text-slate-400" />
+                    <p className="text-xs font-medium text-slate-600">
+                      Upload an Excel or CSV file on the left to start sending.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-[11px] font-semibold text-slate-600 block mb-1">Batch Limit</label>
+                        <select
+                          value={batchSize}
+                          onChange={(e) => setBatchSize(e.target.value)}
+                          disabled={isSending}
+                          className="h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-xs font-medium text-slate-800 outline-none"
+                        >
+                          <option value="all">All Contacts ({contacts.length})</option>
+                          <option value="5">First 5</option>
+                          <option value="10">First 10</option>
+                          <option value="25">First 25</option>
+                          <option value="50">First 50</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="text-[11px] font-semibold text-slate-600 block mb-1">Delay Between API Calls</label>
+                        <select
+                          value={delaySec}
+                          onChange={(e) => setDelaySec(Number(e.target.value))}
+                          disabled={isSending}
+                          className="h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-xs font-medium text-slate-800 outline-none"
+                        >
+                          <option value={0}>Instant (0s)</option>
+                          <option value={1}>1 second (recommended)</option>
+                          <option value={2}>2 seconds</option>
+                          <option value={3}>3 seconds</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Progress Indicator */}
+                    {sendProgress && (
+                      <div className="space-y-1.5 rounded-lg border border-blue-100 bg-blue-50/60 p-3">
+                        <div className="flex items-center justify-between text-xs font-semibold text-blue-900">
+                          <span>Dispatching via Meta Cloud API…</span>
+                          <span>
+                            {sendProgress.current} / {sendProgress.total}
+                          </span>
+                        </div>
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-blue-200">
+                          <div
+                            className="h-full bg-blue-600 transition-all duration-300"
+                            style={{ width: `${(sendProgress.current / sendProgress.total) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex items-center gap-2">
+                      <Button
+                        onClick={handleStartCloudBatchSend}
+                        disabled={isSending || contacts.length === 0}
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs h-10 shadow-sm"
+                      >
+                        {isSending ? (
+                          <>
+                            <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                            Broadcasting via Meta API…
+                          </>
+                        ) : (
+                          <>
+                            <Play className="mr-2 h-4 w-4" />
+                            Start Meta Cloud Broadcast ({batchSize === 'all' ? contacts.length : Math.min(Number(batchSize), contacts.length)} Leads)
+                          </>
+                        )}
+                      </Button>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleDirectResetQueue}
+                        disabled={isSending}
+                        className="h-10 text-xs text-slate-600 hover:text-slate-900"
+                        title="Reset progress to beginning"
+                      >
+                        <RotateCcw className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    {/* Recipient list table */}
+                    <div className="space-y-2 pt-2">
+                      <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                        <span>Recipient Queue ({contacts.length})</span>
+                        <span className="text-[11px] font-normal text-slate-500">
+                          Live delivery status
+                        </span>
+                      </div>
+
+                      <div className="max-h-48 overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-inner">
+                        <table className="w-full text-left text-xs">
+                          <thead className="sticky top-0 bg-slate-100 text-[10px] uppercase font-bold text-slate-500">
+                            <tr>
+                              <th className="px-3 py-1.5">#</th>
+                              <th className="px-3 py-1.5">Name</th>
+                              <th className="px-3 py-1.5">Phone</th>
+                              <th className="px-3 py-1.5">Status</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100 text-slate-700">
+                            {contacts.map((c, i) => (
+                              <tr key={i} className="transition hover:bg-slate-50">
+                                <td className="px-3 py-1.5 font-mono text-[11px] text-slate-400">
+                                  {i + 1}
+                                </td>
+                                <td className="px-3 py-1.5 truncate max-w-[140px] font-medium">{c.name}</td>
+                                <td className="px-3 py-1.5 font-mono text-[11px] text-slate-600">
+                                  {c.phone}
+                                </td>
+                                <td className="px-3 py-1.5">
+                                  {c.status === 'sent' && (
+                                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700">
+                                      <CheckCircle2 className="h-3 w-3" /> Sent
+                                    </span>
+                                  )}
+                                  {c.status === 'skipped' && (
+                                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-rose-700">
+                                      <X className="h-3 w-3" /> Failed
+                                    </span>
+                                  )}
+                                  {(!c.status || c.status === 'pending') && (
+                                    <span className="text-[10px] font-medium text-slate-400">
+                                      Pending
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ) : engineMode === 'direct' ? (
             <Card className="border-slate-200 shadow-sm">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
