@@ -11,7 +11,6 @@ import {
   Package,
   ShieldCheck,
   Users,
-  Zap,
 } from 'lucide-react';
 import { firestore } from '@/lib/firebase';
 
@@ -126,23 +125,7 @@ export default function AdminHub() {
   }, []);
 
   return (
-    <div className="space-y-8">
-      {/* Hero Header matching public/admin.html */}
-      <div className="text-center max-w-3xl mx-auto space-y-2">
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-600/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-emerald-950">
-          <Zap className="h-3.5 w-3.5 text-emerald-700" />
-          <span>Operations Dashboard</span>
-        </div>
-
-        <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight">
-          Admin Tool Hub
-        </h1>
-
-        <p className="text-sm sm:text-base text-slate-600">
-          Select an enterprise application below to manage BrickBloom operations
-        </p>
-      </div>
-
+    <div className="space-y-6">
       {/* Live Statistics Overview Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         <div className="rounded-2xl border border-[#e8d7ba] bg-[#fcf7ee] p-4 text-center shadow-sm">

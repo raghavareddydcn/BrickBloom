@@ -510,14 +510,26 @@ export default function WhatsAppWorkspace() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      {/* Top Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      {/* Top Header Card */}
+      <div className="rounded-2xl border border-[#e8d7ba] bg-[#fcf7ee] p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <p className="eyebrow">Customer Communication</p>
-          <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-            WhatsApp Operations Hub
-          </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-display">
+              WhatsApp Outreach
+            </h1>
+            <span
+              className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
+                status === 'ready'
+                  ? 'bg-emerald-100 text-emerald-800'
+                  : status === 'qr'
+                  ? 'bg-blue-100 text-blue-800'
+                  : 'bg-amber-100 text-amber-800'
+              }`}
+            >
+              {status === 'ready' ? 'Connected' : status === 'qr' ? 'Scan QR' : 'Ready to Connect'}
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-600 mt-1">
             Connect local business WhatsApp, import recipient spreadsheets, compose personalized messages, and broadcast updates.
           </p>
         </div>
@@ -526,7 +538,7 @@ export default function WhatsAppWorkspace() {
             href="/whatsapp.html"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-900"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-[#e8d7ba] bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-[#f0e4cf] hover:text-slate-900"
           >
             <ExternalLink className="h-3.5 w-3.5" />
             Standalone Full Page Tool

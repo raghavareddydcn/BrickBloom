@@ -96,7 +96,7 @@ export default function AdminLayout() {
       </header>
 
       {/* Main Workspace Layout */}
-      <div className="flex-1 mx-auto grid w-full max-w-7xl grid-cols-1 lg:grid-cols-[240px_minmax(0,1fr)] gap-6 p-4 sm:p-6 lg:p-8">
+      <div className="flex-1 mx-auto grid w-full max-w-7xl grid-cols-1 lg:grid-cols-[240px_minmax(0,1fr)] items-start gap-6 p-4 sm:p-6 lg:p-8">
         
         {/* Sidebar */}
         <aside className="h-fit rounded-3xl bg-[#fcf7ee]/90 border border-[#e8d7ba] p-4 shadow-md backdrop-blur-md">
