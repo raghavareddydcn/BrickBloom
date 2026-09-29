@@ -19,8 +19,6 @@ interface ToolItem {
   description: string;
   icon: typeof FileText;
   accentBar: string;
-  iconWrapBg: string;
-  iconColor: string;
   badgeClass: string;
   buttonBg: string;
   actionText: string;
@@ -34,8 +32,6 @@ const TOOLS: ToolItem[] = [
     description: 'Create, save, print, and export GST-compliant tax invoices with automated inventory stock deductions.',
     icon: FileText,
     accentBar: 'bg-gradient-to-r from-emerald-800 to-emerald-500',
-    iconWrapBg: 'bg-emerald-50 border border-emerald-200',
-    iconColor: 'text-emerald-800',
     badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-200',
     buttonBg: 'bg-[#031c0e] hover:bg-emerald-950 text-white',
     actionText: 'Launch Invoice Portal',
@@ -47,8 +43,6 @@ const TOOLS: ToolItem[] = [
     description: 'Track live stock levels across products, set low-stock threshold alerts, and edit stock counts in real-time.',
     icon: Package,
     accentBar: 'bg-gradient-to-r from-amber-600 to-amber-400',
-    iconWrapBg: 'bg-amber-50 border border-amber-200',
-    iconColor: 'text-amber-800',
     badgeClass: 'bg-amber-50 text-amber-900 border-amber-200',
     buttonBg: 'bg-amber-900 hover:bg-amber-950 text-white',
     actionText: 'Launch Inventory',
@@ -60,8 +54,6 @@ const TOOLS: ToolItem[] = [
     description: 'Connect WhatsApp Web, import customer contact sheets from Excel, and broadcast batch or manual reviewed updates.',
     icon: MessageCircle,
     accentBar: 'bg-gradient-to-r from-teal-600 to-emerald-500',
-    iconWrapBg: 'bg-teal-50 border border-teal-200',
-    iconColor: 'text-teal-800',
     badgeClass: 'bg-teal-50 text-teal-900 border-teal-200',
     buttonBg: 'bg-teal-900 hover:bg-teal-950 text-white',
     actionText: 'Launch WhatsApp Tool',
@@ -73,8 +65,6 @@ const TOOLS: ToolItem[] = [
     description: 'Manage registered admin users, assign roles (Admin, Editor, Viewer), and manage security permissions.',
     icon: Users,
     accentBar: 'bg-gradient-to-r from-purple-600 to-purple-400',
-    iconWrapBg: 'bg-purple-50 border border-purple-200',
-    iconColor: 'text-purple-800',
     badgeClass: 'bg-purple-50 text-purple-900 border-purple-200',
     buttonBg: 'bg-purple-900 hover:bg-purple-950 text-white',
     actionText: 'Manage Users',
@@ -86,8 +76,6 @@ const TOOLS: ToolItem[] = [
     description: 'Real-time audit trail of all invoice creations, stock adjustments, and authentication events across BrickBloom.',
     icon: History,
     accentBar: 'bg-gradient-to-r from-slate-700 to-slate-500',
-    iconWrapBg: 'bg-slate-100 border border-slate-200',
-    iconColor: 'text-slate-800',
     badgeClass: 'bg-slate-100 text-slate-800 border-slate-300',
     buttonBg: 'bg-slate-900 hover:bg-slate-950 text-white',
     actionText: 'View Audit Trail',
@@ -172,113 +160,7 @@ export default function AdminHub() {
   }, []);
 
   return (
-    <div className="space-y-7">
-      {/* Modern Executive KPI Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        
-        {/* Total Business Volume */}
-        <div className="rounded-2xl border border-[#e2d5be] bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-emerald-600/40">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
-              Total Business Done
-            </span>
-            <div className="grid h-8 w-8 place-items-center rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200">
-              <IndianRupee className="h-4 w-4" />
-            </div>
-          </div>
-          <p className="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2 tracking-tight">
-            ₹{totalRevenue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-          </p>
-          <div className="mt-2 flex items-center gap-1.5 text-xs text-slate-500">
-            <span className="font-bold text-emerald-700">{invoiceCount} Invoices</span>
-            <span>&bull;</span>
-            <span>All-time turnover</span>
-          </div>
-        </div>
-
-        {/* Commercial Invoices */}
-        <div className="rounded-2xl border border-[#e2d5be] bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-emerald-600/40">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
-              Commercial Invoices
-            </span>
-            <div className="grid h-8 w-8 place-items-center rounded-xl bg-blue-50 text-blue-800 border border-blue-200">
-              <FileText className="h-4 w-4" />
-            </div>
-          </div>
-          <p className="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2 tracking-tight">
-            {invoiceCount}
-          </p>
-          <div className="mt-2 flex items-center gap-1.5 text-xs text-slate-500">
-            <span className="font-bold text-slate-700">GST Compliant</span>
-            <span>&bull;</span>
-            <span>Active records</span>
-          </div>
-        </div>
-
-        {/* Catalog Formats & Stock Health */}
-        <div className="rounded-2xl border border-[#e2d5be] bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-amber-600/40">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
-              Inventory &amp; Products
-            </span>
-            <div className="grid h-8 w-8 place-items-center rounded-xl bg-amber-50 text-amber-800 border border-amber-200">
-              <Package className="h-4 w-4" />
-            </div>
-          </div>
-          <p className="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2 tracking-tight">
-            {productCount} <span className="text-base font-bold text-slate-500">Products</span>
-          </p>
-          <div className="mt-2 flex items-center gap-1.5 flex-wrap">
-            {outOfStockCount > 0 && (
-              <span className="inline-flex items-center rounded-md bg-rose-50 px-2 py-0.5 text-[10px] font-extrabold text-rose-800 border border-rose-200">
-                {outOfStockCount} Out of Stock
-              </span>
-            )}
-            {lowStockCount > 0 && (
-              <span className="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-[10px] font-extrabold text-amber-800 border border-amber-200">
-                {lowStockCount} Low Stock
-              </span>
-            )}
-            {outOfStockCount === 0 && lowStockCount === 0 && (
-              <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-extrabold text-emerald-800 border border-emerald-200">
-                All Items Stocked
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* WhatsApp Dispatch Engine */}
-        <div className="rounded-2xl border border-[#e2d5be] bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-emerald-600/40">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
-              WhatsApp Dispatch
-            </span>
-            <div className="grid h-8 w-8 place-items-center rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200">
-              <MessageCircle className="h-4 w-4" />
-            </div>
-          </div>
-          <div className="mt-2 flex items-center gap-2">
-            <span
-              className={`h-3 w-3 rounded-full ${
-                waStatus === 'ready'
-                  ? 'bg-emerald-500 ring-4 ring-emerald-100'
-                  : waStatus === 'qr'
-                  ? 'bg-blue-500 animate-pulse ring-4 ring-blue-100'
-                  : 'bg-rose-500 ring-4 ring-rose-100'
-              }`}
-            />
-            <p className="font-display text-xl sm:text-2xl font-extrabold text-slate-900 capitalize tracking-tight">
-              {waStatus === 'ready' ? 'Connected' : waStatus === 'qr' ? 'Scan QR' : 'Disconnected'}
-            </p>
-          </div>
-          <p className="mt-2 text-xs text-slate-500">
-            Local port 3000 outreach client
-          </p>
-        </div>
-
-      </div>
-
+    <div className="space-y-6">
       {/* The 5 Core Tools Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {TOOLS.map((tool) => {
@@ -296,7 +178,7 @@ export default function AdminHub() {
                 <div
                   className={`inline-flex items-center justify-center rounded-full border px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider mb-3 ${tool.badgeClass}`}
                 >
-                  {tool.to === '/admin/users' && userCount > 0 ? `${userCount} Operators • ${tool.badge}` : tool.badge}
+                  {tool.badge}
                 </div>
 
                 {/* Title */}
@@ -304,8 +186,90 @@ export default function AdminHub() {
                   {tool.title}
                 </h3>
 
+                {/* Integrated Metric Sub-Panel */}
+                <div className="my-4 w-full rounded-2xl border border-slate-100 bg-[#fbf8f3] p-4 text-center shadow-inner">
+                  {tool.to === '/admin/invoices' && (
+                    <>
+                      <div className="flex items-center justify-center gap-1 font-display text-2xl font-extrabold text-emerald-900">
+                        <IndianRupee className="h-5 w-5 text-emerald-700" />
+                        <span>{totalRevenue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
+                      </div>
+                      <p className="text-xs font-bold text-slate-500 mt-1">
+                        {invoiceCount} Invoices &bull; All-time turnover
+                      </p>
+                    </>
+                  )}
+
+                  {tool.to === '/admin/inventory' && (
+                    <>
+                      <div className="font-display text-2xl font-extrabold text-slate-900">
+                        {productCount} <span className="text-base font-bold text-slate-500">Products</span>
+                      </div>
+                      <div className="mt-1 flex items-center justify-center gap-1.5 flex-wrap text-xs">
+                        {outOfStockCount > 0 && (
+                          <span className="inline-flex items-center rounded-md bg-rose-50 px-2 py-0.5 text-[10px] font-extrabold text-rose-800 border border-rose-200">
+                            {outOfStockCount} Out of Stock
+                          </span>
+                        )}
+                        {lowStockCount > 0 && (
+                          <span className="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-[10px] font-extrabold text-amber-800 border border-amber-200">
+                            {lowStockCount} Low Stock
+                          </span>
+                        )}
+                        {outOfStockCount === 0 && lowStockCount === 0 && (
+                          <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-extrabold text-emerald-800 border border-emerald-200">
+                            All Items Stocked
+                          </span>
+                        )}
+                      </div>
+                    </>
+                  )}
+
+                  {tool.to === '/admin/whatsapp' && (
+                    <>
+                      <div className="flex items-center justify-center gap-2 font-display text-xl font-extrabold text-slate-900">
+                        <span
+                          className={`h-2.5 w-2.5 rounded-full ${
+                            waStatus === 'ready'
+                              ? 'bg-emerald-500 ring-4 ring-emerald-100'
+                              : waStatus === 'qr'
+                              ? 'bg-blue-500 animate-pulse ring-4 ring-blue-100'
+                              : 'bg-rose-500 ring-4 ring-rose-100'
+                          }`}
+                        />
+                        <span className="capitalize">{waStatus === 'ready' ? 'Connected' : waStatus === 'qr' ? 'Scan QR' : 'Disconnected'}</span>
+                      </div>
+                      <p className="text-xs font-bold text-slate-500 mt-1">
+                        Local Port 3000 Outreach Client
+                      </p>
+                    </>
+                  )}
+
+                  {tool.to === '/admin/users' && (
+                    <>
+                      <div className="font-display text-2xl font-extrabold text-slate-900">
+                        {userCount} <span className="text-base font-bold text-slate-500">Operators</span>
+                      </div>
+                      <p className="text-xs font-bold text-slate-500 mt-1">
+                        Role-based access &amp; permissions
+                      </p>
+                    </>
+                  )}
+
+                  {tool.to === '/admin/audit' && (
+                    <>
+                      <div className="font-display text-xl font-extrabold text-slate-900">
+                        Live Event Log
+                      </div>
+                      <p className="text-xs font-bold text-slate-500 mt-1">
+                        Audit trail of invoice &amp; stock events
+                      </p>
+                    </>
+                  )}
+                </div>
+
                 {/* Description */}
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-2.5 max-w-sm">
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-sm">
                   {tool.description}
                 </p>
               </div>

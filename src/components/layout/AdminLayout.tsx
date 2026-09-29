@@ -56,15 +56,6 @@ export default function AdminLayout() {
         </NavLink>
 
         <div className="flex items-center gap-3">
-          {/* Live Cloud Sync Pill */}
-          <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold text-emerald-300">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span>Cloud Synced</span>
-          </div>
-
           {/* User Identity Pill */}
           <div className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-bold text-slate-200 shadow-sm">
             <span className="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-tr from-emerald-600 to-emerald-400 text-xs font-extrabold text-white">

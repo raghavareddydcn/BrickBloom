@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import { collection, doc, getDocs, increment, onSnapshot, runTransaction, setDoc, writeBatch } from 'firebase/firestore';
-import { Copy, FilePlus2, ImageDown, Pencil, Plus, Printer, Search, Trash2 } from 'lucide-react';
+import { Award, BarChart3, Calendar, Copy, FilePlus2, ImageDown, Pencil, Plus, Printer, Search, Trash2, TrendingUp } from 'lucide-react';
 import { firestore } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -77,6 +77,56 @@ export default function InvoiceWorkspace() {
     const next = await runTransaction(firestore, async transaction => { const counter = doc(firestore, 'counters', fy); const snap = await transaction.get(counter); const rows = await getDocs(collection(firestore, 'invoices')); const highest = rows.docs.reduce((max, row) => Math.max(max, Number(refPattern(fy).exec(String(row.data().refNo || ''))?.[1] || 0)), 0); const sequence = Math.max(Number(snap.data()?.seq || 0), highest, Number(match[1]) - 1) + 1; transaction.set(counter, { seq: sequence, updatedAt: new Date().toISOString() }, { merge: true }); return sequence; });
     return `BB/${fy}/${String(next).padStart(3, '0')}`;
   }
+
+  const analytics = useMemo(() => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+    const fyStartYear = currentMonth >= 3 ? currentYear : currentYear - 1;
+    const fyStartDate = new Date(fyStartYear, 3, 1);
+
+    let monthlyTotal = 0;
+    let monthlyCount = 0;
+    let ytdTotal = 0;
+    let ytdCount = 0;
+    let allTimeTotal = 0;
+
+    invoices.forEach((inv) => {
+      const total = (inv as any).grandTotal || (
+        (inv.items || []).reduce((sum, item) => sum + n(item.qty) * n(item.price) * (1 + n(item.gstRate ?? inv.taxRate ?? 5) / 100), 0) + n(inv.transport)
+      );
+      allTimeTotal += total;
+
+      const dateStr = inv.issueDate || inv.savedAt;
+      if (dateStr) {
+        const d = new Date(dateStr);
+        if (!isNaN(d.getTime())) {
+          if (d.getFullYear() === currentYear && d.getMonth() === currentMonth) {
+            monthlyTotal += total;
+            monthlyCount++;
+          }
+          if (d >= fyStartDate) {
+            ytdTotal += total;
+            ytdCount++;
+          }
+        }
+      }
+    });
+
+    const aov = invoices.length ? allTimeTotal / invoices.length : 0;
+
+    return {
+      monthlyTotal,
+      monthlyCount,
+      ytdTotal,
+      ytdCount,
+      allTimeTotal,
+      aov,
+      monthName: now.toLocaleString('default', { month: 'short' }),
+      fyName: `FY ${String(fyStartYear).slice(-2)}-${String(fyStartYear + 1).slice(-2)}`,
+    };
+  }, [invoices]);
+
   const totals = useMemo(() => { const subtotal = draft.items.reduce((sum, item) => sum + n(item.qty) * n(item.price), 0); const tax = draft.items.reduce((sum, item) => sum + n(item.qty) * n(item.price) * n(item.gstRate) / 100, 0); const grand = subtotal + tax + n(draft.transport); return { subtotal, tax, grand, balance: Math.max(0, grand - n(draft.advancePaid)) }; }, [draft]);
   const filtered = useMemo(() => invoices.filter(invoice => `${invoice.refNo || ''} ${invoice.custName || ''} ${invoice.custPhone || ''}`.toLowerCase().includes(query.toLowerCase())), [invoices, query]);
   const changeDraft = (key: keyof Draft, value: string | number | Item[]) => setDraft(current => ({ ...current, [key]: value }));
@@ -125,6 +175,69 @@ export default function InvoiceWorkspace() {
         <Button size="default" className="bg-[#031c0e] hover:bg-emerald-950 text-white rounded-xl shadow-sm font-bold" onClick={startNew} disabled={!canEdit}>
           <FilePlus2 className="h-4 w-4 mr-1.5" /> New invoice
         </Button>
+      </div>
+
+      {/* Executive Financial Performance Dashboard */}
+      <div className="no-print grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="rounded-2xl border border-[#e2d5be] bg-white p-4 shadow-sm">
+          <div className="flex items-center justify-between text-xs font-extrabold uppercase tracking-wider text-slate-500">
+            <span>This Month ({analytics.monthName})</span>
+            <div className="grid h-7 w-7 place-items-center rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200">
+              <TrendingUp className="h-3.5 w-3.5" />
+            </div>
+          </div>
+          <p className="font-display text-2xl font-extrabold text-slate-900 mt-2">
+            ₹{analytics.monthlyTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+          </p>
+          <p className="text-xs font-bold text-slate-500 mt-1">
+            {analytics.monthlyCount} {analytics.monthlyCount === 1 ? 'Invoice' : 'Invoices'} issued
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-[#e2d5be] bg-white p-4 shadow-sm">
+          <div className="flex items-center justify-between text-xs font-extrabold uppercase tracking-wider text-slate-500">
+            <span>YTD Business ({analytics.fyName})</span>
+            <div className="grid h-7 w-7 place-items-center rounded-lg bg-blue-50 text-blue-800 border border-blue-200">
+              <Calendar className="h-3.5 w-3.5" />
+            </div>
+          </div>
+          <p className="font-display text-2xl font-extrabold text-slate-900 mt-2">
+            ₹{analytics.ytdTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+          </p>
+          <p className="text-xs font-bold text-slate-500 mt-1">
+            {analytics.ytdCount} Invoices in current FY
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-[#e2d5be] bg-white p-4 shadow-sm">
+          <div className="flex items-center justify-between text-xs font-extrabold uppercase tracking-wider text-slate-500">
+            <span>All-Time Turnover</span>
+            <div className="grid h-7 w-7 place-items-center rounded-lg bg-amber-50 text-amber-800 border border-amber-200">
+              <Award className="h-3.5 w-3.5" />
+            </div>
+          </div>
+          <p className="font-display text-2xl font-extrabold text-slate-900 mt-2">
+            ₹{analytics.allTimeTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+          </p>
+          <p className="text-xs font-bold text-slate-500 mt-1">
+            {invoices.length} Total commercial invoices
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-[#e2d5be] bg-white p-4 shadow-sm">
+          <div className="flex items-center justify-between text-xs font-extrabold uppercase tracking-wider text-slate-500">
+            <span>Avg Order Value (AOV)</span>
+            <div className="grid h-7 w-7 place-items-center rounded-lg bg-purple-50 text-purple-800 border border-purple-200">
+              <BarChart3 className="h-3.5 w-3.5" />
+            </div>
+          </div>
+          <p className="font-display text-2xl font-extrabold text-slate-900 mt-2">
+            ₹{analytics.aov.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+          </p>
+          <p className="text-xs font-bold text-slate-500 mt-1">
+            Average revenue per invoice
+          </p>
+        </div>
       </div>
       {notice && <p className="no-print rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-900">{notice}</p>}
       {showForm && <div className="no-print grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]"><Card><CardContent className="p-5 sm:p-7"><div className="flex items-center justify-between"><h2 className="text-xl font-bold text-slate-900">{editingId ? `Edit ${draft.refNo}` : 'New invoice'}</h2><Button variant="ghost" onClick={() => setShowForm(false)}>Close</Button></div><div className="mt-5 grid gap-4 md:grid-cols-3">{([['refNo','Invoice reference'],['issueDate','Issue date'],['payTerms','Payment terms'],['custName','Customer name'],['custPhone','Phone'],['custGstin','GSTIN'],['custAddr','Address'],['custState','Customer state'],['placeOfSupply','Place of supply']] as [keyof Draft,string][]).map(([key,label]) => <label key={String(key)} className="text-xs font-bold uppercase tracking-wide text-slate-500">{label}<input disabled={!canEdit} type={key === 'issueDate' ? 'date' : 'text'} value={String(draft[key] ?? '')} onChange={event => changeDraft(key, event.target.value)} className="mt-1.5 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal text-slate-800 outline-none focus:border-brand-600 disabled:bg-slate-50" /></label>)}</div>
