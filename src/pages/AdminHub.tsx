@@ -3,14 +3,11 @@ import { Link } from 'react-router-dom';
 import { collection, onSnapshot } from 'firebase/firestore';
 import {
   ArrowRight,
-  ChevronRight,
-  ExternalLink,
   FileText,
   History,
   IndianRupee,
   MessageCircle,
   Package,
-  ShieldCheck,
   Users,
 } from 'lucide-react';
 import { firestore } from '@/lib/firebase';
@@ -331,51 +328,6 @@ export default function AdminHub() {
             </Link>
           );
         })}
-      </div>
-
-      {/* Bottom Bar Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-        
-        {/* Audit Bar */}
-        <div className="rounded-2xl border border-[#e2d5be] bg-white p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-all">
-          <div>
-            <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
-              <History className="h-4 w-4 text-slate-700" />
-              <span>System Audit Logs</span>
-            </div>
-            <p className="text-xs text-slate-600 mt-1">
-              Real-time activity logs of all invoice, inventory, and login events.
-            </p>
-          </div>
-          <Link
-            to="/admin/audit"
-            className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 text-xs font-bold shadow-sm transition-all shrink-0 ml-3"
-          >
-            <span>View Logs</span>
-            <ChevronRight className="h-3.5 w-3.5" />
-          </Link>
-        </div>
-
-        {/* Public Site Bar */}
-        <div className="rounded-2xl border border-[#e2d5be] bg-white p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-all">
-          <div>
-            <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
-              <ShieldCheck className="h-4 w-4 text-emerald-700" />
-              <span>Customer Website &amp; Inquiry Desk</span>
-            </div>
-            <p className="text-xs text-slate-600 mt-1">
-              Visit the live public catalog and test commercial RFQ submission.
-            </p>
-          </div>
-          <a
-            href="/"
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[#031c0e] hover:bg-emerald-950 text-white px-4 py-2 text-xs font-bold shadow-sm transition-all shrink-0 ml-3"
-          >
-            <span>Open Site</span>
-            <ExternalLink className="h-3.5 w-3.5" />
-          </a>
-        </div>
-
       </div>
     </div>
   );
