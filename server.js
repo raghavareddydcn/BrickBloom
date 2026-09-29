@@ -1,6 +1,19 @@
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
+import express from 'express';
+import path from 'path';
+import cors from 'cors';
+import fs from 'fs';
+import nodemailer from 'nodemailer';
+import whatsappWeb from 'whatsapp-web.js';
+import qrcode from 'qrcode';
+import { fileURLToPath } from 'url';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+
+const execAsync = promisify(exec);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const { Client, LocalAuth, MessageMedia } = whatsappWeb;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -8,7 +21,11 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-app.use(express.static(path.join(__dirname)));
+const distDir = path.join(__dirname, 'dist');
+const publicDir = path.join(__dirname, 'public');
+if (fs.existsSync(distDir)) app.use(express.static(distDir));
+app.use(express.static(publicDir));
+app.use(express.static(__dirname));
 
 const marketIntelligence = {
   overview: 'Premium BrickBloom sourcing for hydroponics, nurseries, and commercial growers.',
@@ -66,34 +83,6 @@ app.get('/api/market-intelligence', (req, res) => {
   res.json(marketIntelligence);
 });
 
-// ─── Admin portal ──────────────────────────────────────────────────────────
-app.get('/dashboard', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin.html'));
-});
-
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin.html'));
-});
-
-app.get('/invoice', (req, res) => {
-  res.sendFile(path.join(__dirname, 'invoice.html'));
-});
-
-app.get('/inventory', (req, res) => {
-  res.sendFile(path.join(__dirname, 'inventory.html'));
-});
-
-app.get('/public', (req, res) => {
-  res.redirect('/');
-});
-
-app.get('/public/:asset(*)', (req, res) => {
-  const assetPath = req.params.asset;
-  res.redirect(`/${assetPath}`);
-});
-
-const nodemailer = require('nodemailer');
-
 app.post('/api/leads', async (req, res) => {
   const { name, email, company, message } = req.body;
 
@@ -138,7 +127,6 @@ app.post('/api/leads', async (req, res) => {
 });
 
 // ─── Invoice Persistence API ────────────────────────────────────────────────
-const fs = require('fs');
 const invoicesDir = path.join(__dirname, 'invoices');
 if (!fs.existsSync(invoicesDir)) {
   fs.mkdirSync(invoicesDir, { recursive: true });
@@ -190,14 +178,14 @@ app.delete('/api/invoices/:id', (req, res) => {
   }
 });
 
-app.get('/whatsapp', (req, res) => {
-  res.sendFile(path.join(__dirname, 'whatsapp.html'));
-});
+const waLogFile = path.join(__dirname, 'wa-debug.log');
+function waLog(level, msg) {
+  const line = `[${new Date().toISOString()}] [${level}] ${msg}\n`;
+  try { fs.appendFileSync(waLogFile, line); } catch (_) {}
+  console.log(line.trim());
+}
 
 // ─── WhatsApp Bulk Sender ─────────────────────────────────────────────────────
-const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
-const qrcode = require('qrcode');
-
 // ── State ──────────────────────────────────────────────────────────────────────
 let waClient   = null;
 let waStatus   = 'disconnected';  // disconnected | initializing | qr | ready
@@ -215,55 +203,71 @@ function broadcast(event, data) {
   for (const res of SSE_CLIENTS) sseWrite(res, event, data);
 }
 
-// ── Internal: destroy client safely ───────────────────────────────────────────
-async function destroyClient(client) {
+async function stopWAClient(client) {
   if (!client) return;
   try {
+    const proc = client.pupBrowser ? client.pupBrowser.process() : null;
+    const pid = proc ? proc.pid : null;
+
     await Promise.race([
       client.destroy(),
-      new Promise(r => setTimeout(r, 6000))
+      new Promise(r => setTimeout(r, 3000))
     ]);
-  } catch (_) {}
+
+    if (pid) {
+      try {
+        await execAsync(`taskkill /pid ${pid} /T /F`);
+      } catch (_) {}
+    }
+  } catch (e) {
+    console.warn('[WA] Error destroying client:', e.message);
+  }
 }
 
-// ── Internal: reset state and broadcast ───────────────────────────────────────
-async function clearWASession(reason) {
+async function closeWASession(reason) {
+  waLog('warn', 'closeWASession called: ' + (reason || 'no reason'));
   clearTimeout(waInitTimeout);
   const prev = waClient;
   waClient = null;
   waStatus = 'disconnected';
   waQrData = null;
-  waError  = reason || null;
+  waError = reason || null;
   broadcast('state', { status: 'disconnected', error: waError });
 
   if (prev) {
-    try {
-      await Promise.race([
-        prev.destroy(),
-        new Promise(r => setTimeout(r, 4000))
-      ]);
-    } catch (_) {}
+    await stopWAClient(prev);
   }
+}
 
-  // Force delete .wwebjs_auth session directory to clean Chromium locks
+async function clearWASession(reason) {
+  await closeWASession(reason);
+  await new Promise(r => setTimeout(r, 600));
+
   const authDir = path.join(__dirname, '.wwebjs_auth');
   if (fs.existsSync(authDir)) {
-    try {
-      fs.rmSync(authDir, { recursive: true, force: true });
-      console.log('[WA] Cleared session folder .wwebjs_auth');
-    } catch (e) {
-      console.warn('[WA] Could not delete .wwebjs_auth folder:', e.message);
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        fs.rmSync(authDir, { recursive: true, force: true });
+        console.log('[WA] Cleared session folder .wwebjs_auth');
+        break;
+      } catch (e) {
+        if (attempt === 3) {
+          console.warn('[WA] Could not delete .wwebjs_auth folder after 3 attempts:', e.message);
+        } else {
+          await new Promise(r => setTimeout(r, 500));
+        }
+      }
     }
   }
 }
 
 async function resetWA(reason) {
-  await clearWASession(reason);
+  await closeWASession(reason);
 }
 
 // ── GET /api/wa/status ─────────────────────────────────────────────────────────
 app.get('/api/wa/status', (req, res) => {
-  res.json({ status: waStatus, error: waError });
+  res.json({ status: waStatus, qr: waQrData, error: waError });
 });
 
 // ── GET /api/wa/stream  (SSE) ──────────────────────────────────────────────────
@@ -271,15 +275,12 @@ app.get('/api/wa/stream', (req, res) => {
   res.setHeader('Content-Type',  'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection',    'keep-alive');
-  res.setHeader('X-Accel-Buffering', 'no');   // nginx: disable buffering
+  res.setHeader('X-Accel-Buffering', 'no');
   res.flushHeaders();
 
-  // Send a heartbeat comment every 20 s to keep the connection alive through proxies
   const hb = setInterval(() => { try { res.write(': ping\n\n'); } catch (_) {} }, 20000);
 
   SSE_CLIENTS.add(res);
-
-  // Immediately push current state to the new subscriber
   sseWrite(res, 'state', { status: waStatus, qr: waQrData, error: waError });
 
   req.on('close', () => {
@@ -290,94 +291,99 @@ app.get('/api/wa/stream', (req, res) => {
 
 // ── POST /api/wa/connect ───────────────────────────────────────────────────────
 app.post('/api/wa/connect', async (req, res) => {
-  // Already running
+  waLog('info', 'POST /api/wa/connect called (status was: ' + waStatus + ')');
   if (waClient && (waStatus === 'initializing' || waStatus === 'qr' || waStatus === 'ready')) {
     return res.json({ ok: true, status: waStatus });
   }
 
-  // Clean up any leftover state
-  if (waClient) await resetWA();
+  try {
+    if (waClient) await closeWASession();
 
-  waStatus = 'initializing';
-  waError  = null;
-  waQrData = null;
-  broadcast('state', { status: 'initializing' });
-
-  const client = new Client({
-    authStrategy: new LocalAuth({ clientId: 'brickbloom' }),
-    webVersionCache: { type: 'none' },
-    takeoverOnConflict: true,
-    takeoverTimeoutMs: 3000,
-    puppeteer: {
-      headless: true,
-      timeout: 0,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu',
-        '--disable-extensions',
-        '--disable-background-timer-throttling'
-      ]
-    },
-    authTimeoutMs: 0,          // disable internal 30s auth wait
-    restartOnAuthFail: true    // auto-restart on auth failure
-  });
-
-  waClient = client;
-
-  client.on('qr', async (qr) => {
-    waStatus = 'qr';
-    waQrData = await qrcode.toDataURL(qr);
-    broadcast('state', { status: 'qr', qr: waQrData });
-    console.log('[WA] QR ready for scan');
-  });
-
-  client.on('authenticated', () => {
-    console.log('[WA] Authenticated');
-  });
-
-  client.on('ready', () => {
-    clearTimeout(waInitTimeout);
-    waStatus = 'ready';
-    waQrData = null;
+    waStatus = 'initializing';
     waError  = null;
-    broadcast('state', { status: 'ready' });
-    console.log('[WA] Client ready');
-  });
+    waQrData = null;
+    broadcast('state', { status: 'initializing' });
 
-  client.on('auth_failure', (msg) => {
-    console.error('[WA] Auth failure:', msg);
-    waError = 'Authentication failed — please reconnect and scan QR again.';
-    resetWA(waError);
-  });
+    const client = new Client({
+      authStrategy: new LocalAuth({ clientId: 'brickbloom' }),
+      webVersionCache: { type: 'none' },
+      takeoverOnConflict: true,
+      takeoverTimeoutMs: 3000,
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      puppeteer: {
+        headless: true,
+        timeout: 60000,
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-gpu',
+          '--disable-extensions',
+          '--disable-background-timer-throttling',
+          '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
+        ]
+      },
+      authTimeoutMs: 120000,
+      restartOnAuthFail: true
+    });
 
-  client.on('disconnected', (reason) => {
-    console.warn('[WA] Disconnected:', reason);
-    // Only reset if this is the current client (guards against stale events)
-    if (waClient === client) resetWA('WhatsApp disconnected: ' + reason);
-  });
+    waClient = client;
 
-  // 3-minute init timeout — Chrome can be slow on first launch
-  waInitTimeout = setTimeout(() => {
-    if (waClient === client && waStatus !== 'ready') {
-      resetWA('WhatsApp took too long to initialize. Please try again.');
-    }
-  }, 180000);
+    client.on('qr', async (qr) => {
+      clearTimeout(waInitTimeout);
+      waStatus = 'qr';
+      waQrData = await qrcode.toDataURL(qr);
+      broadcast('state', { status: 'qr', qr: waQrData });
+      waLog('info', 'QR generated for scanning');
+    });
 
-  client.initialize().catch(async (err) => {
-    if (waClient === client) {
-      console.error('[WA] Init error:', err && err.message);
-      await resetWA('WhatsApp init failed: ' + (err && err.message ? err.message : String(err)));
-    }
-  });
+    client.on('authenticated', () => {
+      waLog('info', 'WhatsApp authentication completed');
+    });
 
-  res.json({ ok: true, status: waStatus });
+    client.on('ready', () => {
+      clearTimeout(waInitTimeout);
+      waStatus = 'ready';
+      waQrData = null;
+      waError  = null;
+      broadcast('state', { status: 'ready' });
+      waLog('info', 'WhatsApp Client is ready');
+    });
+
+    client.on('auth_failure', async (msg) => {
+      waLog('error', 'Auth failure: ' + msg);
+      waError = 'Authentication failed — please reconnect and scan QR again.';
+      await clearWASession(waError);
+    });
+
+    client.on('disconnected', async (reason) => {
+      waLog('warn', 'Client emitted disconnected: ' + reason);
+      if (waClient === client) await closeWASession('WhatsApp disconnected: ' + reason);
+    });
+
+    waInitTimeout = setTimeout(async () => {
+      if (waClient === client && waStatus === 'initializing') {
+        await closeWASession('WhatsApp took too long to initialize. Please try again.');
+      }
+    }, 180000);
+
+    client.initialize().catch(async (err) => {
+      if (waClient === client) {
+        waLog('error', 'WhatsApp Init Error: ' + (err && err.stack ? err.stack : err));
+        await closeWASession('WhatsApp init failed: ' + (err && err.message ? err.message : String(err)));
+      }
+    });
+
+    res.json({ ok: true, status: waStatus });
+  } catch (err) {
+    console.error('[WA] Module loading error:', err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
 });
 
 // ── POST /api/wa/disconnect ────────────────────────────────────────────────────
 app.post('/api/wa/disconnect', async (req, res) => {
-  await clearWASession();
+  await closeWASession();
   res.json({ ok: true, status: 'disconnected' });
 });
 
@@ -498,8 +504,29 @@ app.get('/api/audit-log', (req, res) => {
   }
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+// ── Explicit App & Tool Routes ──
+app.get(['/whatsapp', '/whatsapp.html'], (req, res) => {
+  const candidates = [
+    path.join(publicDir, 'whatsapp.html'),
+    path.join(distDir, 'whatsapp.html'),
+    path.join(__dirname, 'whatsapp.html')
+  ];
+  const target = candidates.find(f => fs.existsSync(f));
+  if (target) {
+    return res.sendFile(target);
+  }
+  res.status(404).send('WhatsApp tool template not found.');
+});
+
+app.get('/admin.html', (req, res) => {
+  res.redirect(301, '/admin');
+});
+
+app.get('/{*path}', (req, res) => {
+  const indexPath = fs.existsSync(path.join(distDir, 'index.html'))
+    ? path.join(distDir, 'index.html')
+    : path.join(__dirname, 'index.html');
+  res.sendFile(indexPath);
 });
 
 app.listen(PORT, () => {
