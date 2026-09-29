@@ -34,7 +34,28 @@ function rootBranchDeployPlugin(): Plugin {
         fs.copyFileSync(distIndex, root404);
         fs.writeFileSync(rootNoJekyll, '');
         fs.writeFileSync(rootCname, 'brickbloom.co.in\n');
-        console.log('[root-branch-deploy] Copied compiled index.html, 404.html, .nojekyll, CNAME to root');
+
+        // Create physical HTML entry points for direct URLs in GitHub Pages branch mode
+        const staticRoutes = [
+          'admin',
+          'admin/invoices',
+          'admin/inventory',
+          'admin/whatsapp',
+          'admin/audit',
+          'admin/users'
+        ];
+        fs.copyFileSync(distIndex, path.join(rootDir, 'admin.html'));
+        fs.copyFileSync(distIndex, path.join(rootDir, 'invoice.html'));
+        fs.copyFileSync(distIndex, path.join(rootDir, 'inventory.html'));
+
+        for (const route of staticRoutes) {
+          const dir = path.join(rootDir, route);
+          if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+          }
+          fs.copyFileSync(distIndex, path.join(dir, 'index.html'));
+        }
+        console.log('[root-branch-deploy] Copied compiled index.html, 404.html, admin entry points to root');
 
         if (fs.existsSync(distAssets)) {
           if (!fs.existsSync(rootAssets)) {
