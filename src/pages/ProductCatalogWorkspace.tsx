@@ -639,7 +639,7 @@ export default function ProductCatalogWorkspace() {
                   </div>
 
                   {/* Title & Tagline */}
-                  <div>
+                  <div className="min-h-[58px]">
                     <h3 className="font-display text-base font-extrabold text-slate-900 leading-snug line-clamp-1 group-hover:text-emerald-950 transition">
                       {product.name}
                     </h3>
