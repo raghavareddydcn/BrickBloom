@@ -31,7 +31,7 @@ const TOOLS: ToolItem[] = [
     to: '/admin/products',
     badge: 'Enterprise Product Showcase',
     title: 'Product Showcase & Catalog',
-    description: 'Explore all 17 products with high-res photos, wholesale pricing tiers, technical specifications, and instant invoice quote generation.',
+    description: '',
     icon: ShoppingBag,
     accentBar: 'bg-gradient-to-r from-emerald-600 via-teal-500 to-amber-500',
     badgeClass: 'bg-emerald-50 text-emerald-900 border-emerald-300',
@@ -298,9 +298,11 @@ export default function AdminHub() {
                 </div>
 
                 {/* Description */}
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-sm">
-                  {tool.description}
-                </p>
+                {tool.description && (
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-sm">
+                    {tool.description}
+                  </p>
+                )}
               </div>
 
               {/* Action Button */}
