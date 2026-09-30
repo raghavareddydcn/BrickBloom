@@ -12,6 +12,7 @@ import {
   Users,
 } from 'lucide-react';
 import { firestore } from '@/lib/firebase';
+import { CATALOG_PRODUCTS } from '@/data/catalogProducts';
 
 interface ToolItem {
   to: string;
@@ -30,7 +31,7 @@ const TOOLS: ToolItem[] = [
     to: '/admin/products',
     badge: 'Enterprise Product Showcase',
     title: 'Product Showcase & Catalog',
-    description: 'Explore all 21 products with high-res photos, wholesale pricing tiers, technical specifications, and instant invoice quote generation.',
+    description: 'Explore all 17 products with high-res photos, wholesale pricing tiers, technical specifications, and instant invoice quote generation.',
     icon: ShoppingBag,
     accentBar: 'bg-gradient-to-r from-emerald-600 via-teal-500 to-amber-500',
     badgeClass: 'bg-emerald-50 text-emerald-900 border-emerald-300',
@@ -200,6 +201,22 @@ export default function AdminHub() {
 
                 {/* Integrated Metric Sub-Panel */}
                 <div className="my-4 w-full rounded-2xl border border-slate-100 bg-[#fbf8f3] p-4 text-center shadow-inner">
+                  {tool.to === '/admin/products' && (
+                    <>
+                      <div className="font-display text-2xl font-extrabold text-slate-900">
+                        {CATALOG_PRODUCTS.length} <span className="text-base font-bold text-slate-500">Available Products</span>
+                      </div>
+                      <div className="mt-1 flex items-center justify-center gap-1.5 flex-wrap text-xs">
+                        <span className="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-[10px] font-extrabold text-amber-800 border border-amber-200">
+                          ⭐ {CATALOG_PRODUCTS.filter((p) => p.badges.some((b) => /bestseller|choice/i.test(b))).length} Fast Moving
+                        </span>
+                        <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-extrabold text-emerald-800 border border-emerald-200">
+                          {CATALOG_PRODUCTS.filter((p) => p.stockStatus === 'in_stock').length} In Stock
+                        </span>
+                      </div>
+                    </>
+                  )}
+
                   {tool.to === '/admin/invoices' && (
                     <>
                       <div className="flex items-center justify-center gap-1 font-display text-2xl font-extrabold text-emerald-900">

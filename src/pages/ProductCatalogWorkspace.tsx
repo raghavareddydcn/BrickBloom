@@ -576,18 +576,17 @@ export default function ProductCatalogWorkspace() {
 
                   {/* Badges Top Left & Right */}
                   <div className="absolute top-3 left-3 flex flex-col gap-1 z-10">
-                    {product.badges.slice(0, 2).map((badge, idx) => (
-                      <span
-                        key={idx}
-                        className={`rounded-md px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider shadow-sm ${
-                          /bestseller|choice/i.test(badge)
-                            ? 'bg-amber-500 text-slate-950 font-black'
-                            : 'bg-[#031c0e] text-emerald-300'
-                        }`}
-                      >
-                        {badge}
-                      </span>
-                    ))}
+                    {product.badges
+                      .filter((badge) => /bestseller|choice/i.test(badge))
+                      .slice(0, 1)
+                      .map((badge, idx) => (
+                        <span
+                          key={idx}
+                          className="rounded-md bg-amber-500 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-slate-950 shadow-sm"
+                        >
+                          {badge}
+                        </span>
+                      ))}
                   </div>
 
                   <div className="absolute top-3 right-3 z-10">
@@ -985,11 +984,13 @@ export default function ProductCatalogWorkspace() {
                     className="h-full w-full object-contain"
                   />
                   <div className="absolute top-3 left-3 flex flex-col gap-1">
-                    {quickViewProduct.badges.map((b, i) => (
-                      <span key={i} className="rounded bg-emerald-950 text-emerald-300 text-[10px] font-extrabold px-2 py-0.5 uppercase">
-                        {b}
-                      </span>
-                    ))}
+                    {quickViewProduct.badges
+                      .filter((b) => /bestseller|choice/i.test(b))
+                      .map((b, i) => (
+                        <span key={i} className="rounded-md bg-amber-500 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-slate-950 shadow-sm">
+                          {b}
+                        </span>
+                      ))}
                   </div>
                 </div>
 
