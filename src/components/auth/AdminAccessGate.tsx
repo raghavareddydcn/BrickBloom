@@ -170,11 +170,11 @@ export default function AdminAccessGate({ children }: { children: ReactNode }) {
       
       {/* Topbar matching public/admin.html */}
       <header className="sticky top-0 z-50 h-16 bg-[#031c0e]/95 backdrop-blur-md border-b border-white/10 px-6 sm:px-10 flex items-center justify-between shadow-xl">
-        <div className="flex items-center gap-3">
+        <a href="/" className="flex items-center gap-3 group" aria-label="BrickBloom Home" title="Back to BrickBloom Home">
           <img
             src="/images/OurProducts/Logo_new.jpeg"
             alt="BrickBloom"
-            className="h-10 w-auto rounded-lg object-contain bg-[#f5ebd9] p-1 shadow-md"
+            className="h-10 w-auto rounded-lg object-contain bg-[#f5ebd9] p-1 shadow-md transition-transform group-hover:scale-105"
           />
           <div>
             <span className="font-display text-lg font-bold text-white tracking-wide block leading-none">
@@ -184,13 +184,6 @@ export default function AdminAccessGate({ children }: { children: ReactNode }) {
               Admin Enterprise Suite
             </span>
           </div>
-        </div>
-
-        <a
-          href="/"
-          className="text-xs font-semibold text-slate-300 hover:text-white transition-colors"
-        >
-          &larr; Public Site
         </a>
       </header>
 
