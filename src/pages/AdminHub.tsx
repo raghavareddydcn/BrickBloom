@@ -28,7 +28,7 @@ interface ToolItem {
 const TOOLS: ToolItem[] = [
   {
     to: '/admin/products',
-    badge: 'Amazon & Flipkart Style Showcase',
+    badge: 'Enterprise Product Showcase',
     title: 'Product Showcase & Catalog',
     description: 'Explore all 21 products with high-res photos, wholesale pricing tiers, technical specifications, and instant invoice quote generation.',
     icon: ShoppingBag,

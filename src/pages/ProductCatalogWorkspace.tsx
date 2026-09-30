@@ -23,6 +23,9 @@ import {
   Percent,
   ChevronUp,
   ChevronDown,
+  Boxes,
+  Clock,
+  Droplets,
 } from 'lucide-react';
 import {
   CATALOG_CATEGORIES,
@@ -288,40 +291,81 @@ export default function ProductCatalogWorkspace() {
         </div>
       )}
 
-      {/* Hero Header Banner (Amazon/Flipkart Marketplace Style) */}
+      {/* Hero Header Banner */}
       <div className="relative overflow-hidden rounded-3xl border border-[#e2d5be] bg-gradient-to-br from-[#031c0e] via-[#042814] to-[#011409] p-6 sm:p-8 text-white shadow-xl">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          
+          {/* Left Column: Heading & Sourcing Vision */}
+          <div className="lg:col-span-5 space-y-2.5">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-300">
               <Sparkles className="h-3.5 w-3.5" />
-              <span>Enterprise B2B Product Showcase & Marketplace</span>
+              <span>Enterprise B2B Product Showcase</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black font-display tracking-tight text-white">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black font-display tracking-tight text-white leading-tight">
               BrickBloom Product Catalog
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Explore our full line of 100% natural coconut coir pots, gift kits, high-expansion blocks, propagation discs, and commercial hydroponic slabs. Direct wholesale tier pricing with instant tax invoice generation.
+              Explore our complete line of 100% natural coconut coir pots, retail starter kits, high-expansion blocks, propagation discs, and commercial hydroponic slabs with live wholesale tier pricing.
             </p>
           </div>
 
-          {/* Quick Metrics Badges */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 shrink-0">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur-sm">
-              <div className="text-xs text-slate-400 uppercase font-bold tracking-wider">Products</div>
-              <div className="text-xl sm:text-2xl font-black text-emerald-400 mt-0.5">{CATALOG_PRODUCTS.length} SKUs</div>
-              <div className="text-[10px] text-slate-300">100% In Stock</div>
+          {/* Middle Column: Meaningful Operational Numbers */}
+          <div className="lg:col-span-4 grid grid-cols-2 gap-3 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+            <div className="space-y-0.5">
+              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Live Inventory</div>
+              <div className="text-xl sm:text-2xl font-black text-emerald-400 font-display">19,550+</div>
+              <div className="text-[11px] text-slate-300">Ready units in stock</div>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur-sm">
-              <div className="text-xs text-slate-400 uppercase font-bold tracking-wider">Categories</div>
-              <div className="text-xl sm:text-2xl font-black text-amber-300 mt-0.5">{CATALOG_CATEGORIES.length - 1} Sectors</div>
-              <div className="text-[10px] text-slate-300">Retail to Export</div>
+            <div className="space-y-0.5">
+              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Wholesale Margin</div>
+              <div className="text-xl sm:text-2xl font-black text-amber-300 font-display">Up to 60%</div>
+              <div className="text-[11px] text-slate-300">Tier 100+ bulk discount</div>
             </div>
-            <div className="col-span-2 sm:col-span-1 rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur-sm">
-              <div className="text-xs text-slate-400 uppercase font-bold tracking-wider">GST Compliant</div>
-              <div className="text-xl sm:text-2xl font-black text-teal-300 mt-0.5">5% Rate</div>
-              <div className="text-[10px] text-slate-300">HSN 5305 / 1404</div>
+            <div className="space-y-0.5 pt-2.5 border-t border-white/10">
+              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Desalinated Purity</div>
+              <div className="text-base sm:text-lg font-black text-teal-300 font-display">≤ 0.5 mS/cm</div>
+              <div className="text-[10px] text-slate-300">Triple-washed low EC</div>
+            </div>
+            <div className="space-y-0.5 pt-2.5 border-t border-white/10">
+              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Quality Score</div>
+              <div className="text-base sm:text-lg font-black text-emerald-300 font-display">4.8 ★ / 5.0</div>
+              <div className="text-[10px] text-slate-300">3,300+ Trade reviews</div>
             </div>
           </div>
+
+          {/* Right Column: Sourcing & Commercial Specifications */}
+          <div className="lg:col-span-3 grid grid-cols-2 lg:grid-cols-1 gap-2.5">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur-sm flex items-center justify-between">
+              <div>
+                <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Active Catalog</div>
+                <div className="text-lg font-black text-emerald-400">{CATALOG_PRODUCTS.length} SKUs</div>
+              </div>
+              <span className="text-[10px] font-bold text-emerald-950 bg-emerald-400 px-2 py-0.5 rounded-full">
+                7 Sectors
+              </span>
+            </div>
+
+            <div className="rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur-sm flex items-center justify-between">
+              <div>
+                <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">GST Compliant</div>
+                <div className="text-lg font-black text-teal-300">5% Tax Rate</div>
+              </div>
+              <span className="text-[10px] font-bold text-slate-300 bg-white/10 px-2 py-0.5 rounded-full">
+                HSN 5305
+              </span>
+            </div>
+
+            <div className="col-span-2 lg:col-span-1 rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur-sm flex items-center justify-between">
+              <div>
+                <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Ocean Logistics</div>
+                <div className="text-lg font-black text-amber-300">20ft / 40ft HQ</div>
+              </div>
+              <span className="text-[10px] font-bold text-amber-950 bg-amber-400 px-2 py-0.5 rounded-full">
+                FCL Ready
+              </span>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -365,7 +409,7 @@ export default function ProductCatalogWorkspace() {
             <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1">
               <button
                 onClick={() => setViewMode('grid')}
-                title="Grid View (Amazon Style)"
+                title="Grid View"
                 className={`grid h-9 w-9 place-items-center rounded-lg transition-all ${
                   viewMode === 'grid'
                     ? 'bg-white text-emerald-900 shadow-sm font-bold'
@@ -376,7 +420,7 @@ export default function ProductCatalogWorkspace() {
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                title="List View (Flipkart Style)"
+                title="List View"
                 className={`grid h-9 w-9 place-items-center rounded-lg transition-all ${
                   viewMode === 'list'
                     ? 'bg-white text-emerald-900 shadow-sm font-bold'
@@ -467,6 +511,53 @@ export default function ProductCatalogWorkspace() {
         </div>
       </Card>
 
+      {/* Meaningful Numbers & Commercial Standards Strip */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div className="flex items-center gap-3.5 rounded-2xl border border-[#ebdcc7] bg-white p-4 shadow-sm hover:shadow-md transition">
+          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200">
+            <Boxes className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="text-xl font-black text-slate-900 font-display">19,550+</div>
+            <div className="text-xs font-bold text-slate-700">Ready Units in Stock</div>
+            <div className="text-[11px] text-slate-500">21 production SKUs ready</div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3.5 rounded-2xl border border-[#ebdcc7] bg-white p-4 shadow-sm hover:shadow-md transition">
+          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-amber-50 text-amber-800 border border-amber-200">
+            <Percent className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="text-xl font-black text-slate-900 font-display">Up to 60%</div>
+            <div className="text-xs font-bold text-slate-700">Bulk Margin Savings</div>
+            <div className="text-[11px] text-slate-500">Tier 50 & 100+ volume</div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3.5 rounded-2xl border border-[#ebdcc7] bg-white p-4 shadow-sm hover:shadow-md transition">
+          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-blue-50 text-blue-800 border border-blue-200">
+            <Droplets className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="text-xl font-black text-slate-900 font-display">≤ 0.5 mS/cm</div>
+            <div className="text-xs font-bold text-slate-700">Triple-Washed Purity</div>
+            <div className="text-[11px] text-slate-500">Low sodium & EC certified</div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3.5 rounded-2xl border border-[#ebdcc7] bg-white p-4 shadow-sm hover:shadow-md transition">
+          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-teal-50 text-teal-800 border border-teal-200">
+            <Clock className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="text-xl font-black text-slate-900 font-display">&lt; 24 Hours</div>
+            <div className="text-xs font-bold text-slate-700">Quote & Invoice Prep</div>
+            <div className="text-[11px] text-slate-500">Fast commercial dispatch</div>
+          </div>
+        </div>
+      </div>
+
       {/* Empty State */}
       {filteredProducts.length === 0 && (
         <Card className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
@@ -492,7 +583,7 @@ export default function ProductCatalogWorkspace() {
         </Card>
       )}
 
-      {/* GRID VIEW (Amazon Style 3-Column Cards) */}
+      {/* GRID VIEW (3-Column Cards) */}
       {viewMode === 'grid' && filteredProducts.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProducts.map((product) => {
@@ -592,7 +683,7 @@ export default function ProductCatalogWorkspace() {
                     </p>
                   </div>
 
-                  {/* Star Rating & Order Count (Amazon Style) */}
+                  {/* Star Rating & Order Count */}
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1 text-amber-500">
                       <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
@@ -608,7 +699,7 @@ export default function ProductCatalogWorkspace() {
                     </span>
                   </div>
 
-                  {/* Amazon Wholesale Tier Pricing Box */}
+                  {/* Wholesale Tier Pricing Box */}
                   <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-3 space-y-1.5">
                     <div className="flex items-baseline justify-between">
                       <div className="flex items-baseline gap-2">
@@ -724,7 +815,7 @@ export default function ProductCatalogWorkspace() {
         </div>
       )}
 
-      {/* LIST VIEW (Flipkart / Amazon Business Wide Rows) */}
+      {/* LIST VIEW (Table Rows) */}
       {viewMode === 'list' && filteredProducts.length > 0 && (
         <div className="space-y-4">
           {filteredProducts.map((product) => {
@@ -906,7 +997,7 @@ export default function ProductCatalogWorkspace() {
         </div>
       )}
 
-      {/* QUICK VIEW & PRICE CALCULATOR MODAL (Amazon Style Lightbox) */}
+      {/* QUICK VIEW & PRICE CALCULATOR MODAL */}
       {quickViewProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in">
           <div className="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-3xl border border-[#e2d5be] bg-white p-6 sm:p-8 shadow-2xl">
@@ -984,7 +1075,7 @@ export default function ProductCatalogWorkspace() {
                   </p>
                 </div>
 
-                {/* Amazon Buy Box / Live Price Calculator */}
+                {/* Live Price Calculator & Order Box */}
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
                   <div className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center justify-between">
                     <span>Wholesale Order Calculator</span>
@@ -1122,7 +1213,7 @@ export default function ProductCatalogWorkspace() {
         </div>
       )}
 
-      {/* STICKY BOTTOM ORDER SHEET / QUOTATION TRAY (Amazon Buy Box / Flipkart Drawer) */}
+      {/* STICKY BOTTOM ORDER SHEET / QUOTATION TRAY */}
       {orderItems.length > 0 && (
         <div className="fixed bottom-0 inset-x-0 z-40 bg-[#021a0d]/95 backdrop-blur-md border-t border-emerald-500/30 px-4 py-3 sm:py-4 shadow-2xl text-white animate-in slide-in-from-bottom-6">
           <div className="mx-auto max-w-7xl space-y-3">

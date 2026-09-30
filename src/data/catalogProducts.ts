@@ -132,7 +132,7 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     moq: 20,
     stockStatus: 'in_stock',
     stockCount: 245,
-    badges: ['Amazon Choice', 'Trending', 'Eco-Packaging'],
+    badges: ['Top Choice', 'Trending', 'Eco-Packaging'],
     highlights: [
       'Includes 2 × 4″ Eco-Coir Pots and nutrient-rich coco peat',
       '2 high-germination premium seed balls included',
@@ -220,7 +220,7 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     moq: 10,
     stockStatus: 'in_stock',
     stockCount: 95,
-    badges: ['Top-Tier Luxury', 'Flagship Showcase', 'Amazon Choice'],
+    badges: ['Top-Tier Luxury', 'Flagship Showcase', 'Top Choice'],
     highlights: [
       'Complete 6-pot ensemble: 2 × 2″, 2 × 4″, and 2 × 6″ Coir Pots',
       '1 × 8″ Hanging Coir Basket with triple-wire rust-proof steel chain',
@@ -387,7 +387,7 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     moq: 50,
     stockStatus: 'in_stock',
     stockCount: 1250,
-    badges: ['Bestseller', 'Amazon Choice', 'Bulk Wholesale'],
+    badges: ['Bestseller', 'Top Choice', 'Bulk Wholesale'],
     highlights: [
       'Our highest volume single pot format across domestic and retail nurseries',
       'Fits standard 4″ retail trays and decorative tabletop cachepots',
@@ -547,7 +547,7 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     moq: 20,
     stockStatus: 'in_stock',
     stockCount: 340,
-    badges: ['Amazon Choice', 'Bestseller', 'Includes Chain'],
+    badges: ['Top Choice', 'Bestseller', 'Includes Chain'],
     highlights: [
       'Molded 8″ heavy-duty coir bowl with reinforced perimeter lip',
       'Includes galvanized 3-way weather-resistant hanging chain and top hook',
@@ -714,7 +714,7 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     moq: 24,
     stockStatus: 'in_stock',
     stockCount: 2200,
-    badges: ['Top Seller', 'Amazon Choice', 'Save 47%'],
+    badges: ['Top Seller', 'Top Choice', 'Save 47%'],
     highlights: [
       'Compact 650-gram brick expands to approximately 9 to 10 Litres of fluffy media',
       'Triple-washed with low electrical conductivity (EC ≤ 0.5 mS/cm)',
@@ -759,7 +759,7 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     moq: 10,
     stockStatus: 'in_stock',
     stockCount: 850,
-    badges: ['Commercial Standard', 'Export Quality', 'Amazon Choice'],
+    badges: ['Commercial Standard', 'Export Quality', 'Top Choice'],
     highlights: [
       'High-yield 5kg block expands up to 75 to 80 Litres when rehydrated',
       'Export-grade desalinated coir pith, thoroughly screened for micro-dust',
