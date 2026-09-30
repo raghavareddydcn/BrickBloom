@@ -1,171 +1,162 @@
-# 🌿 BrickBloom — Modern Cocopeat Sourcing Platform
+# 🌿 BrickBloom — Modern Cocopeat Sourcing & Operations Platform
 
+![React](https://img.shields.io/badge/React-18.3-61dafb.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178c6.svg)
+![Vite](https://img.shields.io/badge/Vite-6.0-646cff.svg)
+![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4-38bdf8.svg)
 ![Node.js](https://img.shields.io/badge/Node.js-v18%2B-green.svg)
-![Express](https://img.shields.io/badge/Express-4.22-blue.svg)
-![AngularJS](https://img.shields.io/badge/AngularJS-1.8.2-red.svg)
+![Express](https://img.shields.io/badge/Express-5.2-000000.svg)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)
-![Free Cloud Ready](https://img.shields.io/badge/Deploy-Render%20%7C%20Vercel-success)
 
-**BrickBloom** is a premium B2B web application and market-intelligence platform engineered for coconut-based growing media (cocopeat, growbags, growslabs, bricks, tabs, blocks, and loose substrates). Designed for commercial growers, hydroponic nurseries, and international importers, it showcases product specifications, global sourcing hubs, quality standards, and captures high-intent trade inquiries.
+**BrickBloom** is a modern B2B platform and operations suite engineered for commercial coconut-based growing media (cocopeat, coco bricks, growbags, growslabs, coir disks, and retail DIY kits).
+
+Engineered for precision growers, hydroponic nurseries, and international importers, BrickBloom pairs a high-performance marketing and sourcing front-end with an integrated business operations backend for invoicing, inventory tracking, audit logging, and automated WhatsApp client dispatch.
 
 ---
 
 ## ✨ Features
 
-- **🛍️ Product Showcase**: Dedicated specs and landing pages for 8+ commercial cocopeat formats (Coco Bricks, Growbags, GrowSlabs, Open Top Growbags, Coco Tabs, Grow Cubes, Loose Substrates).
-- **📊 Market Intelligence API**: Express REST endpoint delivering dynamic product catalogs, regional sourcing hub details (India, Sri Lanka), and quality benchmarks.
-- **📩 Lead Capture System**: High-converting B2B inquiry form with both JSON AJAX submission and fallback HTML handling.
-- **🎨 Apple-Inspired Aesthetic**: Modern typography (`Inter`), clean visual hierarchy, responsive grid layouts, custom CSS tokens, and glassmorphism headers.
-- **☁️ Zero-Cost Cloud Deployment Ready**: Pre-configured for instant free hosting on **Render** or **Vercel**.
+### 🛍️ Client & Marketing Portal
+- **Interactive Product Catalog**: Detailed crop programs, EC benchmarks, and physical specifications for 8+ commercial formats (Ready Pot, Starter Kit, Medium Kit, Premium Kit, Coco Grow Disks, Premium Cocopeat, Coco Bricks, GrowSlabs, and Coir Chips).
+- **Substrate Visualizer & Spec Calculator**: Interactive tools explaining hydration ratios, water retention, and expansion yields.
+- **B2B Inquiry System**: Lead capture form supporting direct contact dispatch and JSON API submission.
+- **Responsive Nature-Tech Aesthetics**: Typography powered by *Plus Jakarta Sans* and *DM Serif Display*, smooth Framer Motion interactions, and custom Tailwind styling.
+
+### 🏢 Operations & Admin Suite
+- **GST Tax Invoice Generator**: Complete GST-compliant billing engine with automated HSN lookups, reverse CGST/SGST/IGST tax splits, discount management, balance due tracking, and PDF print exports.
+- **Cloud & Server Invoice Persistence**: Save, load, and edit invoice drafts with repo-level JSON persistence and Firebase cloud backup.
+- **Inventory Tracking Workspace**: Real-time stock management with threshold alerts, low-stock notifications, and live ledger updates.
+- **WhatsApp Client Dispatch Engine**:
+  - **Meta Cloud API**: Automated direct broadcast using official Meta WhatsApp Business Cloud APIs.
+  - **Click-to-Chat Mode**: Zero-backend direct client dispatch from any mobile or desktop browser.
+  - **Puppeteer Session Engine**: Local browser QR code authentication with session keep-alive.
+- **Audit Logging**: Traceable, immutable event logs recording all invoice creation, stock adjustments, and system activity.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
-- **Backend**: Node.js, Express.js (`cors`, `express.json`)
-- **Frontend**: AngularJS 1.8.2 (SPA Controller), Vanilla HTML5/CSS3
-- **Design System**: Vanilla CSS with custom properties (`:root`) and responsive grid/flexbox
-- **Typography & Icons**: Google Fonts (`Inter`), SVG vector assets
+| Layer | Technologies |
+| :--- | :--- |
+| **Frontend Framework** | [React 18](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [Vite 6](https://vitejs.dev/) |
+| **Routing** | [React Router v6](https://reactrouter.com/) |
+| **UI Components** | [shadcn/ui](https://ui.shadcn.com/), [Radix UI](https://www.radix-ui.com/), [Lucide React](https://lucide.dev/) |
+| **Styling & Motion** | [Tailwind CSS](https://tailwindcss.com/), [Framer Motion](https://www.framer.com/motion/) |
+| **Backend & APIs** | [Express 5](https://expressjs.com/), [Node.js](https://nodejs.org/) (ES Modules) |
+| **Document Processing** | [SheetJS (xlsx)](https://sheetjs.com/), [html2canvas](https://html2canvas.hertzen.com/), [QRCode](https://github.com/soldair/node-qrcode) |
+| **Storage & Sync** | Local JSON persistence, [Firebase Firestore](https://firebase.google.com/) |
+| **CI/CD & Deployment** | [GitHub Actions](https://github.com/features/actions) → [GitHub Pages](https://pages.github.com/), [Vercel](https://vercel.com/) |
 
 ---
 
-## 📁 Project Structure
+## 📁 Repository Structure
 
 ```text
-cocopeat-site/
-├── public/
-│   ├── app.js                 # AngularJS single-page application controller
-│   ├── styles.css             # Design tokens, Apple-inspired theme & layout styles
-│   ├── index.html             # Main landing page & interactive lead form
-│   ├── blocks.html            # Premium Cocopeat product detail page
-│   ├── coco-grow-cubes.html   # Grow Cubes product detail page
-│   ├── coir-chips.html        # Coir Chips product detail page
-│   ├── growbags.html          # Premium Kit product detail page
-│   ├── loose.html             # Medium Kit product detail page
-│   ├── open-top-growbags.html # Ready Pot product detail page
-│   ├── tabs.html               # Starter Kit product detail page
-│   └── images/                # Brand logos, favicons, and graphic assets
-├── server.js                  # Express server & REST API endpoints
-├── SKILLS.md                  # Comprehensive skills & architectural audit
-├── vercel.json                # Vercel serverless deployment configuration
-├── package.json               # Node.js dependencies & run scripts
-└── README.md                  # Project documentation & deployment guide
+BrickBloom/
+├── .github/workflows/         # Automated GitHub Actions deployment workflows
+│   └── deploy.yml             # Builds React SPA and publishes to GitHub Pages
+├── Docs/                      # Offline catalogs, customer databases, reference PDFs
+│   ├── Customers.xlsx         # Client address book
+│   └── *.pdf                  # Product & pricing catalogs
+├── invoices/                  # Server-side persistent JSON invoice records
+├── public/                    # Static assets copied into dist/ on build
+│   ├── images/                # Single source of truth for all brand & product media
+│   ├── CNAME                  # Custom domain (brickbloom.co.in)
+│   ├── .nojekyll              # Disables Jekyll processing on GitHub Pages
+│   └── whatsapp.html          # Standalone WhatsApp dispatch utility
+├── src/                       # React 18 application source code
+│   ├── components/            # Reusable UI, layout, and section components
+│   ├── data/                  # Product catalog specifications and benchmarks
+│   ├── lib/                   # Firebase config, utility helpers, and formatters
+│   ├── pages/                 # Route views (Home, ProductDetail, AdminHub, Workspaces)
+│   ├── App.tsx                # Client-side router configuration
+│   ├── index.css              # Global design tokens and Tailwind directives
+│   └── main.tsx               # React application entry point
+├── .gitignore                 # Git ignore rules for node_modules, logs, and dev files
+├── index.html                 # Vite HTML shell & SEO metadata
+├── package.json               # Dependencies and build scripts
+├── package-lock.json          # Deterministic dependency lockfile
+├── postcss.config.js          # PostCSS configuration for Tailwind
+├── server.js                  # Express backend (API routes & static preview)
+├── tailwind.config.js         # Tailwind CSS design system configuration
+├── tsconfig.json              # TypeScript application compiler options
+├── tsconfig.node.json         # TypeScript tooling configuration
+├── vercel.json                # Vercel serverless routing configuration
+└── vite.config.ts             # Vite bundler, path aliases, and build settings
 ```
 
 ---
 
-## ⚡ Quick Start (Local Setup)
+## ⚡ Quick Start (Local Development)
 
 ### Prerequisites
-- Node.js (v16+ recommended)
-- npm or yarn
+- **Node.js**: v18.0.0 or higher
+- **npm**: v9.0.0 or higher
 
-### Steps
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/raghavareddydcn/BrickBloom.git
-   cd BrickBloom
-   ```
-
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-
-3. **Start the local server**:
-   ```bash
-   npm start
-   ```
-
-4. **Access in browser**:
-   Open [http://localhost:3000](http://localhost:3000)
-
----
-
-## 📡 API Endpoints
-
-### 1. `GET /api/market-intelligence`
-Returns JSON catalog of product formats, regional sourcing hubs, and quality parameters.
-
-**Sample Response:**
-```json
-{
-  "overview": "Premium BrickBloom sourcing for hydroponics, nurseries...",
-  "formats": [
-    { "name": "Coco Tabs", "path": "/tabs.html", "benefit": "Eco-friendly propagation..." }
-  ],
-  "sourcingHubs": [
-    { "region": "India", "focus": "Large-scale processing..." }
-  ]
-}
+### 1. Installation
+Clone the repository and install dependencies:
+```bash
+git clone https://github.com/raghavareddydcn/BrickBloom.git
+cd BrickBloom
+npm install
 ```
 
-### 2. `POST /api/leads`
-Receives buyer lead inquiries (Name, Email, Company, Message).
+### 2. Running Locally
 
-**Request Body:**
-```json
-{
-  "name": "John Doe",
-  "email": "john@farm.com",
-  "company": "Green Farms Ltd",
-  "message": "Interested in 5000 units of Coco GrowSlabs."
-}
+#### Option A: Run the Backend & Static App on Port 3000 (Recommended)
+Build the frontend and run the Express server:
+```bash
+npm run build
+npm start
 ```
+Open **[http://localhost:3000](http://localhost:3000)** in your browser.
+
+#### Option B: Vite Hot-Reload Development Server
+For rapid React component development with instant hot module replacement:
+```bash
+npm run dev
+```
+Open **[http://localhost:5173](http://localhost:5173)**. API calls to `/api/*` are automatically proxied to port 3000.
 
 ---
 
-## 🚀 Free Cloud Deployment Guide ($0 Cost)
+## 📡 API Reference
 
-This project can be hosted completely **FREE** forever on **Render** or **Vercel**. Choose either method below:
-
----
-
-### Option 1: Render (Recommended for Node.js Express) — 100% Free
-
-[Render](https://render.com) provides a free Web Service tier with continuous GitHub deployment.
-
-1. Sign up for free at **[render.com](https://render.com)**.
-2. Click **New +** → **Web Service**.
-3. Connect your GitHub account and select **`raghavareddydcn/BrickBloom`**.
-4. Configure settings:
-   - **Name**: `brickbloom` (or any name)
-   - **Environment**: `Node`
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
-   - **Instance Type**: **Free** ($0/month)
-5. Click **Create Web Service**.
-6. 🚀 Your live website URL will be ready in ~1 minute (e.g. `https://brickbloom.onrender.com`).
+| Endpoint | Method | Description |
+| :--- | :--- | :--- |
+| `/api/market-intelligence` | `GET` | Returns product specifications, regional sourcing hubs, and quality notes. |
+| `/api/leads` | `POST` | Ingests new B2B buyer inquiries and sends email notification. |
+| `/api/invoices` | `GET` | Retrieves all saved JSON invoices from the server repository. |
+| `/api/invoices` | `POST` | Persists an invoice draft as a formatted JSON document. |
+| `/api/invoices/:id` | `DELETE` | Deletes a stored invoice record. |
+| `/api/audit-log` | `GET` / `POST` | Appends and retrieves tamper-evident operations audit log entries. |
+| `/api/wa/*` | Various | WhatsApp Puppeteer session initialization, QR status, and bulk dispatch. |
 
 ---
 
-### Option 2: Vercel — 100% Free
+## 🚀 Deployment
 
-[Vercel](https://vercel.com) provides instant global CDN hosting with zero configuration via the included `vercel.json`.
+### GitHub Pages (Continuous Deployment)
+Every push to the `main` branch triggers [.github/workflows/deploy.yml](.github/workflows/deploy.yml):
+1. Checks out the code and sets up Node 20.
+2. Installs clean dependencies via `npm ci --ignore-scripts`.
+3. Runs `npm run build` (`tsc -b && vite build`) to generate the optimized static bundle in `dist/`.
+4. Deploys `dist/` directly to GitHub Pages at **[https://brickbloom.co.in](https://brickbloom.co.in)**.
 
-1. Sign up at **[vercel.com](https://vercel.com)** with your GitHub account.
-2. Click **Add New...** → **Project**.
-3. Import **`raghavareddydcn/BrickBloom`**.
-4. Keep default settings and click **Deploy**.
-5. 🚀 Live URL generated instantly (e.g. `https://brickbloom.vercel.app`).
-
----
-
-### Option 3: Koyeb / Railway / Glitch — Free Alternatives
-
-- **Koyeb**: Connect repository → Deploy Node.js app on free micro instance.
-- **Glitch**: Import repository URL for instant sandbox preview.
+### Vercel / Render Deployment
+- **Vercel**: Import the repository on [vercel.com](https://vercel.com). The included [vercel.json](vercel.json) configures serverless routing to `server.js`.
+- **Render**: Connect the repo as a **Web Service** with build command `npm install && npm run build` and start command `npm start`.
 
 ---
 
 ## 📝 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the MIT License. See `LICENSE` for details.
 
 ---
 
-## 👨‍💻 Author & Sourcing Desk
+## 👨‍💻 Maintainer & Sourcing Desk
 
 Developed & Maintained by **[Raghavareddy](https://github.com/raghavareddydcn)**  
+Website: [https://brickbloom.co.in](https://brickbloom.co.in)  
 Repository: [https://github.com/raghavareddydcn/BrickBloom](https://github.com/raghavareddydcn/BrickBloom)
