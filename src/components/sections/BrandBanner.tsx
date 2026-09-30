@@ -1,4 +1,4 @@
-import { Award, Check, Droplets, Leaf, ShieldCheck, Sparkles } from 'lucide-react';
+import { Award, Droplets, Leaf, ShieldCheck, Sparkles } from 'lucide-react';
 
 const HIGHLIGHTS = [
   { icon: Leaf, text: 'Triple-washed with fresh water for low sodium & chloride levels' },
@@ -56,26 +56,14 @@ export default function BrandBanner() {
             </blockquote>
           </div>
 
-          {/* Right: Authentic Coir Visual Showcase */}
-          <div className="lg:col-span-6 relative">
-            <div className="relative rounded-3xl overflow-hidden aspect-[4/3] lg:aspect-[4/3] border border-white/15 shadow-2xl bg-black/30">
+          {/* Right: Official Brand Logo Showcase */}
+          <div className="lg:col-span-6 relative flex items-center justify-center">
+            <div className="relative rounded-3xl overflow-hidden aspect-[4/3] w-full max-w-lg border border-white/15 shadow-2xl bg-white/10 backdrop-blur-md p-3 sm:p-5 flex items-center justify-center">
               <img
-                src="/images/natural-coir-photo.jpg"
-                alt="Natural Coconut Coir Substrate Structure"
-                className="h-full w-full object-cover"
+                src="/images/OurProducts/Logo_new.jpeg"
+                alt="BrickBloom Official Logo"
+                className="h-full w-full object-cover rounded-2xl shadow-md"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-
-              {/* Floating Quality Guarantee Pill */}
-              <div className="absolute bottom-5 left-5 right-5 sm:right-auto bg-black/75 backdrop-blur-md rounded-2xl border border-white/20 p-4 shadow-xl flex items-center gap-4">
-                <div className="grid h-12 w-12 place-items-center rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shrink-0">
-                  <Check className="h-6 w-6" />
-                </div>
-                <div>
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-300">Certified Batch Guarantee</p>
-                  <p className="text-sm font-semibold text-white">Triple-Washed EC ≤ 0.5 mS/cm</p>
-                </div>
-              </div>
             </div>
           </div>
 
