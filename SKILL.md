@@ -11,7 +11,7 @@ This guide defines the architectural standards, code quality gates, validation c
 
 ## 1. Quality & Pre-Commit Validation Gate
 
-Run these checks whenever modifying code or adding features before pushing to `main`:
+Run these checks whenever modifying code or adding features before pushing code:
 
 ```bash
 # 1. Typecheck & production bundle build
@@ -25,16 +25,79 @@ curl -I http://localhost:3000
 curl -s http://localhost:3000/api/market-intelligence
 ```
 
+### Mandatory Visual & Screenshot Testing Gate:
+- **Always Test Changes Live**: Run the application and open the affected views.
+- **Capture Screenshots**: Take browser screenshots of the modified pages across both desktop and mobile viewports.
+- **Analyze for Regressions**: Thoroughly analyze the captured screenshots for visual defects:
+  - Layout misalignments or broken flex/grid wrapping
+  - Typography clipping, awkward line breaks, or contrast issues
+  - Broken image links or missing media assets
+  - Spacing, padding, or overflow inconsistencies
+- **Fix Before Staging**: If any defect or regression is spotted in the screenshot analysis, resolve it immediately before staging files.
+
 ### Validation Checklist:
 1. **Type Safety (`tsc -b`)**: Zero TypeScript compile errors in `src/`. No implicit `any` in core models.
-2. **Asset Path Hygiene**: All static images, logos, and media **must** reside in `public/images/`. Never create an outer root `images/` directory.
-3. **No Scratch/Dump Scripts**: Never commit or leave temporary `chk*.js`, `fix*.js`, `temp*.js`, or `test_*.js` files in the repository.
-4. **Clean Git Working Tree**: Confirm `git status` shows no untracked artifacts or unwanted debug logs before merging to `main`.
-5. **Route Shells in `dist/`**: Ensure `vite.config.ts` plugin generates SPA fallback entry points in `dist/` for GitHub Pages direct routing.
+2. **Visual & Screenshot Verification**: Captured and analyzed screenshots; verified zero UI bugs or regressions.
+3. **Selective File Staging (`git add <file>`)**: **NEVER use `git add .` or `git add -A`.** Explicitly stage only intended, required files to prevent accidental commits of debug logs or temporary files.
+4. **Branching & PR Rule**: **NEVER push or merge directly to `main`.** Always create a descriptive branch (`feature/...`, `fix/...`, `docs/...`) and open a Pull Request (PR) for review and validation.
+5. **Asset Path Hygiene**: All static images, logos, and media **must** reside in `public/images/`. Never create an outer root `images/` directory.
+6. **No Scratch/Dump Scripts**: Never commit or leave temporary `chk*.js`, `fix*.js`, `temp*.js`, or `test_*.js` files in the repository.
+7. **Clean Git Working Tree**: Confirm `git status` shows no untracked artifacts or unwanted debug logs.
+8. **Route Shells in `dist/`**: Ensure `vite.config.ts` plugin generates SPA fallback entry points in `dist/` for GitHub Pages direct routing.
 
 ---
 
-## 2. Architecture & File Layout
+## 2. Git Workflow & Branching Protocol
+
+To protect repository stability and production deployments, strictly follow this protocol:
+
+### Step 1: Create a Feature/Bugfix Branch
+- Direct commits and direct pushes to `main` are strictly prohibited.
+- Branch off the latest `main`:
+  ```bash
+  git checkout main
+  git pull origin main
+  git checkout -b feature/your-feature-name
+  # or: fix/your-bugfix-name, docs/your-doc-update
+  ```
+
+### Step 2: Implement, Test & Analyze Screenshots
+- Apply the code changes.
+- Build and verify: `npm run build`.
+- Load the live preview on `http://localhost:3000`.
+- Capture browser screenshots of modified pages, inspect them critically, and fix any layout/styling defects discovered.
+
+### Step 3: Add Required Files Only — Never Use Blanket `git add .` or `git add -A`
+- **Never** execute `git add .` or `git add -A`.
+- Explicitly stage **only** the specific files you modified or created:
+  ```bash
+  # Correct:
+  git add src/pages/Home.tsx src/components/layout/Navbar.tsx
+  
+  # Incorrect / Forbidden:
+  git add .
+  git add -A
+  ```
+- Inspect staged changes before committing:
+  ```bash
+  git status
+  git diff --staged
+  ```
+
+### Step 4: Commit & Open a Pull Request (PR)
+- Commit with a clear, conventional message:
+  ```bash
+  git commit -m "feat(section): improve product grid layout and responsiveness"
+  ```
+- Push your branch to `origin`:
+  ```bash
+  git push -u origin feature/your-feature-name
+  ```
+- Open a Pull Request (PR) against `main`. Do not merge until automated CI checks succeed.
+
+---
+
+## 3. Architecture & File Layout
 
 | Directory / File | Role & Constraints |
 | :--- | :--- |
@@ -51,7 +114,7 @@ curl -s http://localhost:3000/api/market-intelligence
 
 ---
 
-## 3. Workspaces & Business Rules
+## 4. Workspaces & Business Rules
 
 ### A. Invoice Workspace (`src/pages/InvoiceWorkspace.tsx`)
 - **Numbering Pattern**: `BB/YY-YY/NNN` (April 1 financial year turnover).
@@ -76,7 +139,7 @@ curl -s http://localhost:3000/api/market-intelligence
 
 ---
 
-## 4. Deployment Protocol
+## 5. Deployment Protocol
 
 - **GitHub Pages**: Automated on push to `main`. Never manually commit `dist/` to the `main` branch.
 - **Backend / APIs**: When self-hosting or deploying to cloud VPS / Render / Vercel:
