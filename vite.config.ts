@@ -17,6 +17,8 @@ function githubPagesRoutesPlugin(): Plugin {
       // Put application shells at every routed URL in the published dist artifact.
       const staticRoutes = [
         'admin',
+        'admin/products',
+        'admin/catalog',
         'admin/invoices',
         'admin/inventory',
         'admin/whatsapp',
