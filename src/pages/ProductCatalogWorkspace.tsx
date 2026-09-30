@@ -314,7 +314,7 @@ export default function ProductCatalogWorkspace() {
             <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-sm min-w-[130px]">
               <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Active Catalog</div>
               <div className="text-xl sm:text-2xl font-black text-emerald-400 mt-0.5">{CATALOG_PRODUCTS.length} SKUs</div>
-              <div className="text-[10px] text-slate-400 mt-0.5">7 Product Sectors</div>
+              <div className="text-[10px] text-slate-400 mt-0.5">{CATALOG_CATEGORIES.length - 1} Product Sectors</div>
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-sm min-w-[130px]">
@@ -482,9 +482,11 @@ export default function ProductCatalogWorkspace() {
             <Boxes className="h-5 w-5" />
           </div>
           <div>
-            <div className="text-xl font-black text-slate-900 font-display">19,550+</div>
+            <div className="text-xl font-black text-slate-900 font-display">
+              {CATALOG_PRODUCTS.reduce((acc, p) => acc + p.stockCount, 0).toLocaleString('en-IN')}+
+            </div>
             <div className="text-xs font-bold text-slate-700">Ready Units in Stock</div>
-            <div className="text-[11px] text-slate-500">21 production SKUs ready</div>
+            <div className="text-[11px] text-slate-500">{CATALOG_PRODUCTS.length} production SKUs ready</div>
           </div>
         </div>
 

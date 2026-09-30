@@ -23,9 +23,7 @@ export interface CatalogProduct {
     | 'Eco Coir Pots & Hangers'
     | 'Compressed Blocks & Bricks'
     | 'Grow Discs & Plugs'
-    | 'Commercial Hydroponics'
-    | 'Bulk Substrates & Media'
-    | 'Packaging & Accessories';
+    | 'Commercial Hydroponics';
   eyebrow: string;
   tagline: string;
   rating: number;
@@ -55,8 +53,6 @@ export const CATALOG_CATEGORIES = [
   'Compressed Blocks & Bricks',
   'Grow Discs & Plugs',
   'Commercial Hydroponics',
-  'Bulk Substrates & Media',
-  'Packaging & Accessories',
 ] as const;
 
 export const CATALOG_PRODUCTS: CatalogProduct[] = [
@@ -482,46 +478,7 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     description:
       'For commercial growers, landscape architects, and exposed rooftop gardens, our 6-inch Heavy Duty pot provides the structural integrity of a traditional pot with all the biological advantages of natural coconut coir.',
   },
-  {
-    id: '8-inch-pot',
-    sku: 'BB-POT-8RD',
-    name: '8 Inch Round Coir Pot',
-    invoiceItemName: '8 Inch Pot',
-    category: 'Eco Coir Pots & Hangers',
-    eyebrow: 'Large Container Pot',
-    tagline: 'Deep root zone for dwarf fruit trees, large ornamentals, and vegetables.',
-    rating: 4.8,
-    reviewCount: 78,
-    ordersMonth: '310+ delivered',
-    image: '/images/Pots-ALlSizes.jpeg',
-    gallery: [
-      '/images/Pots-ALlSizes.jpeg',
-      '/images/actual-products/6Inch.JPG',
-      '/images/actual-products/8InchHanger.JPG',
-    ],
-    mrp: 120,
-    price1: 80,
-    price50: 60,
-    price100: 50,
-    gstRate: 5,
-    moq: 25,
-    stockStatus: 'in_stock',
-    stockCount: 290,
-    badges: ['Large Volume', 'Vegetable Spec'],
-    highlights: [
-      'Generous 3.8-liter root volume supports heavy-feeding vegetables',
-      'Perfect for brinjal, bell peppers, tomatoes, and indoor ficus species',
-      'Allows 360-degree radial root growth with zero circling',
-    ],
-    specs: {
-      dimensions: '8″ Top Diameter × 7″ Depth',
-      weight: 'Approx. 130g',
-      material: 'Coarse long-strand coconut fiber with natural binding',
-      origin: 'India',
-    },
-    description:
-      'Our largest standing pot model, the 8-inch round pot provides deep root volume for balcony vegetable gardens, terrace plantations, and specimen houseplants requiring abundant aeration and steady drainage.',
-  },
+
   {
     id: '8-inch-hanger',
     sku: 'BB-POT-8HNG',
@@ -821,128 +778,5 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     },
     description:
       'Ready-to-use slabs crafted for hydroponic gutters, benches, and clean indoor farming. The balanced chip-to-pith formula delivers optimal aeration porosity alongside water retention for precise fertigation management.',
-    publicSlug: 'coco-growslabs',
-  },
-  {
-    id: 'coir-chips',
-    sku: 'BB-SUB-CHP-01',
-    name: 'Coir Chips (Aeration & Drainage Husk Chunks)',
-    invoiceItemName: 'Coir Chips',
-    category: 'Bulk Substrates & Media',
-    eyebrow: 'Aeration & Drainage',
-    tagline: 'Open-structure coir chunks for maximum aeration and root breathability.',
-    rating: 4.8,
-    reviewCount: 112,
-    ordersMonth: '480+ delivered',
-    image: '/images/CoCoPeatProducts.jpeg',
-    gallery: [
-      '/images/CoCoPeatProducts.jpeg',
-      '/images/ALL products.png',
-      '/images/Brick5KG.jpeg',
-    ],
-    mrp: 160,
-    price1: 120,
-    price50: 105,
-    price100: 95,
-    gstRate: 5,
-    moq: 20,
-    stockStatus: 'in_stock',
-    stockCount: 390,
-    badges: ['Orchid Grade', 'High Aeration'],
-    highlights: [
-      'Uniform husk chunk sizing (8-12mm) resists compaction over multi-year cycles',
-      'High air porosity prevents waterlogging in epiphyte and orchid setups',
-      'Washed to remove excess salts and fines',
-    ],
-    specs: {
-      dimensions: '8mm to 14mm Sized Husk Chunks',
-      weight: 'Approx. 4.5 kg compressed block or loose sack',
-      material: '100% natural coconut husk cut chunks',
-      origin: 'India',
-      ecLevel: '≤ 0.7 mS/cm',
-    },
-    description:
-      'Coir chips provide maximum aeration and drainage to potting mixes. Ideal as an orchid substrate, potting mix amendment for anthuriums and monsteras, or a durable top mulch for landscape moisture conservation.',
-    publicSlug: 'coir-chips',
-  },
-  {
-    id: 'open-top-growbag',
-    sku: 'BB-HYD-OTG-01',
-    name: 'Open Top Grow Bags (Commercial Coir Grow Bags)',
-    invoiceItemName: 'Open Top Grow Bag',
-    category: 'Commercial Hydroponics',
-    eyebrow: 'Commercial Hydroponics',
-    tagline: 'UV-treated standalone grow bags for high-yield berry & vegetable cultivation.',
-    rating: 4.8,
-    reviewCount: 85,
-    ordersMonth: '720+ delivered',
-    image: '/images/open-top-growbags.png',
-    gallery: [
-      '/images/open-top-growbags.png',
-      '/images/GrowBag.jpeg',
-      '/images/actual-products/image-3.jpeg',
-    ],
-    mrp: 115,
-    price1: 85,
-    price50: 75,
-    price100: 68,
-    gstRate: 5,
-    moq: 25,
-    stockStatus: 'in_stock',
-    stockCount: 560,
-    badges: ['Berry Grower Choice', 'UV Resistant'],
-    highlights: [
-      'White exterior reflects excess solar radiation; black interior protects root zone',
-      'Pre-compressed coco mix expands cleanly inside bag upon drip irrigation',
-      'Pre-punched drainage holes ensure zero water stagnation at base',
-    ],
-    specs: {
-      dimensions: '20 cm × 20 cm × 20 cm (Expanded)',
-      weight: 'Approx. 650g dry',
-      material: 'Washed coir blend in 3-year UV stabilized polyethylene bag',
-      origin: 'India',
-    },
-    description:
-      'Open top grow bags are the world standard for commercial greenhouse strawberries, blueberries, peppers, and tomatoes. Simply place them on gutter lines, hydrate through drip emitters, and insert seedlings.',
-  },
-  {
-    id: 'packing-box',
-    sku: 'BB-PKG-BOX-01',
-    name: 'BrickBloom Master Packing Box (5-Ply Corrugated)',
-    invoiceItemName: 'Packing Box',
-    category: 'Packaging & Accessories',
-    eyebrow: 'Heavy Duty Dispatch Box',
-    tagline: 'Custom 5-ply reinforced shipping carton with BrickBloom branding.',
-    rating: 4.7,
-    reviewCount: 45,
-    ordersMonth: '380+ delivered',
-    image: '/images/actual-products/image-1.jpeg',
-    gallery: [
-      '/images/actual-products/image-1.jpeg',
-      '/images/actual-products/image-2.jpeg',
-      '/images/actual-products/image-3.jpeg',
-    ],
-    mrp: 120,
-    price1: 100,
-    price50: 100,
-    price100: 100,
-    gstRate: 0,
-    moq: 10,
-    stockStatus: 'in_stock',
-    stockCount: 450,
-    badges: ['5-Ply Heavy Duty', 'Zero Transit Damage'],
-    highlights: [
-      '5-Ply virgin Kraft board with high burst factor (BF 18+)',
-      'Engineered to hold up to 25 kg of compressed coir blocks or pots without buckling',
-      'Branded exterior with handle punchouts and shipping label markings',
-    ],
-    specs: {
-      dimensions: '45 cm × 32 cm × 30 cm',
-      weight: 'Approx. 480g empty',
-      material: '100% Recyclable 5-ply corrugated cardboard',
-      origin: 'India',
-    },
-    description:
-      'Engineered specifically to protect fragile eco-coir pots and heavy compressed blocks during long-distance domestic freight and courier transit. Features moisture-resistant outer liner and reinforced corners.',
   },
 ];
