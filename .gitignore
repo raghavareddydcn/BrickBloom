@@ -13,3 +13,28 @@ dist/
 output/playwright/
 .wwebjs_auth/
 .wwebjs_cache/
+
+# ─── Development / one-off scripts (not part of the app) ───────────────────
+chk*.js
+fix*.js
+clean_*.js
+extract_*.js
+find_*.js
+inv_css.js
+inv_patch*.js
+rem_thresh.js
+seed.js
+temp*.js
+update_*.js
+cleanup_*.js
+get_live.js
+live_script*.js
+live_inventory.html
+test_live*.js
+test_syntax*.js
+
+# ─── Logs and local backups ────────────────────────────────────────────────
+logs/
+*.log
+*.local-backup
+testContacts.xlsx
