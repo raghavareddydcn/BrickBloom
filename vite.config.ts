@@ -52,6 +52,7 @@ function githubPagesRoutesPlugin(): Plugin {
 }
 
 export default defineConfig({
+  envPrefix: ['VITE_', 'FIREBASE_'],
   plugins: [react(), githubPagesRoutesPlugin()],
   resolve: {
     alias: {

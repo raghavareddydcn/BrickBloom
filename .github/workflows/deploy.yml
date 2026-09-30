@@ -39,6 +39,9 @@ jobs:
 
       - name: Build React app
         run: npm run build
+        env:
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY || secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY || secrets.VITE_FIREBASE_API_KEY }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

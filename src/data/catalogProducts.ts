@@ -43,7 +43,6 @@ export interface CatalogProduct {
   highlights: string[];
   specs: CatalogProductSpec;
   description: string;
-  publicSlug?: string;
 }
 
 export const CATALOG_CATEGORIES = [
@@ -100,7 +99,6 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     },
     description:
       'The BrickBloom Ready Pot is our signature corporate and retail gifting product. Packaged in a minimalist Kraft gift box, each unit features a sturdy 4-inch biodegradable coconut coir pot filled with triple-washed, nutrient-receptive coco peat and premium seeds. Zero plastic, 100% natural, and loved by eco-conscious businesses.',
-    publicSlug: 'ready-pot',
   },
   {
     id: 'starter-kit',
@@ -145,7 +143,6 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     },
     description:
       'Designed for beginners and kids, the BrickBloom Starter Kit contains two 4-inch pots, compressed expanding coco peat, and native heirloom seed balls. Simple, mess-free hydration lets any user germinate herbs or greens on their balcony or desk within days.',
-    publicSlug: 'starter-kit',
   },
   {
     id: 'medium-kit',
@@ -188,7 +185,6 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     },
     description:
       'The Medium Kit upgrades your growing capacity to two heavy-duty 6-inch coir pots. Spacious enough for tomatoes, chili, basil, or marigolds, this kit supplies expanded root space for vigorous development and bumper yields.',
-    publicSlug: 'medium-kit',
   },
   {
     id: 'premium-kit',
@@ -233,7 +229,6 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     },
     description:
       'Our flagship luxury kit. The BrickBloom Premium Kit delivers a complete balcony makeover in one curated unboxing. From miniature nursery starter pots to hanging baskets and climbing poles, it provides everything plant enthusiasts and corporate VIPs need to grow in style.',
-    publicSlug: 'premium-kit',
   },
   {
     id: 'ready-pot-bare',
@@ -274,7 +269,6 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     },
     description:
       'Designed specifically for B2B nurseries, garden centers, and event planners who prefer to insert their own customized flora, live succulents, or specialty seeds while leveraging BrickBloom’s premium packaging and pre-filled substrate.',
-    publicSlug: 'ready-pot',
   },
   {
     id: '2-inch-square-pot',
@@ -644,7 +638,6 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     },
     description:
       'Engineered for nursery potting automation and direct pot placement. Drop a 100mm disk into an empty pot, hydrate, and you have instant potting medium without cumbersome soil mixing or heavy bag transport.',
-    publicSlug: 'coco-grow-disk',
   },
   {
     id: '650g-brick',
@@ -689,7 +682,6 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     },
     description:
       'The consumer and retail champion. Lightweight and easy to carry home from garden centers, this 650g compressed brick absorbs water rapidly and expands into 9-10 liters of rich, aerated growing medium. An essential organic soil amendment.',
-    publicSlug: 'coco-bricks',
   },
   {
     id: '5kg-block',
@@ -734,7 +726,6 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     },
     description:
       'The foundation of commercial horticulture, greenhouse hydroponics, and landscape contracts. BrickBloom 5kg blocks are processed using pristine freshwater washing to achieve strict export-grade low electrical conductivity benchmarks.',
-    publicSlug: 'premium-cocopeat',
   },
   {
     id: 'coco-growslabs',

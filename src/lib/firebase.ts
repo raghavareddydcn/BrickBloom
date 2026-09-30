@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCE9R7HACDhgVG-WH7KANSRzyEfhXHg8BQ',
+  apiKey: import.meta.env.FIREBASE_API_KEY || import.meta.env.VITE_FIREBASE_API_KEY || '',
   authDomain: 'brickbloom-invoices.firebaseapp.com',
   projectId: 'brickbloom-invoices',
   storageBucket: 'brickbloom-invoices.firebasestorage.app',
