@@ -1,6 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import {
-  ArrowLeft,
   FileText,
   History,
   LayoutDashboard,
@@ -41,7 +40,7 @@ export default function AdminLayout() {
     <div className="min-h-screen bg-[#f7f5ef] text-slate-800 font-sans flex flex-col selection:bg-[#031c0e] selection:text-white">
       {/* Ultra-Premium Glass Topbar matching public/admin.html */}
       <header className="sticky top-0 z-40 h-[66px] bg-[#021a0d]/95 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 flex items-center justify-between shadow-xl text-white">
-        <NavLink to="/admin" className="flex items-center gap-3 group" aria-label="BrickBloom Admin Suite">
+        <NavLink to="/" className="flex items-center gap-3 group" aria-label="BrickBloom Home" title="Back to BrickBloom Home">
           <img
             src="/images/OurProducts/Logo_new.jpeg"
             alt="BrickBloom"
@@ -87,13 +86,6 @@ export default function AdminLayout() {
             <LogOut className="h-4 w-4" />
           </button>
 
-          {/* Public Site Link */}
-          <NavLink
-            to="/"
-            className="hidden md:inline-flex items-center gap-1.5 text-xs font-semibold text-slate-300 hover:text-white transition-colors ml-2"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" /> Public Site
-          </NavLink>
         </div>
       </header>
 
