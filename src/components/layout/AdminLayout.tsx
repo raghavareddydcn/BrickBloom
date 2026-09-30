@@ -8,12 +8,14 @@ import {
   MessageCircle,
   Package,
   ShieldCheck,
+  ShoppingBag,
   Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navigation = [
   { to: '/admin', label: 'Overview', icon: LayoutDashboard, end: true },
+  { to: '/admin/products', label: 'Product Showcase', icon: ShoppingBag },
   { to: '/admin/invoices', label: 'Invoices & Billing', icon: FileText },
   { to: '/admin/inventory', label: 'Live Inventory', icon: Package },
   { to: '/admin/whatsapp', label: 'WhatsApp Outreach', icon: MessageCircle },

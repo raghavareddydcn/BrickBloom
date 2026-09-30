@@ -71,6 +71,25 @@ export default function InvoiceWorkspace() {
   }, []);
 
   useEffect(() => { if (!draft.refNo && !editingId) suggestReference(); }, [products]);
+  useEffect(() => {
+    const rawCatalogItems = sessionStorage.getItem('bb_catalog_order_items');
+    if (rawCatalogItems) {
+      try {
+        const parsed = JSON.parse(rawCatalogItems);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setShowForm(true);
+          setDraft((curr) => ({
+            ...curr,
+            items: [...parsed, packingItem(products)],
+          }));
+          sessionStorage.removeItem('bb_catalog_order_items');
+          setNotice(`Imported ${parsed.length} product(s) from Showcase Catalog into invoice!`);
+        }
+      } catch {
+        // ignore
+      }
+    }
+  }, [products]);
   async function suggestReference() { const fy = financialYear(); const rows = await getDocs(collection(firestore, 'invoices')); const highest = rows.docs.reduce((max, row) => Math.max(max, Number(refPattern(fy).exec(String(row.data().refNo || ''))?.[1] || 0)), 0); setDraft(current => current.refNo ? current : { ...current, refNo: `BB/${fy}/${String(highest + 1).padStart(3, '0')}` }); }
   async function claimReference(reference: string) {
     const fy = financialYear(); const match = refPattern(fy).exec(reference.trim()); if (!match) return reference.trim();

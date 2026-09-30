@@ -8,6 +8,7 @@ import {
   IndianRupee,
   MessageCircle,
   Package,
+  ShoppingBag,
   Users,
 } from 'lucide-react';
 import { firestore } from '@/lib/firebase';
@@ -25,6 +26,17 @@ interface ToolItem {
 }
 
 const TOOLS: ToolItem[] = [
+  {
+    to: '/admin/products',
+    badge: 'Amazon & Flipkart Style Showcase',
+    title: 'Product Showcase & Catalog',
+    description: 'Explore all 21 products with high-res photos, wholesale pricing tiers, technical specifications, and instant invoice quote generation.',
+    icon: ShoppingBag,
+    accentBar: 'bg-gradient-to-r from-emerald-600 via-teal-500 to-amber-500',
+    badgeClass: 'bg-emerald-50 text-emerald-900 border-emerald-300',
+    buttonBg: 'bg-[#031c0e] hover:bg-emerald-950 text-white',
+    actionText: 'Explore Product Catalog',
+  },
   {
     to: '/admin/invoices',
     badge: 'Invoice & Billing',
