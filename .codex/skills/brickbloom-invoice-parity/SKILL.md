@@ -3,19 +3,19 @@ name: brickbloom-invoice-parity
 description: Rebuild or maintain BrickBloom invoices in React while preserving the legacy invoice workflow, validation, stock, audit, printing, and Firebase behavior.
 ---
 
-# BrickBloom invoice parity
+# BrickBloom Invoice Parity
 
-Use this skill when changing the React invoice workspace. The target is a React-only experience with the same business behavior as the legacy `public/invoice.html`; do not route users back to a legacy page.
+Use this skill when changing the React invoice workspace ([src/pages/InvoiceWorkspace.tsx](file:///e:/code_base/BrickBloom_Git/BrickBloom/src/pages/InvoiceWorkspace.tsx)). The target is a modern React-only experience with full fidelity to the established business rules; do not route users back to legacy standalone HTML pages.
 
-Before changing invoice behavior, read [the legacy contract](references/legacy-contract.md). Treat its rules and stored data shape as compatibility requirements. Preserve existing Firestore invoice records and the local-storage migration path.
+Before modifying invoice behavior, review [the legacy contract](references/legacy-contract.md). Treat its business rules and data shapes as strict compatibility requirements. Always preserve existing Firestore invoice records and backward compatibility.
 
-## Implementation requirements
+## Implementation Requirements
 
-- Keep Firestore `invoices`, `products`, `counters`, `audit_logs`, and `admin_users` compatible with the legacy pages.
-- Make invoice writes and stock deltas safe: calculate changes against the pre-edit invoice, exclude non-inventory charges, and restore stock when deleting.
-- Enforce the documented required fields and role permissions in the React UI, not only visually.
-- Retain edit, duplicate, draft reset, auto-numbering, tier pricing, custom products, GST totals, print, and image-export actions.
-- Log material invoice and stock actions using the documented audit payload. Failures to write an audit record must not silently corrupt invoice or inventory data.
-- Validate by building the React app and manually exercising a new invoice, an edit, a duplicate, and a delete against a disposable record.
-
-When a legacy behavior is unclear, inspect the corresponding function in `public/invoice.html` and update the contract reference before implementing the React equivalent.
+- **Data Models**: Keep Firestore collections (`invoices`, `products`, `counters`, `audit_logs`, `admin_users`) aligned with the schema contract.
+- **Stock Delta Calculation**: Make invoice writes and stock adjustments safe: calculate net changes against the pre-edit invoice (`newQty - oldQty`), exclude non-inventory charges (packing/transport), and restore stock automatically upon deletion.
+- **Form Actions**: Retain edit, duplicate, draft reset, sequential financial-year numbering (`BB/YY-YY/NNN`), tier pricing (1/50/100 units), custom product insertion, and real-time CGST/SGST/IGST breakdown.
+- **Audit Logging**: Log material invoice and stock actions using the documented audit payload to both Firestore `audit_logs` and `POST /api/audit-log`. Failures to log must not corrupt invoice or inventory data.
+- **Document Output**:
+  - Maintain the official Konaseema Coco Products LLP legal header, GSTIN `29ABGFK2654K1ZX`, official brand logo, and signatory seal.
+  - Support high-resolution PNG export via `html2canvas` and exact A4 portrait browser PDF printing.
+- **Validation**: Validate changes with `npm run build` (`tsc -b && vite build`) and verify invoice creation, edit, calculation, and export workflows.
