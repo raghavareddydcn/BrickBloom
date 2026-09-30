@@ -69,7 +69,6 @@ const marketIntelligence = {
   ],
   sourcingHubs: [
     { region: 'India', focus: 'Large-scale processing, low-EC custom blends, and compressed bales.' },
-    { region: 'Sri Lanka', focus: 'Naturally aged, high-porosity cocopeat for premium media mixes.' },
     { region: 'Global directories', focus: 'Direct sourcing from certified mills and exporters.' }
   ],
   qualityNotes: [

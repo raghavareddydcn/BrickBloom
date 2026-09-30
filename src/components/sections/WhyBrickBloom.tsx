@@ -26,23 +26,8 @@ const FEATURES = [
     icon: Factory,
     badge: 'Direct Supply',
     title: 'Direct Coastal Mill Sourcing',
-    desc: 'Direct container shipments from certified processing facilities in southern India and Sri Lanka with dedicated supply volume assurance.',
+    desc: 'Direct container shipments from certified processing facilities across southern India with dedicated supply volume assurance.',
     accent: 'text-emerald-800 bg-emerald-50 border-emerald-200',
-  },
-];
-
-const HUBS = [
-  {
-    flag: '🇮🇳 India Hub',
-    spec: 'Large-scale processing, low-EC custom blends, buffered coir pith, and high-cube container consolidation.',
-  },
-  {
-    flag: '🇱🇰 Sri Lanka Hub',
-    spec: 'Aged premium coco chips, high air-filled porosity growbags, and specialty greenhouse hydroponic slabs.',
-  },
-  {
-    flag: '🌍 Global Export Desk',
-    spec: 'CIF & FOB freight quotes, phytosanitary certificates, SGS lab test verification, and fast customs dispatch.',
   },
 ];
 
@@ -94,19 +79,6 @@ export default function WhyBrickBloom() {
               </article>
             );
           })}
-        </div>
-
-        {/* Coastal Mill Sourcing Hubs */}
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-5">
-          {HUBS.map((hub) => (
-            <div
-              key={hub.flag}
-              className="rounded-2xl border border-[#ebdcc7] bg-[#f8f3ea]/60 p-5 shadow-sm"
-            >
-              <h4 className="font-display text-base font-semibold text-slate-900 mb-1.5">{hub.flag}</h4>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{hub.spec}</p>
-            </div>
-          ))}
         </div>
 
       </div>

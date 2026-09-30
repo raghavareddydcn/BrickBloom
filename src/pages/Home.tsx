@@ -14,8 +14,8 @@ export default function Home() {
   return (
     <main className="relative bg-background">
       <HeroCarousel />
-      <StatsStrip />
       <ProductGrid />
+      <StatsStrip />
       <BrandBanner />
       <WhyBrickBloom />
       <ContactForm />

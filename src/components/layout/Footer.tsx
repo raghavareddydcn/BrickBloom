@@ -29,7 +29,7 @@ export default function Footer() {
               <span className="font-sans font-semibold text-lg text-brand-100 tracking-tight">BrickBloom</span>
             </Link>
             <p className="text-brand-300 text-sm leading-relaxed max-w-xs">
-              Premium coconut coir substrates sourced directly from certified processing mills in India and Sri Lanka.
+              Premium coconut coir substrates sourced directly from certified processing mills across southern India.
             </p>
             <p className="mt-4 text-xs text-brand-400 font-medium tracking-widest uppercase">
               From Nature, For Nature
@@ -88,7 +88,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0" />
-                <span className="text-sm text-brand-300">India & Sri Lanka</span>
+                <span className="text-sm text-brand-300">India</span>
               </li>
               <li className="mt-4 px-3 py-2 rounded-lg bg-brand-900/60 border border-brand-800">
                 <p className="text-xs font-semibold text-brand-300 uppercase tracking-wide mb-0.5">FCL Container Export</p>

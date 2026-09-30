@@ -151,7 +151,7 @@ export default function ContactForm() {
                 <div>
                   <p className="text-[11px] uppercase font-bold text-slate-400">Corporate Trademark</p>
                   <p className="text-xs text-slate-700 font-medium">
-                    Konaseema Coco Products LLP • India &amp; Sri Lanka
+                    Konaseema Coco Products LLP • India
                   </p>
                 </div>
               </div>

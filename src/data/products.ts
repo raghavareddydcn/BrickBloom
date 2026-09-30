@@ -284,7 +284,6 @@ export const productBySlug = (slug: string): Product | undefined =>
 // Sourcing hubs shown on homepage
 export const sourcingHubs = [
   { region: 'India',            focus: 'Large-scale processing, low-EC custom blends, and compressed bales.' },
-  { region: 'Sri Lanka',        focus: 'Naturally aged, high-porosity cocopeat for premium media mixes.' },
   { region: 'Global networks',  focus: 'Direct sourcing from certified mills and exporters worldwide.' },
 ];
 
