@@ -293,10 +293,10 @@ export default function ProductCatalogWorkspace() {
 
       {/* Hero Header Banner */}
       <div className="relative overflow-hidden rounded-3xl border border-[#e2d5be] bg-gradient-to-br from-[#031c0e] via-[#042814] to-[#011409] p-6 sm:p-8 text-white shadow-xl">
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           
           {/* Left Column: Heading & Sourcing Vision */}
-          <div className="lg:col-span-5 space-y-2.5">
+          <div className="space-y-2.5 max-w-2xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-300">
               <Sparkles className="h-3.5 w-3.5" />
               <span>Enterprise B2B Product Showcase</span>
@@ -309,60 +309,24 @@ export default function ProductCatalogWorkspace() {
             </p>
           </div>
 
-          {/* Middle Column: Meaningful Operational Numbers */}
-          <div className="lg:col-span-4 grid grid-cols-2 gap-3 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-            <div className="space-y-0.5">
-              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Live Inventory</div>
-              <div className="text-xl sm:text-2xl font-black text-emerald-400 font-display">19,550+</div>
-              <div className="text-[11px] text-slate-300">Ready units in stock</div>
-            </div>
-            <div className="space-y-0.5">
-              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Wholesale Margin</div>
-              <div className="text-xl sm:text-2xl font-black text-amber-300 font-display">Up to 60%</div>
-              <div className="text-[11px] text-slate-300">Tier 100+ bulk discount</div>
-            </div>
-            <div className="space-y-0.5 pt-2.5 border-t border-white/10">
-              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Desalinated Purity</div>
-              <div className="text-base sm:text-lg font-black text-teal-300 font-display">≤ 0.5 mS/cm</div>
-              <div className="text-[10px] text-slate-300">Triple-washed low EC</div>
-            </div>
-            <div className="space-y-0.5 pt-2.5 border-t border-white/10">
-              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Quality Score</div>
-              <div className="text-base sm:text-lg font-black text-emerald-300 font-display">4.8 ★ / 5.0</div>
-              <div className="text-[10px] text-slate-300">3,300+ Trade reviews</div>
-            </div>
-          </div>
-
           {/* Right Column: Sourcing & Commercial Specifications */}
-          <div className="lg:col-span-3 grid grid-cols-2 lg:grid-cols-1 gap-2.5">
-            <div className="rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur-sm flex items-center justify-between">
-              <div>
-                <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Active Catalog</div>
-                <div className="text-lg font-black text-emerald-400">{CATALOG_PRODUCTS.length} SKUs</div>
-              </div>
-              <span className="text-[10px] font-bold text-emerald-950 bg-emerald-400 px-2 py-0.5 rounded-full">
-                7 Sectors
-              </span>
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-sm min-w-[130px]">
+              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Active Catalog</div>
+              <div className="text-xl sm:text-2xl font-black text-emerald-400 mt-0.5">{CATALOG_PRODUCTS.length} SKUs</div>
+              <div className="text-[10px] text-slate-400 mt-0.5">7 Product Sectors</div>
             </div>
 
-            <div className="rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur-sm flex items-center justify-between">
-              <div>
-                <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">GST Compliant</div>
-                <div className="text-lg font-black text-teal-300">5% Tax Rate</div>
-              </div>
-              <span className="text-[10px] font-bold text-slate-300 bg-white/10 px-2 py-0.5 rounded-full">
-                HSN 5305
-              </span>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-sm min-w-[130px]">
+              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">GST Compliant</div>
+              <div className="text-xl sm:text-2xl font-black text-teal-300 mt-0.5">5% Tax</div>
+              <div className="text-[10px] text-slate-400 mt-0.5">HSN Code 5305</div>
             </div>
 
-            <div className="col-span-2 lg:col-span-1 rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur-sm flex items-center justify-between">
-              <div>
-                <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Ocean Logistics</div>
-                <div className="text-lg font-black text-amber-300">20ft / 40ft HQ</div>
-              </div>
-              <span className="text-[10px] font-bold text-amber-950 bg-amber-400 px-2 py-0.5 rounded-full">
-                FCL Ready
-              </span>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-sm min-w-[130px]">
+              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Dispatch Hub</div>
+              <div className="text-xl sm:text-2xl font-black text-amber-300 mt-0.5">Bangalore</div>
+              <div className="text-[10px] text-slate-400 mt-0.5">Direct Warehouse</div>
             </div>
           </div>
 
