@@ -186,7 +186,7 @@ export default function AdminHub() {
               {/* Top Accent Stripe */}
               <div className={`absolute top-0 left-0 right-0 h-1.5 ${tool.accentBar}`} />
 
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center flex-1 w-full">
                 {/* Badge */}
                 <div
                   className={`inline-flex items-center justify-center rounded-full border px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider mb-3 ${tool.badgeClass}`}
@@ -195,12 +195,14 @@ export default function AdminHub() {
                 </div>
 
                 {/* Title */}
-                <h3 className="font-display text-2xl font-extrabold text-slate-900 leading-snug group-hover:text-emerald-950 transition-colors">
-                  {tool.title}
-                </h3>
+                <div className="h-14 flex items-center justify-center text-center">
+                  <h3 className="font-display text-2xl font-extrabold text-slate-900 leading-snug group-hover:text-emerald-950 transition-colors">
+                    {tool.title}
+                  </h3>
+                </div>
 
                 {/* Integrated Metric Sub-Panel */}
-                <div className="my-4 w-full rounded-2xl border border-slate-100 bg-[#fbf8f3] p-4 text-center shadow-inner">
+                <div className="my-4 w-full h-[96px] rounded-2xl border border-slate-100 bg-[#fbf8f3] p-3 text-center shadow-inner flex flex-col items-center justify-center">
                   {tool.to === '/admin/products' && (
                     <>
                       <div className="font-display text-2xl font-extrabold text-slate-900">
@@ -296,17 +298,10 @@ export default function AdminHub() {
                     </>
                   )}
                 </div>
-
-                {/* Description */}
-                {tool.description && (
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-sm">
-                    {tool.description}
-                  </p>
-                )}
               </div>
 
               {/* Action Button */}
-              <div className="mt-6 pt-4 border-t border-slate-100">
+              <div className="mt-auto pt-4 border-t border-slate-100 w-full">
                 <div
                   className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs sm:text-sm font-bold shadow-sm transition-all ${tool.buttonBg}`}
                 >
