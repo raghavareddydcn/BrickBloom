@@ -9,7 +9,6 @@ import {
   FileText,
   MessageCircle,
   Copy,
-  ExternalLink,
   Plus,
   Minus,
   Trash2,
@@ -666,17 +665,12 @@ export default function ProductCatalogWorkspace() {
 
                   {/* Wholesale Tier Pricing Box */}
                   <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-3 space-y-1.5">
-                    <div className="flex items-baseline justify-between">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-xl font-black text-slate-950 font-display">
-                          ₹{product.price100}
-                        </span>
-                        <span className="text-xs text-slate-400 line-through">
-                          MRP ₹{product.mrp}
-                        </span>
-                      </div>
-                      <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider bg-emerald-100 px-1.5 py-0.5 rounded">
-                        100+ MOQ
+                    <div className="flex items-baseline justify-center gap-2">
+                      <span className="text-xl font-black text-slate-950 font-display">
+                        ₹{product.price100}
+                      </span>
+                      <span className="text-xs text-slate-400 line-through">
+                        MRP ₹{product.mrp}
                       </span>
                     </div>
 
@@ -758,20 +752,6 @@ export default function ProductCatalogWorkspace() {
                         WhatsApp
                       </Button>
                     </div>
-
-                    {product.publicSlug && (
-                      <div className="text-center pt-1">
-                        <a
-                          href={`/products/${product.publicSlug}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-400 hover:text-emerald-700 transition"
-                        >
-                          <span>View Public Landing Page</span>
-                          <ExternalLink className="h-2.5 w-2.5" />
-                        </a>
-                      </div>
-                    )}
                   </div>
                 </div>
               </Card>
