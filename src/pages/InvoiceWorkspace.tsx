@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import { collection, doc, getDocs, increment, onSnapshot, runTransaction, setDoc, writeBatch } from 'firebase/firestore';
-import { Award, BarChart3, Calendar, Copy, FilePlus2, ImageDown, Pencil, Plus, Printer, Search, Trash2, TrendingUp } from 'lucide-react';
+import { Award, BarChart3, Calendar, Copy, FileDown, FilePlus2, FileText, ImageDown, Pencil, Plus, Printer, Search, Trash2, TrendingUp } from 'lucide-react';
 import { firestore } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -43,6 +44,7 @@ export default function InvoiceWorkspace() {
   const [query, setQuery] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
+  const [exporting, setExporting] = useState<'pdf' | 'png' | null>(null);
   const [showForm, setShowForm] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
   const role = sessionStorage.getItem('bb_admin_role') || 'admin';
@@ -174,8 +176,113 @@ export default function InvoiceWorkspace() {
   function editInvoice(invoice: Invoice, duplicate = false) { const items = (invoice.items || []).map(item => ({ ...item, rowId: crypto.randomUUID(), gstRate: n(item.gstRate ?? invoice.taxRate ?? 5) })); const normalized = items.some(item => isPackingRow(item.productName)) ? items : [...items, packingItem(products)]; setDraft({ ...emptyDraft(products), ...invoice, issueDate: duplicate ? today() : invoice.issueDate || today(), refNo: duplicate ? '' : invoice.refNo, items: normalized }); setEditingId(duplicate ? null : invoice.id); setShowForm(true); if (duplicate) setTimeout(suggestReference, 0); }
   async function deleteInvoice(invoice: Invoice) { if (!canEdit || !window.confirm(`Delete ${invoice.refNo}? Stock will be restored.`)) return; setBusy(true); try { const batch = writeBatch(firestore); Object.entries(inventoryQuantities(invoice.items || [])).forEach(([name, qty]) => batch.set(doc(firestore, 'products', name), { stock: increment(qty), lastUpdated: new Date().toISOString() }, { merge: true })); batch.delete(doc(firestore, 'invoices', invoice.id)); await batch.commit(); await audit('INVOICE_DELETE', invoice.id, `Deleted invoice ${invoice.refNo}`, { refNo: invoice.refNo, restoredStock: inventoryQuantities(invoice.items || []) }); setNotice(`Deleted ${invoice.refNo}; stock restored.`); if (editingId === invoice.id) startNew(); } catch { setNotice('Could not delete the invoice.'); } finally { setBusy(false); } }
   function startNew() { setEditingId(null); setDraft(emptyDraft(products)); setShowForm(true); setTimeout(suggestReference, 0); }
-  async function exportImage() { await saveInvoice(); if (!previewRef.current) return; const canvas = await html2canvas(previewRef.current, { scale: 2.5, backgroundColor: '#ffffff', useCORS: true }); const anchor = document.createElement('a'); anchor.download = `${safeName(draft.refNo)}_${safeName(draft.custName)}.png`; anchor.href = canvas.toDataURL('image/png'); anchor.click(); }
-  async function printInvoice() { await saveInvoice(); const before = document.title; document.title = `${safeName(draft.refNo)}_${safeName(draft.custName)}`; window.print(); document.title = before; }
+  async function generateInvoiceCanvas(): Promise<HTMLCanvasElement | null> {
+    if (!previewRef.current) return null;
+    const element = previewRef.current;
+    const targetWidth = 794;
+    const targetHeight = element.scrollHeight || element.offsetHeight;
+
+    return await html2canvas(element, {
+      scale: 3,
+      backgroundColor: '#ffffff',
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      width: targetWidth,
+      height: targetHeight,
+      windowWidth: 1280,
+      windowHeight: Math.max(targetHeight + 200, 1400),
+      x: 0,
+      y: 0,
+      scrollX: 0,
+      scrollY: 0,
+      onclone: (_clonedDoc, clonedElement) => {
+        clonedElement.style.width = '794px';
+        clonedElement.style.minWidth = '794px';
+        clonedElement.style.maxWidth = '794px';
+        clonedElement.style.margin = '0 auto';
+        clonedElement.style.boxShadow = 'none';
+        clonedElement.style.transform = 'none';
+      },
+    });
+  }
+
+  async function exportImage() {
+    await saveInvoice();
+    if (!previewRef.current) return;
+    setExporting('png');
+    setNotice('Generating high-resolution invoice image…');
+    try {
+      const canvas = await generateInvoiceCanvas();
+      if (!canvas) return;
+      const anchor = document.createElement('a');
+      const filename = `${safeName(draft.refNo)}_${safeName(draft.custName)}.png`;
+      anchor.download = filename;
+      anchor.href = canvas.toDataURL('image/png', 1.0);
+      anchor.click();
+      setNotice(`Saved image: ${filename}`);
+    } catch (err) {
+      console.error('Image export failed:', err);
+      setNotice('Could not save image. Please try again.');
+    } finally {
+      setExporting(null);
+    }
+  }
+
+  async function exportPdf() {
+    await saveInvoice();
+    if (!previewRef.current) return;
+    setExporting('pdf');
+    setNotice('Generating standard A4 invoice PDF…');
+    try {
+      const canvas = await generateInvoiceCanvas();
+      if (!canvas) return;
+
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        compress: true,
+      });
+
+      const pdfWidth = 210;
+      const pdfPageHeight = 297;
+      const renderedHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      if (renderedHeight <= pdfPageHeight) {
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, renderedHeight, undefined, 'FAST');
+      } else {
+        let position = 0;
+        let heightLeft = renderedHeight;
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, renderedHeight, undefined, 'FAST');
+        heightLeft -= pdfPageHeight;
+        while (heightLeft > 0) {
+          position -= pdfPageHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, renderedHeight, undefined, 'FAST');
+          heightLeft -= pdfPageHeight;
+        }
+      }
+
+      const filename = `${safeName(draft.refNo)}_${safeName(draft.custName)}.pdf`;
+      pdf.save(filename);
+      setNotice(`Saved PDF: ${filename}`);
+    } catch (err) {
+      console.error('PDF export failed:', err);
+      setNotice('Could not save PDF. Please try again.');
+    } finally {
+      setExporting(null);
+    }
+  }
+
+  async function printInvoice() {
+    await saveInvoice();
+    const before = document.title;
+    document.title = `${safeName(draft.refNo)}_${safeName(draft.custName)}`;
+    window.print();
+    document.title = before;
+  }
 
   return (
     <div className="mx-auto max-w-7xl space-y-5">
@@ -261,16 +368,27 @@ export default function InvoiceWorkspace() {
       {notice && <p className="no-print rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-900">{notice}</p>}
       {showForm && <div className="no-print grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]"><Card><CardContent className="p-5 sm:p-7"><div className="flex items-center justify-between"><h2 className="text-xl font-bold text-slate-900">{editingId ? `Edit ${draft.refNo}` : 'New invoice'}</h2><Button variant="ghost" onClick={() => setShowForm(false)}>Close</Button></div><div className="mt-5 grid gap-4 md:grid-cols-3">{([['refNo','Invoice reference'],['issueDate','Issue date'],['payTerms','Payment terms'],['custName','Customer name'],['custPhone','Phone'],['custGstin','GSTIN'],['custAddr','Address'],['custState','Customer state'],['placeOfSupply','Place of supply']] as [keyof Draft,string][]).map(([key,label]) => <label key={String(key)} className="text-xs font-bold uppercase tracking-wide text-slate-500">{label}<input disabled={!canEdit} type={key === 'issueDate' ? 'date' : 'text'} value={String(draft[key] ?? '')} onChange={event => changeDraft(key, event.target.value)} className="mt-1.5 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm font-normal text-slate-800 outline-none focus:border-brand-600 disabled:bg-slate-50" /></label>)}</div>
         <div className="mt-7 flex items-center justify-between"><h3 className="font-bold text-slate-900">Items</h3><div className="flex gap-2"><Button size="sm" variant="outline" onClick={addCustomProduct} disabled={!canEdit}>Add catalog item</Button><Button size="sm" onClick={addItem} disabled={!canEdit}><Plus className="h-4 w-4" /> Item</Button></div></div><div className="mt-3 overflow-x-auto"><table className="min-w-[730px] w-full text-sm"><thead className="bg-slate-50 text-left text-xs uppercase text-slate-500"><tr><th className="p-3">Product</th><th className="p-3">Qty</th><th className="p-3">Price</th><th className="p-3">GST</th><th className="p-3">Amount</th><th className="p-3" /></tr></thead><tbody>{draft.items.map(item => <tr key={item.rowId} className="border-b border-slate-100"><td className="p-2"><input list="invoice-products" disabled={!canEdit || isPackingRow(item.productName)} value={item.productName} onChange={event => chooseProduct(item, event.target.value)} className="h-9 w-full rounded border border-slate-200 px-2" placeholder="Choose or type product" /></td><td className="p-2"><input disabled={!canEdit} min="0" type="number" value={item.qty || ''} onChange={event => changeQuantity(item, n(event.target.value))} className="h-9 w-20 rounded border border-slate-200 px-2" /></td><td className="p-2"><input disabled={!canEdit} min="0" type="number" value={item.price || ''} onChange={event => updateItem(item.rowId, { price: n(event.target.value) })} className="h-9 w-24 rounded border border-slate-200 px-2" /></td><td className="p-2"><select disabled={!canEdit} value={item.gstRate} onChange={event => updateItem(item.rowId, { gstRate: n(event.target.value) })} className="h-9 rounded border border-slate-200 px-2">{[0,5,12,18].map(rate => <option key={rate} value={rate}>{rate}%</option>)}</select></td><td className="p-2 font-semibold">{money(n(item.qty) * n(item.price))}</td><td className="p-2">{!isPackingRow(item.productName) && <button disabled={!canEdit} onClick={() => removeItem(item)} className="rounded p-2 text-red-500 hover:bg-red-50"><Trash2 className="h-4 w-4" /></button>}</td></tr>)}</tbody></table><datalist id="invoice-products">{products.map(product => <option key={product.name} value={product.name} />)}</datalist></div>
-        <div className="mt-5 grid gap-4 sm:grid-cols-2"><label className="text-sm font-semibold">Transport<input disabled={!canEdit} type="number" min="0" value={draft.transport || ''} onChange={event => changeDraft('transport', n(event.target.value))} className="mt-1 h-10 w-full rounded border border-slate-200 px-3" /></label><label className="text-sm font-semibold">Advance paid<input disabled={!canEdit} type="number" min="0" value={draft.advancePaid || ''} onChange={event => changeDraft('advancePaid', n(event.target.value))} className="mt-1 h-10 w-full rounded border border-slate-200 px-3" /></label></div><div className="mt-6 flex flex-wrap gap-3"><Button onClick={saveInvoice} disabled={!canEdit || busy}>{busy ? 'Saving…' : 'Save invoice'}</Button><Button variant="outline" onClick={() => editInvoice({ ...draft, id: editingId || 'preview' }, true)} disabled={!canEdit}><Copy className="h-4 w-4" /> Duplicate as new</Button><Button variant="outline" onClick={printInvoice} disabled={!canEdit}><Printer className="h-4 w-4" /> Print / PDF</Button><Button variant="outline" onClick={exportImage} disabled={!canEdit}><ImageDown className="h-4 w-4" /> PNG</Button></div></CardContent></Card>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2"><label className="text-sm font-semibold">Transport<input disabled={!canEdit} type="number" min="0" value={draft.transport || ''} onChange={event => changeDraft('transport', n(event.target.value))} className="mt-1 h-10 w-full rounded border border-slate-200 px-3" /></label><label className="text-sm font-semibold">Advance paid<input disabled={!canEdit} type="number" min="0" value={draft.advancePaid || ''} onChange={event => changeDraft('advancePaid', n(event.target.value))} className="mt-1 h-10 w-full rounded border border-slate-200 px-3" /></label></div><div className="mt-6 flex flex-wrap gap-3"><Button onClick={saveInvoice} disabled={!canEdit || busy}>{busy ? 'Saving…' : 'Save invoice'}</Button><Button variant="outline" onClick={() => editInvoice({ ...draft, id: editingId || 'preview' }, true)} disabled={!canEdit}><Copy className="h-4 w-4" /> Duplicate as new</Button><Button variant="outline" onClick={exportPdf} disabled={!canEdit || exporting !== null} className="border-emerald-200 text-emerald-900 hover:bg-emerald-50"><FileDown className="h-4 w-4 mr-1 text-emerald-700" /> {exporting === 'pdf' ? 'Generating PDF…' : 'Save PDF'}</Button><Button variant="outline" onClick={exportImage} disabled={!canEdit || exporting !== null} className="border-blue-200 text-blue-900 hover:bg-blue-50"><ImageDown className="h-4 w-4 mr-1 text-blue-700" /> {exporting === 'png' ? 'Generating PNG…' : 'Save Image (PNG)'}</Button><Button variant="outline" onClick={printInvoice} disabled={!canEdit}><Printer className="h-4 w-4 mr-1" /> Print</Button></div></CardContent></Card>
       <Card><CardContent className="p-6"><h3 className="font-bold text-slate-900">Invoice totals</h3><dl className="mt-4 space-y-3 text-sm"><div className="flex justify-between"><dt>Taxable value</dt><dd>{money(totals.subtotal)}</dd></div><div className="flex justify-between"><dt>GST</dt><dd>{money(totals.tax)}</dd></div><div className="flex justify-between"><dt>Transport</dt><dd>{money(n(draft.transport))}</dd></div><div className="flex justify-between border-t pt-3 text-base font-bold"><dt>Grand total</dt><dd>{money(totals.grand)}</dd></div><div className="flex justify-between"><dt>Advance paid</dt><dd>{money(n(draft.advancePaid))}</dd></div><div className="flex justify-between font-bold text-brand-800"><dt>Balance due</dt><dd>{money(totals.balance)}</dd></div></dl></CardContent></Card></div>}
     <Card className="no-print"><CardContent className="p-4"><label className="relative block"><Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" /><input value={query} onChange={event => setQuery(event.target.value)} className="h-11 w-full rounded-xl border border-slate-200 pl-10 pr-4" placeholder="Search invoice, customer, or phone" /></label></CardContent></Card><Card className="no-print overflow-hidden"><div className="overflow-x-auto"><table className="min-w-full text-left text-sm"><thead className="bg-slate-50 text-xs uppercase text-slate-500"><tr><th className="px-5 py-4">Invoice</th><th className="px-5 py-4">Customer</th><th className="px-5 py-4">Date</th><th className="px-5 py-4">Total</th><th className="px-5 py-4">Actions</th></tr></thead><tbody>{filtered.map(invoice => { const total = (invoice.items || []).reduce((sum, item) => sum + n(item.qty) * n(item.price) * (1 + n(item.gstRate ?? invoice.taxRate ?? 5) / 100), 0) + n(invoice.transport); return <tr key={invoice.id} className="border-t border-slate-100"><td className="px-5 py-4 font-bold text-brand-800">{invoice.refNo || invoice.id}</td><td className="px-5 py-4">{invoice.custName || '—'}</td><td className="px-5 py-4">{invoice.issueDate || '—'}</td><td className="px-5 py-4 font-semibold">{money(total)}</td><td className="flex gap-1 px-5 py-3"><button onClick={() => editInvoice(invoice)} className="rounded p-2 hover:bg-slate-100"><Pencil className="h-4 w-4" /></button><button onClick={() => editInvoice(invoice, true)} className="rounded p-2 hover:bg-slate-100"><Copy className="h-4 w-4" /></button><button disabled={!canEdit} onClick={() => deleteInvoice(invoice)} className="rounded p-2 text-red-600 hover:bg-red-50"><Trash2 className="h-4 w-4" /></button></td></tr>; })}</tbody></table></div>{!filtered.length && <p className="p-10 text-center text-sm text-slate-500">No invoices found.</p>}</Card>
-    {showForm && <div ref={previewRef} className="invoice-document">
-      <div className="invoice-stripe" />
-      <header className="invoice-header"><div><div className="invoice-company-name">Konaseema Coco Products LLP</div><div className="invoice-company-address">No 12, Ground Floor, AVP Complex, Sy No 97,<br />Dommasandra Village, Virgo Nagar Post,<br />Bangalore, Karnataka - 560049<br /><strong>GSTIN: 29ABGFK2654K1ZX</strong><br />+91 8951744898 · info@brickbloom.co.in<br />brickbloom.co.in</div></div><img src="/images/OurProducts/Logo_new.jpeg" alt="BrickBloom" className="invoice-company-logo" /><div className="invoice-header-right"><div className="invoice-tax-tag">TAX INVOICE</div><div className="invoice-original">Original for Recipient</div><div className="invoice-detail"><span>Invoice No:</span><strong className="invoice-reference">{draft.refNo || 'BB/--/---'}</strong></div><div className="invoice-detail"><span>Date:</span><strong>{draft.issueDate}</strong></div><div className="invoice-detail"><span>Payment Mode:</span><strong>{draft.payTerms}</strong></div><div className="invoice-detail"><span>Place of Supply:</span><strong>{draft.placeOfSupply}</strong></div></div></header>
-      <section className="invoice-parties"><div className="invoice-party"><div className="invoice-label">Bill To</div><div className="invoice-buyer">{draft.custName || 'Customer Name'}</div><div className="invoice-small">{draft.custAddr || '—'}<br />{draft.custState && <>State: <strong>{draft.custState}</strong><br /></>}{draft.custPhone && <>Phone: <strong>{draft.custPhone}</strong><br /></>}{draft.custGstin && <>GSTIN: <strong>{draft.custGstin}</strong></>}</div></div><div className="invoice-party"><div className="invoice-label">Dispatch Details</div><div className="invoice-small">Dispatched from: <strong>Bangalore, Karnataka</strong><br />Transport Charges: <strong>{money(n(draft.transport))}</strong></div></div></section>
-      <section className="invoice-items"><div className="invoice-items-title">Description of Goods &amp; Services</div><table className="invoice-table"><colgroup><col style={{ width: '4%' }} /><col style={{ width: '32%' }} /><col style={{ width: '9%' }} /><col style={{ width: '12%' }} /><col style={{ width: '14%' }} /><col style={{ width: '14%' }} /><col style={{ width: '15%' }} /></colgroup><thead><tr><th>#</th><th>Item / Description</th><th>Qty</th><th>Rate (₹)</th><th>Taxable Amt</th><th>GST Amt</th><th>Total (₹)</th></tr></thead><tbody>{draft.items.filter(item => item.productName || item.qty).map((item, index) => { const taxable = n(item.qty) * n(item.price); const tax = taxable * n(item.gstRate) / 100; return <tr key={item.rowId}><td>{index + 1}</td><td><strong>{item.productName || '—'}</strong></td><td>{item.qty}</td><td>{money(n(item.price))}</td><td>{money(taxable)}</td><td>{item.gstRate ? `${money(tax)} (${item.gstRate}%)` : 'Exempt'}</td><td>{money(taxable + tax)}</td></tr>; })}<tr className="invoice-total-row"><td /><td>TOTAL</td><td>{draft.items.reduce((sum, item) => sum + n(item.qty), 0)}</td><td /><td>{money(totals.subtotal)}</td><td>{money(totals.tax)}</td><td>{money(totals.subtotal + totals.tax)}</td></tr></tbody></table></section>
-      <section className="invoice-financials"><div className="invoice-words"><div className="invoice-section-label">Amount in Words</div><p>{amountInWords(totals.grand)}</p></div><div className="invoice-summary"><div className="invoice-summary-row"><span>Taxable Value</span><strong>{money(totals.subtotal)}</strong></div>{[...new Set(draft.items.map(item => n(item.gstRate)).filter(Boolean))].sort((a,b) => a-b).map(rate => { const tax = draft.items.filter(item => n(item.gstRate) === rate).reduce((sum, item) => sum + n(item.qty) * n(item.price) * rate / 100, 0); return <div key={rate}><div className="invoice-summary-row"><span>CGST @ {rate / 2}%</span><strong>{money(tax / 2)}</strong></div><div className="invoice-summary-row"><span>SGST @ {rate / 2}%</span><strong>{money(tax / 2)}</strong></div></div>; })}<div className="invoice-summary-row"><span>Transport</span><strong>{money(n(draft.transport))}</strong></div><div className="invoice-grand"><span>Total Payable</span><span>{money(totals.grand)}</span></div>{n(draft.advancePaid) > 0 && <><div className="invoice-summary-row"><span>Advance Paid</span><strong>− {money(n(draft.advancePaid))}</strong></div><div className="invoice-balance"><span>Balance Due</span><span>{money(totals.balance)}</span></div></>}</div></section>
-      <footer className="invoice-footer"><div className="invoice-terms"><strong>Terms &amp; Conditions:</strong><br />1. Goods once dispatched are non-returnable without prior written consent. 2. Interest @ 18% p.a. applies on payments overdue beyond agreed terms. 3. All disputes subject to Bangalore jurisdiction only.</div><div className="invoice-signature">For Konaseema Coco Products LLP<img src="/images/konaseema_seal.jpg" alt="Company seal" className="invoice-seal" /><div className="invoice-sign-line">Authorised Signatory</div></div></footer><div className="invoice-tagline">🌱 Thank you for your business — BrickBloom: Sustainable Cocopeat Growing Media</div>
+    {showForm && <div className="rounded-2xl border border-slate-200 bg-slate-100/70 p-3 sm:p-6 shadow-sm overflow-x-auto">
+      <div className="no-print mb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs text-slate-500 font-semibold px-1">
+        <span className="flex items-center gap-1.5 text-emerald-900">
+          <FileText className="h-4 w-4 text-emerald-700" />
+          Commercial A4 Tax Invoice (Standard 794px Layout — identical on mobile &amp; laptop)
+        </span>
+        <span className="text-slate-400">Scroll horizontally on smaller screens to view full sheet</span>
+      </div>
+      <div className="flex justify-center min-w-max">
+        <div ref={previewRef} className="invoice-document">
+          <div className="invoice-stripe" />
+          <header className="invoice-header"><div><div className="invoice-company-name">Konaseema Coco Products LLP</div><div className="invoice-company-address">No 12, Ground Floor, AVP Complex, Sy No 97,<br />Dommasandra Village, Virgo Nagar Post,<br />Bangalore, Karnataka - 560049<br /><strong>GSTIN: 29ABGFK2654K1ZX</strong><br />+91 8951744898 · info@brickbloom.co.in<br />brickbloom.co.in</div></div><img src="/images/OurProducts/Logo_new.jpeg" alt="BrickBloom" className="invoice-company-logo" crossOrigin="anonymous" /><div className="invoice-header-right"><div className="invoice-tax-tag">TAX INVOICE</div><div className="invoice-original">Original for Recipient</div><div className="invoice-detail"><span>Invoice No:</span><strong className="invoice-reference">{draft.refNo || 'BB/--/---'}</strong></div><div className="invoice-detail"><span>Date:</span><strong>{draft.issueDate}</strong></div><div className="invoice-detail"><span>Payment Mode:</span><strong>{draft.payTerms}</strong></div><div className="invoice-detail"><span>Place of Supply:</span><strong>{draft.placeOfSupply}</strong></div></div></header>
+          <section className="invoice-parties"><div className="invoice-party"><div className="invoice-label">Bill To</div><div className="invoice-buyer">{draft.custName || 'Customer Name'}</div><div className="invoice-small">{draft.custAddr || '—'}<br />{draft.custState && <>State: <strong>{draft.custState}</strong><br /></>}{draft.custPhone && <>Phone: <strong>{draft.custPhone}</strong><br /></>}{draft.custGstin && <>GSTIN: <strong>{draft.custGstin}</strong></>}</div></div><div className="invoice-party"><div className="invoice-label">Dispatch Details</div><div className="invoice-small">Dispatched from: <strong>Bangalore, Karnataka</strong><br />Transport Charges: <strong>{money(n(draft.transport))}</strong></div></div></section>
+          <section className="invoice-items"><div className="invoice-items-title">Description of Goods &amp; Services</div><table className="invoice-table"><colgroup><col style={{ width: '4%' }} /><col style={{ width: '32%' }} /><col style={{ width: '9%' }} /><col style={{ width: '12%' }} /><col style={{ width: '14%' }} /><col style={{ width: '14%' }} /><col style={{ width: '15%' }} /></colgroup><thead><tr><th>#</th><th>Item / Description</th><th>Qty</th><th>Rate (₹)</th><th>Taxable Amt</th><th>GST Amt</th><th>Total (₹)</th></tr></thead><tbody>{draft.items.filter(item => item.productName || item.qty).map((item, index) => { const taxable = n(item.qty) * n(item.price); const tax = taxable * n(item.gstRate) / 100; return <tr key={item.rowId}><td>{index + 1}</td><td><strong>{item.productName || '—'}</strong></td><td>{item.qty}</td><td>{money(n(item.price))}</td><td>{money(taxable)}</td><td>{item.gstRate ? `${money(tax)} (${item.gstRate}%)` : 'Exempt'}</td><td>{money(taxable + tax)}</td></tr>; })}<tr className="invoice-total-row"><td /><td>TOTAL</td><td>{draft.items.reduce((sum, item) => sum + n(item.qty), 0)}</td><td /><td>{money(totals.subtotal)}</td><td>{money(totals.tax)}</td><td>{money(totals.subtotal + totals.tax)}</td></tr></tbody></table></section>
+          <section className="invoice-financials"><div className="invoice-words"><div className="invoice-section-label">Amount in Words</div><p>{amountInWords(totals.grand)}</p></div><div className="invoice-summary"><div className="invoice-summary-row"><span>Taxable Value</span><strong>{money(totals.subtotal)}</strong></div>{[...new Set(draft.items.map(item => n(item.gstRate)).filter(Boolean))].sort((a,b) => a-b).map(rate => { const tax = draft.items.filter(item => n(item.gstRate) === rate).reduce((sum, item) => sum + n(item.qty) * n(item.price) * rate / 100, 0); return <div key={rate}><div className="invoice-summary-row"><span>CGST @ {rate / 2}%</span><strong>{money(tax / 2)}</strong></div><div className="invoice-summary-row"><span>SGST @ {rate / 2}%</span><strong>{money(tax / 2)}</strong></div></div>; })}<div className="invoice-summary-row"><span>Transport</span><strong>{money(n(draft.transport))}</strong></div><div className="invoice-grand"><span>Total Payable</span><span>{money(totals.grand)}</span></div>{n(draft.advancePaid) > 0 && <><div className="invoice-summary-row"><span>Advance Paid</span><strong>− {money(n(draft.advancePaid))}</strong></div><div className="invoice-balance"><span>Balance Due</span><span>{money(totals.balance)}</span></div></>}</div></section>
+          <footer className="invoice-footer"><div className="invoice-terms"><strong>Terms &amp; Conditions:</strong><br />1. Goods once dispatched are non-returnable without prior written consent. 2. Interest @ 18% p.a. applies on payments overdue beyond agreed terms. 3. All disputes subject to Bangalore jurisdiction only.</div><div className="invoice-signature">For Konaseema Coco Products LLP<img src="/images/konaseema_seal.jpg" alt="Company seal" className="invoice-seal" crossOrigin="anonymous" /><div className="invoice-sign-line">Authorised Signatory</div></div></footer><div className="invoice-tagline">🌱 Thank you for your business — BrickBloom: Sustainable Cocopeat Growing Media</div>
+        </div>
+      </div>
     </div>}
     </div>
   );
