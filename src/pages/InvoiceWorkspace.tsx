@@ -203,6 +203,15 @@ export default function InvoiceWorkspace() {
         clonedElement.style.margin = '0 auto';
         clonedElement.style.boxShadow = 'none';
         clonedElement.style.transform = 'none';
+        const tag = clonedElement.querySelector('.invoice-tax-tag') as HTMLElement | null;
+        if (tag) {
+          tag.style.display = 'inline-block';
+          tag.style.height = 'auto';
+          tag.style.lineHeight = '1';
+          tag.style.padding = '2.5px 14px 5px 14px';
+          tag.style.textAlign = 'center';
+          tag.style.boxSizing = 'border-box';
+        }
       },
     });
   }
