@@ -210,3 +210,16 @@
   border-radius: 0.75rem;
   border: 1px solid hsl(var(--border));
 }
+
+.invoice-paycard { display:flex; align-items:stretch; gap:12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px; }
+.invoice-paycard-rows { flex:1 1 auto; min-width:0; display:grid; grid-template-columns:62px 1fr; row-gap:4px; column-gap:6px; align-items:baseline; font-size:11px; line-height:1.4; }
+.invoice-paycard-rows .invoice-bank-label { font-size:10.5px; }
+.invoice-paycard-rows .invoice-bank-val { font-size:11px; }
+.invoice-paycard-sep { grid-column:1 / -1; height:0; border-top:1px dashed #cbd5e1; margin:2px 0; }
+.invoice-paycard-qr { flex:0 0 auto; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding-left:12px; border-left:1px solid #e2e8f0; }
+.invoice-paycard-qr img { width:84px; height:84px; display:block; padding:4px; background:#fff; border:1px solid #e2e8f0; border-radius:6px; }
+.invoice-paycard-qr span { color:#15803d; font-size:8.5px; font-weight:800; letter-spacing:.8px; text-transform:uppercase; white-space:nowrap; }
+.invoice-parties { grid-template-columns:38% 62%; }
+.invoice-parties .invoice-party + .invoice-party { padding-left:18px; }
+.invoice-paycard-rows { grid-template-columns:70px 1fr; }
+.invoice-paycard-qr img { width:92px; height:92px; }
