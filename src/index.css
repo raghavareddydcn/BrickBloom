@@ -223,3 +223,7 @@
 .invoice-parties .invoice-party + .invoice-party { padding-left:18px; }
 .invoice-paycard-rows { grid-template-columns:70px 1fr; }
 .invoice-paycard-qr img { width:92px; height:92px; }
+
+.invoice-parties .invoice-party { display:flex; flex-direction:column; }
+.invoice-billcard { flex:1; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px; }
+.invoice-paycard { flex:1; }
