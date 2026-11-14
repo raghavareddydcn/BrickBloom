@@ -36,7 +36,7 @@ function isNonInventoryItem(name: string) {
 }
 
 function financialYear(date = new Date()) { const start = date.getMonth() < 3 ? date.getFullYear() - 1 : date.getFullYear(); return `${String(start).slice(-2)}-${String(start + 1).slice(-2)}`; }
-function refPattern(fy: string) { return new RegExp(`^BB/${fy.replace('-', '\\-')}/(\\d+)$`, 'i'); }
+function refPattern(fy: string) { return new RegExp(`^BB/${fy.replace('-', '\\-')}/(\\d{4,})$`, 'i'); }
 
 export default function InvoiceWorkspace() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -96,11 +96,11 @@ export default function InvoiceWorkspace() {
       }
     }
   }, [products]);
-  async function suggestReference() { const fy = financialYear(); const rows = await getDocs(collection(firestore, 'invoices')); const highest = rows.docs.reduce((max, row) => Math.max(max, Number(refPattern(fy).exec(String(row.data().refNo || ''))?.[1] || 0)), 0); setDraft(current => current.refNo ? current : { ...current, refNo: `BB/${fy}/${String(highest + 1).padStart(3, '0')}` }); }
+  async function suggestReference() { const fy = financialYear(); const rows = await getDocs(collection(firestore, 'invoices')); const highest = rows.docs.reduce((max, row) => Math.max(max, Number(refPattern(fy).exec(String(row.data().refNo || ''))?.[1] || 0)), 0); setDraft(current => current.refNo ? current : { ...current, refNo: `BB/${fy}/${String(highest + 1).padStart(4, '0')}` }); }
   async function claimReference(reference: string) {
     const fy = financialYear(); const match = refPattern(fy).exec(reference.trim()); if (!match) return reference.trim();
-    const next = await runTransaction(firestore, async transaction => { const counter = doc(firestore, 'counters', fy); const snap = await transaction.get(counter); const rows = await getDocs(collection(firestore, 'invoices')); const highest = rows.docs.reduce((max, row) => Math.max(max, Number(refPattern(fy).exec(String(row.data().refNo || ''))?.[1] || 0)), 0); const sequence = Math.max(Number(snap.data()?.seq || 0), highest, Number(match[1]) - 1) + 1; transaction.set(counter, { seq: sequence, updatedAt: new Date().toISOString() }, { merge: true }); return sequence; });
-    return `BB/${fy}/${String(next).padStart(3, '0')}`;
+    const next = await runTransaction(firestore, async transaction => { const counter = doc(firestore, 'counters', `${fy}-v4`); const snap = await transaction.get(counter); const rows = await getDocs(collection(firestore, 'invoices')); const highest = rows.docs.reduce((max, row) => Math.max(max, Number(refPattern(fy).exec(String(row.data().refNo || ''))?.[1] || 0)), 0); const sequence = Math.max(Number(snap.data()?.seq || 0), highest, Number(match[1]) - 1) + 1; transaction.set(counter, { seq: sequence, updatedAt: new Date().toISOString() }, { merge: true }); return sequence; });
+    return `BB/${fy}/${String(next).padStart(4, '0')}`;
   }
 
   const analytics = useMemo(() => {
