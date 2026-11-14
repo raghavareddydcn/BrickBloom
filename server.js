@@ -444,9 +444,9 @@ app.post('/api/wa/send', async (req, res) => {
 
       if (mediaObj) {
         // Send media with caption
-        await waClient.sendMessage(numberId._serialized, mediaObj, { caption: message, sendMediaAsDocument: mediaObj.mimetype === 'application/pdf' });
+        await waClient.sendMessage(numberId._serialized, mediaObj, { caption: message, linkPreview: false, sendMediaAsDocument: mediaObj.mimetype === 'application/pdf' });
       } else {
-        await waClient.sendMessage(numberId._serialized, message);
+        await waClient.sendMessage(numberId._serialized, message, { linkPreview: false });
       }
 
       console.log(`[WA] Sent → ${phone} (${name})`);
