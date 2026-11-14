@@ -63,6 +63,23 @@ export default function WhatsAppWorkspace() {
     [serverUrl]
   );
 
+  const waFetch = useCallback(async (path: string, init?: RequestInit): Promise<Response> => {
+    const candidates = Array.from(new Set([api(path), path, `${window.location.protocol}//${window.location.hostname}:3000${path}`, 'http://localhost:3000' + path]));
+    let lastErr: unknown = null;
+    let lastRes: Response | null = null;
+    for (const url of candidates) {
+      try {
+        const res = await fetch(url, init);
+        const ct = res.headers.get('content-type') || '';
+        if (res.ok || ct.includes('application/json') || ct.includes('application/x-ndjson')) return res;
+        lastRes = res;
+      } catch (err) {
+        lastErr = err;
+      }
+    }
+    if (lastRes) return lastRes;
+    throw lastErr ?? new Error('Failed to fetch');
+  }, [api]);
   const saveServerUrl = () => {
     const trimmed = serverUrlInput.trim().replace(/\/$/, '');
     setServerUrl(trimmed);
@@ -157,7 +174,7 @@ export default function WhatsAppWorkspace() {
   // Poll / Status check
   const fetchStatus = useCallback(async () => {
     try {
-      const res = await fetch(api('/api/wa/status'));
+      const res = await waFetch('/api/wa/status');
       if (res.ok) {
         const data = await res.json();
         applyState(data);
@@ -165,7 +182,7 @@ export default function WhatsAppWorkspace() {
     } catch {
       // Local server might be offline
     }
-  }, [api]);
+  }, [waFetch]);
 
   // SSE Stream listener — reconnects whenever serverUrl changes
   useEffect(() => {
@@ -203,7 +220,7 @@ export default function WhatsAppWorkspace() {
     setSessionError(null);
     addLog('info', 'Connecting to WhatsApp Web client...');
     try {
-      const res = await fetch(api('/api/wa/connect'), { method: 'POST' });
+      const res = await waFetch('/api/wa/connect', { method: 'POST' });
       const contentType = res.headers.get('content-type') || '';
       if (!contentType.includes('application/json')) {
         throw new Error(
@@ -229,7 +246,7 @@ export default function WhatsAppWorkspace() {
     setBusyAction('disconnecting');
     addLog('info', 'Disconnecting WhatsApp session...');
     try {
-      await fetch(api('/api/wa/disconnect'), { method: 'POST' });
+      await waFetch('/api/wa/disconnect', { method: 'POST' });
       setStatus('disconnected');
       setQrCode(null);
       addLog('info', 'WhatsApp session disconnected.');
@@ -249,7 +266,7 @@ export default function WhatsAppWorkspace() {
     setBusyAction('clearing');
     addLog('warning', 'Clearing WhatsApp session directory (.wwebjs_auth) & browser locks...');
     try {
-      const res = await fetch(api('/api/wa/clear-session'), { method: 'POST' });
+      const res = await waFetch('/api/wa/clear-session', { method: 'POST' });
       if (res.ok) {
         setStatus('disconnected');
         setQrCode(null);
@@ -644,7 +661,7 @@ export default function WhatsAppWorkspace() {
 
     try {
       const payloadMedia = media ? { mimetype: media.mimetype, data: media.data, filename: media.filename } : null;
-      const res = await fetch(api('/api/wa/send'), {
+      const res = await waFetch('/api/wa/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -704,7 +721,7 @@ export default function WhatsAppWorkspace() {
     addLog('info', `Sending manual message to ${contact.name} (${contact.phone})...`);
     try {
       const payloadMedia = media ? { mimetype: media.mimetype, data: media.data, filename: media.filename } : null;
-      const res = await fetch(api('/api/wa/send'), {
+      const res = await waFetch('/api/wa/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
