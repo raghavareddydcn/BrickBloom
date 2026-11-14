@@ -229,3 +229,12 @@
 .invoice-paycard { flex:1; }
 
 .invoice-table th.invoice-hsn, .invoice-table td.invoice-hsn { text-align:center; font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; font-size:11px; }
+.invoice-table th { border-left:1px solid #334155; }
+.invoice-table th:first-child { border-left:0; }
+.invoice-table th.invoice-center, .invoice-table td.invoice-center { text-align:center; }
+.invoice-table tr.invoice-subhead th { background:#334155; font-size:8.5px; padding:4px 6px; border-top:1px solid #475569; color:#e2e8f0; text-align:right; }
+.invoice-table tr.invoice-subhead th:first-child { border-left:1px solid #475569; }
+.invoice-table tr.invoice-subhead th.invoice-center { text-align:center; }
+.invoice-gst-cell { line-height:1.25; }
+.invoice-gst-amt { display:block; font-weight:600; color:#0f172a; }
+.invoice-gst-rate { display:block; font-size:9.5px; color:#64748b; }
